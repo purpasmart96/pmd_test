@@ -1,0 +1,328 @@
+#===============================================================================
+# Roguelike Random Dungeon Generator
+#-------------------------------------------------------------------------------
+# Version: 2.0a
+# Author: cozziekuns (rmrk)
+# Last Date Updated: 4/11/2011
+#===============================================================================
+# Description:
+#-------------------------------------------------------------------------------
+# A random dungeon generator akin to that of games like Rogue or Pokemon Mystery
+# Dungeon.
+#===============================================================================
+# Updates
+# ------------------------------------------------------------------------------
+# o 16/07/2011 - Started Script
+# o 17/07/2011 - Updated Script to support black outlines and some autotile 
+#                features
+# o 15/09/2011 - Bugfix.
+# o 17/09/2011 - Major overhaul of the entire script. Now has fully functional
+#                autotile support, and a much faster algorithm that can create a 
+#                500 * 500 tile map with 1000 features in less than 10 seconds.
+#===============================================================================
+# To-do List
+#------------------------------------------------------------------------------- 
+# o Nothing! Suggest some features.
+#===============================================================================
+# Instructions
+#-------------------------------------------------------------------------------
+# Copy and paste this script above ? Main Process but below ? Materials, and
+# edit the modules to your liking. Some difficult modules have links to the 
+# instructions.
+#===============================================================================
+# Maps
+#-------------------------------------------------------------------------------
+# Start editing at:
+#   case id
+#   when [id] - Replace [id] with your map id.
+#     ROOM_MIN_WIDTH : Minimum width for a single "Room"
+#     ROOM_MAX_WIDTH : Maximum width for a single "Room"
+#     ROOM_MIN_HEIGHT : Minimum height for a single "Room"
+#     ROOM_MAX_HEIGHT : Maximum height for a single "Room"
+#     FEATURES : How many features you want to fit in the map
+#     WALL_TILE : Tile of the wall
+#     FLOOR_TILE : Tile of the floor
+#     BLACK_OUTLINE : Do you want a black outline surrounding your random 
+#                     dungeon (slow).
+#   end
+#===============================================================================
+
+module COZZIEKUNS
+  
+  module RDG
+    
+    def self.map_settings(id)
+      case id
+      when 1
+        room_min_width = 3
+        room_max_width = 6
+        room_min_height = 3
+        room_max_height = 6
+        features = 200
+        wall_tile = 0
+        floor_tile = 16
+        black_outline = false
+      when 2
+        room_min_width = 4
+        room_max_width = 8
+        room_min_height = 4
+        room_max_height = 8
+        features = 75
+        wall_tile = 6
+        floor_tile = 52
+        black_outline = false
+      end
+      return [room_min_width, room_max_width, room_min_height, room_max_height,
+      features, wall_tile, floor_tile, black_outline].compact 
+    end
+  
+  end
+  
+end
+
+#==============================================================================
+# ** Game_Map
+#==============================================================================
+
+class Game_Map 
+  
+  alias coz_rdg_gm_setup setup
+  def setup(*args)
+    coz_rdg_gm_setup(*args)
+    create_dungeon if not COZZIEKUNS::RDG.map_settings(@map_id).empty?
+  end
+  
+  def create_dungeon
+    set_variables
+    fill_wall_tiles
+    dig_random_room
+    for i in 0...@features
+      count = 0
+      loop do
+        count += 1
+        choose_next_wall
+        make_new_feature
+        break if @can_make or count == 5
+      end
+    end
+    refine_tilemap
+    set_player_and_events
+  end
+  
+  def set_variables
+    settings = COZZIEKUNS::RDG.map_settings(@map_id)
+    @rmiw = settings[0]
+    @rmaw = settings[1]
+    @rmih = settings[2]
+    @rmah = settings[3]
+    @features = settings[4]
+    @walls = []
+    @floor = []
+    @next_wall = []
+    @wall_tile = (settings[5] + 80) * 48 + 2048
+    @wall2_tile = (settings[5] + 88) * 48 + 2048
+    @floor_tile = (settings[6] + 128) + 1408
+    @black_outline = settings[7]
+    @next_feature = 0
+    @can_make = false
+    @player_transfered = false
+  end
+  
+  def set_player_and_events
+    for event in $game_map.events.values + [$game_player]
+      loop do
+        ax = @floor[rand(@floor.size)][0]
+        ay = @floor[rand(@floor.size)][1]
+        if passable_in_area?(ax - 1, ay - 1, event)
+          event.moveto(ax, ay)
+          break
+        end
+      end
+    end
+  end
+  
+  alias coz_rdg_gm_update update
+  def update
+    coz_rdg_gm_update
+    unless @player_transfered or COZZIEKUNS::RDG.map_settings(@map_id).empty?
+      @player_transfered = true
+      set_player_and_events
+    end
+  end
+  
+  def passable_in_area?(x, y, char, width = 3, height = 3)
+    for i in x...x + width; for j in y...y + height
+      return false if not char.passable?(i, j)
+    end; end
+    return true
+  end
+  
+  def fill_wall_tiles
+    for i in 0...width; for j in 0...height
+      @map.data[i, j, 0] = @wall_tile
+    end; end
+  end
+  
+  def dig_random_room
+    x = [rand(width) + 1, width - @rmaw - 1].min
+    y = [rand(height) + 1, height - @rmah - 1].min
+    dig_room(x, y)
+  end
+  
+  def dig_room(x, y, direction = 2)
+    width = rand(@rmiw) + @rmaw - @rmiw + 1
+    height = rand(@rmih) + @rmah - @rmih + 1
+    for i in 0...width
+      for j in 0...height
+        case direction
+        when 0; new_x = x + j; new_y = y + i
+        when 1; new_x = x - i; new_y = y + j
+        when 2; new_x = x + i; new_y = y + j
+        when 3; new_x = x + j; new_y = y - i
+        end
+        @map.data[new_x, new_y, 0] = @floor_tile
+        @floor.push([new_x, new_y]) 
+        @walls.push([new_x - 1, new_y, 1]) if new_x == x
+        @walls.push([new_x + 1, new_y, 2]) if new_x == x + width - 1
+        @walls.push([new_x, new_y - 1, 3]) if new_y == y
+        @walls.push([new_x, new_y + 1, 0]) if new_y == y + height - 1
+      end
+    end
+    @next_feature = 1
+  end
+  
+  def dig_corridor(x, y, direction)
+    j = 0
+    width = rand(@rmiw) + @rmaw - @rmiw + 1
+    height = 0
+    for i in 0...width
+      case direction
+      when 0; new_x = x + j; new_y = y + i
+      when 1; new_x = x - i; new_y = y + j
+      when 2; new_x = x + i; new_y = y + j  
+      when 3; new_x = x + j; new_y = y - i 
+      end
+      @map.data[new_x, new_y, 0] = @floor_tile
+      @floor.push([new_x, new_y]) 
+      @walls.push([new_x - 1, new_y, 1]) if new_x == x
+      @walls.push([new_x + 1, new_y, 2]) if new_x == x + width - 1
+      @walls.push([new_x, new_y - 1, 3]) if new_y == y
+      @walls.push([new_x, new_y + 1, 0]) if new_y == y + height - 1
+    end
+    case direction
+    when 0; @next_wall = [x + height, y + width, 0]
+    when 1; @next_wall = [x - width, y + height, 1]
+    when 2; @next_wall = [x + width, y + height, 2]
+    when 3; @next_wall = [x + height, y - width, 3]
+    end
+    @next_feature = 0
+  end
+  
+  def choose_next_wall; @next_wall = @walls[rand(@walls.size)]; end
+  
+  def make_new_feature
+    direction = rand(4)
+    @can_make = scan_area(@next_wall[0], @next_wall[1], @next_wall[2])
+    return if not @can_make
+    @walls.delete(@next_wall)
+    dig_corridor(@next_wall[0], @next_wall[1], @next_wall[2])
+    @can_make = scan_area(@next_wall[0], @next_wall[1], @next_wall[2])
+    dig_room(@next_wall[0], @next_wall[1], @next_wall[2]) if @can_make
+    @next_feature = 1
+  end
+  
+  def scan_area(x, y, direction)
+    case @next_feature
+    when 0
+      for i in 0..@rmaw + 1; for j in 0..@rmah + 1
+        case direction
+        when 0; return false if passable?(x + j, y + i) or !valid?(x + j, y + i)
+        when 1; return false if passable?(x - i, y + j) or !valid?(x - i, y + j)
+        when 2; return false if passable?(x + i, y + j) or !valid?(x + i, y + j)
+        when 3; return false if passable?(x + j, y - i) or !valid?(x + j, y - i)
+        end
+      end; end
+    when 1
+      for i in 0..@rmaw + 1; for j in -2..2
+        case direction
+        when 0; return false if passable?(x + j, y + i) or !valid?(x + j, y + i)
+        when 1; return false if passable?(x - i, y + j) or !valid?(x - i, y + j)
+        when 2; return false if passable?(x + i, y + j) or !valid?(x + i, y + j)
+        when 3; return false if passable?(x + j, y - i) or !valid?(x + j, y - i)
+        end
+      end; end
+    end
+    return true
+  end
+  
+  def refine_tilemap
+    for point in @floor
+      next if passable?(point[0], point[1] - 1)
+      if passable?(point[0], point[1] - 2)
+        @map.data[point[0], point[1] - 1, 0] = @floor_tile
+      else
+        @map.data[point[0], point[1] - 1, 0] = @wall2_tile
+      end
+    end
+    for i in 0...width; for j in 0...height
+      next if @map.data[i, j, 0] == @floor_tile 
+      type = @map.data[i, j, 0] == @wall2_tile ? 1 : 0
+      @map.data[i, j, 0] = rdg_tilemap_id(i, j, type) 
+    end; end
+    return if not @black_outline
+    for i in 0...width; for j in 0...height
+      next if @floor.include?([i, j])
+      if (@map.data[i, j, 0] - 2048) % 48 == 0 
+        @map.data[i, j, 0] = 0
+      end
+    end; end
+  end
+  
+  def rdg_tilemap_id(x, y, type)
+    data = @map.data
+    base = @map.data[x, y, 0]
+    return base if x == 0 or x == width - 1 or y == 0 or y == width - 1
+    case type
+    when 0
+      count = 0
+      count += 1 if (data[x - 1, y, 0] - 2048) / 48 != (base - 2048) / 48 rescue false
+      count += 2 if (data[x, y - 1, 0] - 2048) / 48 != (base - 2048) / 48 rescue false
+      count += 4 if (data[x + 1, y, 0] - 2048) / 48 != (base - 2048) / 48 rescue false
+      count += 8 if (data[x, y + 1, 0] - 2048) / 48 != (base - 2048) / 48 rescue false
+      id = case count 
+      when 0 then check_corners(x, y, base)
+      when 1 then 16 + ((check_corners(x, y, base, [2, 4])) / 2)
+      when 2 then 20 + ((check_corners(x, y, base, [4, 8])) / 4)
+      when 3 then 34 + ((check_corners(x, y, base, [4])) / 4)
+      when 4 then 24 + ([0,8,1,9].index(check_corners(x, y, base, [1, 8])))
+      when 5 then 32
+      when 6 then 36 + ((check_corners(x, y, base, [8])) / 8)
+      when 7 then 42
+      when 8 then 28 + check_corners(x, y, base, [1, 2])
+      when 9 then 40 + ((check_corners(x, y, base, [2])) / 2)
+      when 10 then 33
+      when 11 then 43
+      when 12 then 38 + check_corners(x, y, base, [1])
+      else
+        31 + count
+      end
+    when 1
+      count = 0
+      count += 1 if passable?(x - 1, y)
+      count += 4 if passable?(x + 1, y)
+      id = count + 10
+    end
+    return base + id
+  end
+
+  def check_corners(x, y, base, corners = [1, 2, 4, 8])
+    count = 0
+    data = @map.data
+    count += 1 if corners.include?(1) and (data[x - 1, y - 1, 0] - 2048) / 48 != (base - 2048) / 48 rescue false
+    count += 2 if corners.include?(2) and (data[x + 1, y - 1, 0] - 2048) / 48 != (base - 2048) / 48 rescue false
+    count += 4 if corners.include?(4) and (data[x + 1, y + 1, 0] - 2048) / 48 != (base - 2048) / 48 rescue false
+    count += 8 if corners.include?(8) and (data[x - 1, y + 1, 0] - 2048) / 48 != (base - 2048) / 48 rescue false
+    return count
+  end
+  
+end

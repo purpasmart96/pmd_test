@@ -1,0 +1,93 @@
+// Copyright(c) <2015> <Purpasmart>
+// The MIT License
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files(the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and / or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions :
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+
+#include "screen/screen.h"
+
+GLFWwindow* window = NULL;
+
+static void error_callback(int error, const char* description)
+{
+	fputs(description, stderr);
+}
+
+static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+        glfwSetWindowShouldClose(window, GL_TRUE);
+}
+
+void screen_Init()
+{
+    //SDL_Init(SDL_INIT_EVERYTHING);
+
+    if (!glfwInit())
+        exit(1);
+
+	glfwSetErrorCallback(error_callback);
+
+    GLFWwindow* window = glfwCreateWindow(640, 480, "Pmd_wip", NULL, NULL);
+
+    if (window == NULL)
+    {
+        ERROR("Error creating GLFW window\n");
+        exit(1);
+    }
+
+    glfwMakeContextCurrent(window);
+    glfwSwapInterval(1);
+    glfwSetKeyCallback(window, key_callback);
+    while (!glfwWindowShouldClose(window))
+    {
+        float ratio;
+        int width, height;
+        glfwGetFramebufferSize(window, &width, &height);
+        ratio = width / (float)height;
+        glViewport(0, 0, width, height);
+        glClear(GL_COLOR_BUFFER_BIT);
+        glMatrixMode(GL_PROJECTION);
+        glLoadIdentity();
+        glOrtho(-ratio, ratio, -1.f, 1.f, 1.f, -1.f);
+        glMatrixMode(GL_MODELVIEW);
+        glLoadIdentity();
+        glRotatef((float)glfwGetTime() * 50.f, 0.f, 0.f, 1.f);
+        glBegin(GL_TRIANGLES);
+        glColor3f(1.f, 0.f, 0.f);
+        glVertex3f(-0.6f, -0.4f, 0.f);
+        glColor3f(0.f, 1.f, 0.f);
+        glVertex3f(0.6f, -0.4f, 0.f);
+        glColor3f(0.f, 0.f, 1.f);
+        glVertex3f(0.f, 0.6f, 0.f);
+        glEnd();
+        glfwSwapBuffers(window);
+        glfwPollEvents();
+    }
+
+
+}
+
+void screen_Free()
+{
+    // Destroy window
+    glfwDestroyWindow(window);
+    glfwTerminate();
+
+    // Quit SDL subsystems
+    //SDL_Quit();
+}
