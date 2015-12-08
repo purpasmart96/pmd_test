@@ -86,10 +86,10 @@ int main()
     SetUpDefualtStatus();
     printf("Leaders belly is %d\n", teammates[CURRENT_LEADER].belly);
     //dungeon_main();
-    //screen_Init();
+    screen_Init();
     printf("This is only the beginning!\n");
     printf("Press Any Key to Continue\n");
     _getch();
-    //screen_Free();
+    screen_Free();
     return 0;
 }
