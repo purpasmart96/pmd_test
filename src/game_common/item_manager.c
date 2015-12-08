@@ -29,11 +29,6 @@ void ClearBag()
     }
 }
 
-void GiveItemToTeamMember(Pokemon *team_member, Items the_item)
-{
-    team_member->held_item = the_item;
-}
-
 bool IsBagEmpty()
 {
     if (bag.size == NO_ITEMS)
@@ -109,13 +104,50 @@ void RemoveItemFromBag(Items the_item)
     }
 }
 
+// Takes a item from the bag or ground and puts it on the desired team member
+// If there is item already on it then swap it
+void GiveItemToTeamMember(Pokemon *team_member, Items the_item)
+{
+    if (team_member->held_item == None)
+    {
+        printf("Gave the %s to the Team Member\n", GetItemNameFromId(the_item));
+        team_member->held_item = the_item;
+    }
+    else
+    {
+        if (IsBagFull() == false)
+        {
+            printf("Put the %s in the bag\n", GetItemNameFromId(team_member->held_item));
+            printf("Gave the %s to the Team Member\n", GetItemNameFromId(the_item));
+            AddItemToBag(team_member->held_item);
+            team_member->held_item = the_item;
+        }
+        else
+        {
+            // Do nothing
+            printf("Cannot give Team Member a item!\n");
+            return;
+        }
+    }
+
+}
+
 // Removes the item from the team member and puts it in the bag
 void RemoveItemFromTeamMember(Pokemon *team_member, Items the_item)
 {
-    if (team_member->held_item != None;)
+    if (team_member->held_item != None)
     {
-        team_member->held_item = None;
-        AddItemToBag(the_item);
+        if (IsBagFull() == false)
+        {
+            team_member->held_item = None;
+            AddItemToBag(the_item);
+        }
+        else
+        {
+            // Do nothing
+            printf("Cannot take item from Team Member!\n");
+            return;
+        }
     }
     else
     {
@@ -181,6 +213,12 @@ char *GetItemNameFromId(Items the_item)
     }
     case 12:
     {
+        item_name = "";
+        break;
+    }
+    case 26:
+    {
+        item_name = "PowerBand";
         break;
     }
     case 70:

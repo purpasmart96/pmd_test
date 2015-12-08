@@ -80,9 +80,9 @@ int main()
     AddItemToBag(JoySeed);
     AddItemToBag(ReviverSeed);
     AddItemToBag(ReviverSeed);
-    AddItemToBag(ReviverSeed);
 
-    AddItemToBag(ReviverSeed);
+    GiveItemToTeamMember(&players_team[CURRENT_LEADER], PowerBand);
+    RemoveItemFromTeamMember(&players_team[CURRENT_LEADER], PowerBand);
     SetUpDefualtStatus();
     printf("Leaders belly is %d\n", teammates[CURRENT_LEADER].belly);
     //dungeon_main();
