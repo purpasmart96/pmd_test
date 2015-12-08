@@ -83,6 +83,8 @@ int main()
 
     GiveItemToTeamMember(&players_team[CURRENT_LEADER], PowerBand);
     RemoveItemFromTeamMember(&players_team[CURRENT_LEADER], PowerBand);
+    RemoveItemFromBag(PowerBand);
+    RemoveItemFromBag(ReviverSeed);
     SetUpDefualtStatus();
     printf("Leaders belly is %d\n", teammates[CURRENT_LEADER].belly);
     //dungeon_main();

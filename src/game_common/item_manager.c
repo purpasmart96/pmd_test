@@ -83,11 +83,11 @@ void RemoveItemFromBag(Items the_item)
 {
     if (IsBagEmpty() == false)
     {
-        for (int i = 0; i < MAX_ITEMS; i++)
+        for (int i = MAX_ITEMS; i >= 0; i--)
         {
             if (bag.items[i] != the_item)
             {
-                continue; // skip to the next slot in the bag
+                continue; // skip to the next slot down in the bag
             }
             else
             {
@@ -112,6 +112,7 @@ void GiveItemToTeamMember(Pokemon *team_member, Items the_item)
     {
         printf("Gave the %s to the Team Member\n", GetItemNameFromId(the_item));
         team_member->held_item = the_item;
+        return;
     }
     else
     {
@@ -121,6 +122,7 @@ void GiveItemToTeamMember(Pokemon *team_member, Items the_item)
             printf("Gave the %s to the Team Member\n", GetItemNameFromId(the_item));
             AddItemToBag(team_member->held_item);
             team_member->held_item = the_item;
+            return;
         }
         else
         {
@@ -141,6 +143,7 @@ void RemoveItemFromTeamMember(Pokemon *team_member, Items the_item)
         {
             team_member->held_item = None;
             AddItemToBag(the_item);
+            return;
         }
         else
         {
