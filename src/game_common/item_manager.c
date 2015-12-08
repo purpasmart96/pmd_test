@@ -112,8 +112,16 @@ void RemoveItemFromBag(Items the_item)
 // Removes the item from the team member and puts it in the bag
 void RemoveItemFromTeamMember(Pokemon *team_member, Items the_item)
 {
-    team_member->held_item = None;
-    AddItemToBag(the_item);
+    if (team_member->held_item != None;)
+    {
+        team_member->held_item = None;
+        AddItemToBag(the_item);
+    }
+    else
+    {
+        printf("There is no item on it!\n");
+        return;
+    }
 }
 
 char *GetItemNameFromId(Items the_item)
