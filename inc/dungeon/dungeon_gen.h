@@ -34,5 +34,4 @@ void showDungeon();
 bool createDungeon(int inx, int iny, int inobj);
 void dungeon_main();
 
-
 #endif

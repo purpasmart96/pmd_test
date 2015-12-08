@@ -39,5 +39,4 @@ struct
 void DungeonFloorFunction_LeaveFloor(bool isMusicChange);
 void DungeonFloorFunction_LeaveDungeon();
 
-
 #endif
