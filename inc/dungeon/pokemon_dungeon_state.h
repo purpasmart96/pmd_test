@@ -49,5 +49,4 @@ StatusState teammates[NUMBER_OF_TEAMMATES];
 void SetUpDefualtStatus();
 void SetStatusAfterStairs();
 
-
 #endif
