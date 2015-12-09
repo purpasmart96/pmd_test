@@ -19,24 +19,30 @@
 // THE SOFTWARE.
 
 
-#ifndef _QUEUE_H_
-#define _QUEUE_H_
+#ifndef _D_LIST_H_
+#define _D_LIST_H_
 
 #include "util.h"
 
+typedef struct node 
+{
+    u32 data;
+    int size;
+    struct node *next;
+    struct node *prev;
+} Node;
+
 typedef struct
 {
-    u32 *data;
-    int capacity;
-    int size;
-    int front;
-    int rear;
-} Queue;
+	struct node *head;
+	struct node *tail;
+	int size;
+} List;
 
-void queue_init(Queue *q, int capacity);
-bool queue_empty(Queue *q);
-void dequeue(Queue *q);
-int  queue_front(Queue *q);
-void enqueue(Queue *q, int element);
+void node_init(Node *n);
+void list_insert(Node * n, u32 data);
+int  list_find(Node *n, u32 data);
+void list_delete(Node *n, u32 data);
+bool list_empty(Node *n);
 
 #endif

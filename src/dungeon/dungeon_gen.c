@@ -19,6 +19,7 @@
 // THE SOFTWARE.
 
 #include "dungeon/dungeon_gen.h"
+#include "common/rand_num.h"
 
     int xmax = 80;
     int ymax = 25;
@@ -27,7 +28,7 @@
     int objects = 0;
     int chanceRoom = 75;
     int chanceCorridor = 25;
-    int *dungeon_map;
+    int dungeon_map[2048];
 
     u64 oldseed;
 
@@ -132,12 +133,14 @@ bool makeCorridor(int x, int y, int lenght, int direction)
             if (ytemp < 0 || ytemp > ysize) return false;
             else ytemp = y;
 
-            for (xtemp = x; xtemp >(x - len); xtemp--){
+            for (xtemp = x; xtemp >(x - len); xtemp--)
+            {
                 if (xtemp < 0 || xtemp > xsize) return false;
                 if (getCell(xtemp, ytemp) != tileUnused) return false;
             }
 
-            for (xtemp = x; xtemp > (x - len); xtemp--){
+            for (xtemp = x; xtemp > (x - len); xtemp--)
+            {
                 setCell(xtemp, ytemp, floor);
             }
             break;
@@ -248,7 +251,8 @@ bool makeRoom(int x, int y, int xlength, int ylength, int direction)
             for (int ytemp = (y - ylen / 2); ytemp < (y + (ylen + 1) / 2); ytemp++)
             {
                 if (ytemp < 0 || ytemp > ysize) return false;
-                for (int xtemp = x; xtemp >(x - xlen); xtemp--){
+                for (int xtemp = x; xtemp >(x - xlen); xtemp--)
+                {
                     if (xtemp < 0 || xtemp > xsize) return false;
                     if (getCell(xtemp, ytemp) != tileUnused) return false;
                 }
@@ -336,7 +340,11 @@ bool createDungeon(int inx, int iny, int inobj)
         //printf("%s %d\n", msgMaxObjects.c_str(), objects);
 
         //redefine the map var, so it's adjusted to our new map size
-        dungeon_map = malloc(xsize * ysize);
+
+        for (int size = 0; size < 2048; size++)
+        {
+            dungeon_map[size] = (xsize * ysize);
+        }
 
         //start with making the "standard stuff" on the map
         for (int y = 0; y < ysize; y++)
@@ -364,7 +372,8 @@ bool createDungeon(int inx, int iny, int inobj)
         int currentFeatures = 1; //+1 for the first room we just made
 
         //then we sart the main loop
-        for (int countingTries = 0; countingTries < 1000; countingTries++){
+        for (int countingTries = 0; countingTries < 1000; countingTries++)
+        {
             //check if we've reached our quota
             if (currentFeatures == objects){
                 break;
@@ -386,22 +395,26 @@ bool createDungeon(int inx, int iny, int inobj)
                 //System.out.println("tempx: " + newx + "\ttempy: " + newy);
                 if (getCell(newx, newy) == tileDirtWall || getCell(newx, newy) == tileCorridor){
                     //check if we can reach the place
-                    if (getCell(newx, newy + 1) == tileDirtFloor || getCell(newx, newy + 1) == tileCorridor){
+                    if (getCell(newx, newy + 1) == tileDirtFloor || getCell(newx, newy + 1) == tileCorridor)
+                    {
                         validTile = 0; //
                         xmod = 0;
                         ymod = -1;
                     }
-                    else if (getCell(newx - 1, newy) == tileDirtFloor || getCell(newx - 1, newy) == tileCorridor){
+                    else if (getCell(newx - 1, newy) == tileDirtFloor || getCell(newx - 1, newy) == tileCorridor)
+                    {
                         validTile = 1; //
                         xmod = +1;
                         ymod = 0;
                     }
-                    else if (getCell(newx, newy - 1) == tileDirtFloor || getCell(newx, newy - 1) == tileCorridor){
+                    else if (getCell(newx, newy - 1) == tileDirtFloor || getCell(newx, newy - 1) == tileCorridor)
+                    {
                         validTile = 2; //
                         xmod = 0;
                         ymod = +1;
                     }
-                    else if (getCell(newx + 1, newy) == tileDirtFloor || getCell(newx + 1, newy) == tileCorridor){
+                    else if (getCell(newx + 1, newy) == tileDirtFloor || getCell(newx + 1, newy) == tileCorridor)
+                    {
                         validTile = 3; //
                         xmod = -1;
                         ymod = 0;
@@ -531,7 +544,8 @@ void dungeon_main()
     int x = 80;
     int y = 25;
     int dungeon_objects = 100;
-    dungeon_map = (int*)malloc(x * y);
+    
+    //dungeon_map = (int*)malloc(x * y);
     //for (;;)
     //{
         if (createDungeon(x, y, dungeon_objects));

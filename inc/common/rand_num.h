@@ -23,11 +23,37 @@
 
 #include "util.h"
 
-typedef struct {
-    u64 state;
-    u64 inc;
-} pcg32_rng;
+struct pcg_state_setseq_64 {    // Internals are *Private*.
+    u64 state;             // RNG state.  All values are possible.
+    u64 inc;               // Controls which RNG sequence (stream) is
+    // selected. Must *always* be odd.
+};
+typedef struct pcg_state_setseq_64 pcg32_random_t;
 
-u32 random_num_gen(pcg32_rng *rng);
+// If you *must* statically initialize it, here's one.
+
+#define PCG32_INITIALIZER   { 0x853c49e6748fea9bULL, 0xda3e39cb94b95bdbULL }
+
+// pcg32_srandom(initstate, initseq)
+// pcg32_srandom_r(rng, initstate, initseq):
+//     Seed the rng.  Specified in two parts, state initializer and a
+//     sequence selection constant (a.k.a. stream id)
+
+void srandom(u64 initstate, u64 initseq);
+void pcg32_srandom_r(pcg32_random_t *rng, u64 initstate, u64 initseq);
+
+// pcg32_random()
+// pcg32_random_r(rng)
+//     Generate a uniformly distributed 32-bit random number
+
+u32 random(void);
+u32 pcg32_random_r(pcg32_random_t *rng);
+
+// pcg32_boundedrand(bound):
+// pcg32_boundedrand_r(rng, bound):
+//     Generate a uniformly distributed number, r, where 0 <= r < bound
+
+u32 pcg32_boundedrand(u32 bound);
+u32 pcg32_boundedrand_r(pcg32_random_t* rng, u32 bound);
 
 #endif

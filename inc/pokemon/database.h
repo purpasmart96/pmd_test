@@ -2101,7 +2101,7 @@ typedef struct
     u8 speed;
 
     Items held_item;
-    Moves move[4]
+    Moves move[4];
 
 }Pokemon;
 

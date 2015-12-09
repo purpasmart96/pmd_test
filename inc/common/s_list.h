@@ -19,24 +19,9 @@
 // THE SOFTWARE.
 
 
-#ifndef _QUEUE_H_
-#define _QUEUE_H_
+#ifndef _S_LIST_H_
+#define _S_LIST_H_
 
 #include "util.h"
-
-typedef struct
-{
-    u32 *data;
-    int capacity;
-    int size;
-    int front;
-    int rear;
-} Queue;
-
-void queue_init(Queue *q, int capacity);
-bool queue_empty(Queue *q);
-void dequeue(Queue *q);
-int  queue_front(Queue *q);
-void enqueue(Queue *q, int element);
 
 #endif

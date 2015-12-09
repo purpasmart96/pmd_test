@@ -69,8 +69,10 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\pmd\inc;D:\glfw-3.1.2.bin.WIN32\include</AdditionalIncludeDirectories>
+      <SDLCheck>false</SDLCheck>
+      <AdditionalIncludeDirectories>..\pmd_fix\inc;D:\glfw-3.1.2.bin.WIN32\include</AdditionalIncludeDirectories>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -83,7 +85,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\audio\audio.c" />
+    <ClCompile Include="src\common\d_list.c" />
+    <ClCompile Include="src\common\queue.c" />
     <ClCompile Include="src\common\rand_num.c" />
+    <ClCompile Include="src\common\s_list.c" />
     <ClCompile Include="src\common\stack.c" />
     <ClCompile Include="src\dungeon\dungeon_gen.c" />
     <ClCompile Include="src\dungeon\pokemon_dungeon_state.c" />
@@ -96,7 +101,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="inc\audio\audio.h" />
+    <ClInclude Include="inc\common\d_list.h" />
+    <ClInclude Include="inc\common\queue.h" />
     <ClInclude Include="inc\common\rand_num.h" />
+    <ClInclude Include="inc\common\s_list.h" />
     <ClInclude Include="inc\common\stack.h" />
     <ClInclude Include="inc\dungeon\dungeon_gen.h" />
     <ClInclude Include="inc\dungeon\floor_function.h" />
