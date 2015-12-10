@@ -18,35 +18,40 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+#include "screen/load_png.h"
+#include "lib/loadpng/lodepng.h"
 
-#ifndef _POKE_DUNGEON_STATE_H_
-#define _POKE_DUNGEON_STATE_H_
-
-#include "util.h"
-
-typedef struct
+void LoadPngFile(char *filename)
 {
-    u8 attack_multiplier;
-    u8 sp_attack_multiplier;
-    u8 defense_multiplier;
-    u8 sp_defense_multiplier;
-    u8 speed_multiplier;
+    u32 error;
+    unsigned char *image;
+    u32 width, height;
 
-    s16 belly;
+    error = lodepng_decode32_file(&image, &width, &height, filename);
+    if (error)
+        printf("error %u: %s\n", error, lodepng_error_text(error));
 
-    bool confused;
-    bool burned;
-    bool paralysis;
-    bool sleeping;
-    bool posioned;
-}StatusState;
+    /*use image here*/
 
-// Team members, including the leader
-#define NUMBER_OF_TEAMMATES 3
+    free(image);
+}
 
-StatusState teammates[NUMBER_OF_TEAMMATES];
+char *GetPngFile(char *filename)
+{
+    u32 error;
+    unsigned char *image;
+    u32 width, height;
 
-void SetUpDefualtStatus();
-void SetStatusAfterStairs();
+    error = lodepng_decode32_file(&image, &width, &height, filename);
+    if (error)
+        printf("error %u: %s\n", error, lodepng_error_text(error));
 
-#endif
+    /*use image here*/
+
+    return image;
+}
+
+void FreePngFile(char *file)
+{
+    free(file);
+}

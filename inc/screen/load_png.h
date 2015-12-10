@@ -18,17 +18,13 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#ifndef _SCREEN_H_
-#define _SCREEN_H_
+#ifndef _LOAD_PNG_H_
+#define _LOAD_PNG_H_
 
 #include "util.h"
-//#define GLFW_INCLUDE_NONE
-//#include <GLFW/glfw3.h>
-#include <SDL.h>
-#include <SDL_image.h>
 
-void screen_Init();
-void screen_Free();
-
+void LoadPngFile(char *filename);
+char *GetPngFile(char *filename);
+void FreePngFile(char *file);
 
 #endif

@@ -55,10 +55,10 @@ int getRand(int min, int max)
     seed = time(NULL) + oldseed;
     oldseed = seed;
 
-    srand(seed);
+    srandom(seed, 1);
 
     int n = max - min + 1;
-    int i = rand() % n;
+    int i = random() % n;
 
     if (i < 0)
         i = -i;

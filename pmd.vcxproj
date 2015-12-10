@@ -44,7 +44,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <LibraryPath>$(LibraryPath)</LibraryPath>
+    <LibraryPath>D:\SDL2-2.0.3\lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -70,7 +70,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>false</SDLCheck>
-      <AdditionalIncludeDirectories>..\pmd_fix\inc;D:\glfw-3.1.2.bin.WIN32\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\pmd_fix\inc;D:\glfw-3.1.2.bin.WIN32\include;G:\PokeMysteryDun\pmd_fix\inc\lib\zlib\include;D:\SDL2-2.0.3\include</AdditionalIncludeDirectories>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
@@ -79,11 +79,12 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>D:\glfw-3.1.2.bin.WIN32\lib-vc2013;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>D:\glfw-3.1.2.bin.WIN32\lib-vc2013;G:\PokeMysteryDun\pmd_fix\inc\lib\zlib\lib;D:\SDL2-2.0.3\include;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;zdll.lib;SDL2.lib;SDL2main.lib;SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="inc\lib\loadpng\lodepng.c" />
     <ClCompile Include="src\audio\audio.c" />
     <ClCompile Include="src\common\d_list.c" />
     <ClCompile Include="src\common\queue.c" />
@@ -91,13 +92,14 @@
     <ClCompile Include="src\common\s_list.c" />
     <ClCompile Include="src\common\stack.c" />
     <ClCompile Include="src\dungeon\dungeon_gen.c" />
-    <ClCompile Include="src\dungeon\pokemon_dungeon_state.c" />
+    <ClCompile Include="src\dungeon\dungeon_state.c" />
     <ClCompile Include="src\dungeon\floor_function.c" />
     <ClCompile Include="src\game_common\item_manager.c" />
     <ClCompile Include="src\main.c" />
     <ClCompile Include="src\pokemon\database.c" />
     <ClCompile Include="src\pokemon\stats.c" />
     <ClCompile Include="src\screen\screen.c" />
+    <ClCompile Include="src\screen\load_png.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="inc\audio\audio.h" />
@@ -108,11 +110,13 @@
     <ClInclude Include="inc\common\stack.h" />
     <ClInclude Include="inc\dungeon\dungeon_gen.h" />
     <ClInclude Include="inc\dungeon\floor_function.h" />
-    <ClInclude Include="inc\dungeon\pokemon_dungeon_state.h" />
+    <ClInclude Include="inc\dungeon\dungeon_state.h" />
     <ClInclude Include="inc\game_common\item_manager.h" />
+    <ClInclude Include="inc\lib\loadpng\lodepng.h" />
     <ClInclude Include="inc\pokemon\stats.h" />
     <ClInclude Include="inc\pokemon\database.h" />
     <ClInclude Include="inc\rand_num.h" />
+    <ClInclude Include="inc\screen\load_png.h" />
     <ClInclude Include="inc\screen\screen.h" />
     <ClInclude Include="inc\stack.h" />
     <ClInclude Include="inc\util.h" />

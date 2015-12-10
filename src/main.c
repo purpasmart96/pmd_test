@@ -22,8 +22,9 @@
 #include "util.h"
 #include "screen/screen.h"
 #include "game_common/item_manager.h"
-#include "dungeon/pokemon_dungeon_state.h"
+#include "dungeon/dungeon_state.h"
 #include "dungeon/dungeon_gen.h"
+#include "screen/load_png.h"
 
 int main()
 {
@@ -86,12 +87,13 @@ int main()
     RemoveItemFromBag(PowerBand);
     RemoveItemFromBag(ReviverSeed);
     SetUpDefualtStatus();
-    printf("Leaders belly is %d\n", teammates[CURRENT_LEADER].belly);
-    //dungeon_main();
+    printf("Leaders belly is %d\n", team_mates[CURRENT_LEADER].belly);
     screen_Init();
+    LoadPngFile("test.png");
     printf("This is only the beginning!\n");
     printf("Press Any Key to Continue\n");
     _getch();
+    dungeon_main();
     screen_Free();
     return 0;
 }
