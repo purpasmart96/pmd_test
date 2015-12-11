@@ -28,8 +28,9 @@
 
 int main()
 {
-    screen_Init();
     ClearBag();
+    printf("Press Esc in the other window to Continue!\n");
+    screen_Init();
     GiveItemToTeamMember(&team_mates[CURRENT_LEADER], ReviverSeed);
     printf("Item on player is %s\n", GetItemNameFromId(team_mates[CURRENT_LEADER].held_item));
     RemoveItemFromTeamMember(&team_mates[CURRENT_LEADER], ReviverSeed);
@@ -102,12 +103,11 @@ int main()
     RemoveItemFromBag(JoySeed);
     RemoveItemFromBag(JoySeed);
     printf("Leaders belly is %d\n", team_mates[CURRENT_LEADER].status.belly);
-   
+    dungeon_main();
     //LoadPngFile("test.png");
+    screen_Free();
     printf("This is only the beginning!\n");
     printf("Press Any Key to Continue\n");
     _getch();
-    dungeon_main();
-    screen_Free();
     return 0;
 }

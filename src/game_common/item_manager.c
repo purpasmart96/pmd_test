@@ -211,72 +211,122 @@ char *GetItemNameFromId(Items the_item)
         item_name = "None";
         break;
     }
-    case 1:
+    case Stick:
     {
         break;
     }
-    case 2:
+    case IronThorn:
     {
         break;
     }
-    case 3:
+    case SilverSpike:
     {
         break;
     }
-    case 4:
+    case GoldFang:
     {
         break;
     }
-    case 5:
+    case CacneaSpike:
     {
         break;
     }
-    case 6:
+    case CorsolaTwig:
     {
         break;
     }
-    case 7:
+    case Gravelerock:
     {
         break;
     }
-    case 8:
+    case GeoPebble:
     {
         break;
     }
-    case 9:
+    case GoldThorn:
     {
         item_name = "GoldThorn";
         break;
     }
-    case 10:
+    case RareFossil:
     {
         break;
     }
-    case 11:
+    case NoSlipCap:
     {
         break;
     }
-    case 12:
+    case YRaySpecs:
     {
-        item_name = "";
+        item_name = "YRaySpecs";
         break;
     }
-    case 26:
+    case GaggleSpecs:
+    {
+        break;
+    }
+    case MobileScarf:
+    {
+        break;
+    }
+    case HealRibbon:
+    {
+        break;
+    }
+    case TwistBand:
+    {
+        break;
+    }
+    case ScopeLens:
+    {
+        break;
+    }
+    case PatsyBand:
+    {
+        break;
+    }
+    case NoStickCap:
+    {
+        break;
+    }
+    case PierceBand:
+    {
+        break;
+    }
+    case JoyRibbon:
+    {
+        item_name = "JoyRibbon";
+        break;
+    }
+    case XRaySpecs:
+    {
+        break;
+    }
+    case PersimBand:
+    {
+        break;
+    }
+    case PowerBand:
     {
         item_name = "PowerBand";
         break;
     }
-    case 68:
+    case 25:
+    {
+        item_name = "PechaScarf";
+        break;
+    }
+    case OranBerry:
     {
         item_name = "OranBerry";
         break;
     }
-    case 71:
+    case ReviverSeed:
     {
         item_name = "ReviverSeed";
         break;
     }
-    case 87:
+    case JoySeed:
     {
         item_name = "JoySeed";
         break;
