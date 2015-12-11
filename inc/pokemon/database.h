@@ -22,8 +22,13 @@
 #ifndef _DATABASE_H_
 #define _DATABASE_H_
 
-#include "util.h"
+#include "dungeon/dungeon_state.h"
 
+typedef enum
+{
+    Male,
+    Female,
+}Sex;
 
 typedef enum
 {
@@ -663,8 +668,6 @@ typedef enum
     GeoPebble,
     GoldThorn,
     RareFossil,
-    unk0,
-    unk1,
     NoSlipCap,
     YRaySpecs,
     GaggleSpecs,
@@ -744,79 +747,76 @@ typedef enum
     JoySeed,
     ChestoBerry,
     StunSeed,
+    GabiteScale,
+    GoldenSeed,
+    VileSeed,
+    PureSeed,
+    ViolentSeed,
+    VanishSeed,
+    MaxElixir,
+    Protein,
+    Calcium,
+    Iron,
+    Nectar,
+    DropeyeSeed,
+    ReviserSeed,
+    SlipSeed,
+    ViaSeed,
+    Zinc,
+    Apple,
+    BigApple,
+    GrimyFood,
+    HugeApple,
+    GoldenApple,
+    MixElixir,
+    OrenBerry,
+    DoughSeed,
+    WhiteGummi,
 /*
-92 = GabiteScale
-93 = GoldenSeed
-94 = VileSeed
-95 = PureSeed
-96 = ViolentSeed
-97 = VanishSeed
-98 = unk2,
-99 = MaxElixir
-100 = Protein
-101 = Calcium
-102 = Iron
-103 = Nectar
-104 = DropeyeSeed
-105 = ReviserSeed
-106 = SlipSeed
-107 = ViaSeed
-108 = Zinc
-109 = Apple
-110 = BigApple
-111 = GrimyFood
-112 = HugeApple
-113 = unk3,
-114 = unk4,
-115 = GoldenApple
-116 = MixElixir
-117 = OrenBerry
-118 = DoughSeed
-119 = WhiteGummi
-120 = RedGummi
-121 = BlueGummi
-122 = GrassGummi
-123 = YellowGummi
-124 = ClearGummi
-125 = OrangeGummi
-126 = PinkGummi
-127 = BrownGummi
-128 = SkyGummi
-129 = GoldGummi
-130 = GreenGummi
-131 = GrayGummi
+120 = RedGummi,
+121 = BlueGummi,
+122 = GrassGummi,
+123 = YellowGummi,
+124 = ClearGummi,
+125 = OrangeGummi,
+126 = PinkGummi,
+127 = BrownGummi,
+128 = SkyGummi,
+129 = GoldGummi,
+130 = GreenGummi,
+131 = GrayGummi,
 132 = PurpleGummi
-133 = RoyalGummi
-134 = BlackGummi
-135 = SilverGummi
-136 = WonderGummi
-137 = Gravelyrock
+133 = RoyalGummi,
+134 = BlackGummi,
+135 = SilverGummi,
+136 = WonderGummi,
+137 = Gravelyrock,
 138 = unk5,
-139 = Upgrade
-140 = KingsRock
-141 = Thunderstone
-142 = Deepseascale
-143 = Deepseatooth
-144 = SunStone
-145 = MoonStone
-146 = FireStone
-147 = WaterStone
-148 = MetalCoat
-149 = LeafStone
-150 = DragonScale
-151 = LinkCable
-152 = DubiousDisc
-153 = Protector
-154 = ReaperCloth
-155 = RazorFang
-156 = RazorClaw
-157 = Electirizer
-158 = Magmarizer
-159 = OvalStone
-160 = DawnStone
-161 = ShinyStone
-162 = DuskStone
-163 = CoronetRock
+139 = Upgrade,
+140 = KingsRock,
+141 = Thunderstone,
+142 = Deepseascale,
+143 = Deepseatooth,
+144 = SunStone,
+145 = MoonStone,
+146 = FireStone,
+147 = WaterStone,
+148 = MetalCoat,
+149 = LeafStone,
+150 = DragonScale,
+151 = LinkCable,
+152 = DubiousDisc,
+153 = Protector,
+154 = ReaperCloth,
+155 = RazorFang,
+156 = RazorClaw,
+157 = Electirizer,
+158 = Magmarizer,
+159 = OvalStone,
+160 = DawnStone,
+161 = ShinyStone,
+162 = DuskStone,
+163 = CoronetRock,
 164 = MossyRock
 165 = FrozenRock
 166 = unk6,
@@ -877,9 +877,7 @@ typedef enum
 221 = ShockWave
 222 = Flamethrower
 223 = SludgeBomb
-224 = $$$
 225 = FireBlast
-226 = $$$
 227 = AerialAce
 228 = Torment
 229 = Facade
@@ -889,7 +887,6 @@ typedef enum
 233 = Thief
 234 = SteelWing
 235 = SkillSwap
-236 = $$$
 237 = Overheat
 238 = Roost
 239 = FocusBlast
@@ -908,33 +905,31 @@ typedef enum
 252 = ShadowClaw
 253 = Payback
 254 = Recycle
-255 = GigaImpact
-256 = RockPolish
-257 = WideSlash
-258 = $$$
-259 = $$$
-260 = Vacuum - Cut
-261 = Dive
-262 = Flash
-263 = StoneEdge
-264 = Avalanche
-265 = ThunderWave
-266 = GyroBall
-267 = SwordsDance
-268 = StealthRock
-269 = PsychUp
-270 = Captivate
-271 = DarkPulse
-272 = RockSlide
-273 = XScissor
-274 = SleepTalk
-275 = NaturalGift
-276 = PoisonJab
-277 = DreamEater
-278 = GrassKnot
-279 = Swagger
-280 = Pluck
-281 = Uturn
+255 = GigaImpact_TM
+256 = RockPolish_TM
+257 = WideSlash_TM
+260 = VacuumCut_TM
+261 = Dive_TM
+262 = Flash_TM
+263 = StoneEdge_TM
+264 = Avalanche_TM
+265 = ThunderWave_TM
+266 = GyroBall_TM
+267 = SwordsDance_TM
+268 = StealthRock_TM
+269 = PsychUp_TM
+270 = Captivate_TM
+271 = DarkPulse_TM
+272 = RockSlide_TM
+273 = XScissor_TM
+274 = SleepTalk_TM
+275 = NaturalGift_TM
+276 = PoisonJab_TM
+277 = DreamEater_TM
+278 = GrassKnot_TM
+279 = Swagger_TM
+280 = Pluck_TM
+281 = Uturn_TM
 282 = Substitute
 283 = FlashCannon
 284 = TrickRoom
@@ -946,14 +941,6 @@ typedef enum
 290 = RockSmash
 291 = Waterfall
 292 = RockClimb
-293 = $$$
-294 = $$$
-295 = $$$
-296 = $$$
-297 = $$$
-298 = $$$
-299 = $$$
-300 = $$$
 301 = HailOrb
 302 = SunnyOrb
 303 = RainyOrb
@@ -977,7 +964,6 @@ typedef enum
 321 = PounceOrb
 322 = TrawlOrb
 323 = CleanseOrb
-324 = $$$
 325 = DecoyOrb
 326 = SlumberOrb
 327 = TotterOrb
@@ -992,31 +978,24 @@ typedef enum
 336 = InvisifyOrb
 337 = OneShotOrb
 338 = IdentifyOrb
-339 = $$$
 340 = ShockerOrb
 341 = SizebustOrb
 342 = OneRoomOrb
-343 = Fill - In Orb
-344 = Trapper Orb
-345 = $$$
+343 = FillInOrb
+344 = TrapperOrb
 346 = Itemizer Orb
 347 = Hurl Orb
 348 = Mobile Orb
-349 = $$$
 350 = Stairs Orb
 351 = Longtoss Orb
 352 = Pierce Orb
-353 = $$$
 354 = SpurnOrb
 355 = FoeHoldOrb
-356 = All - Mach Orb
-357 = Foe - Fear Orb
+356 = AllMachOrb
+357 = FoeFearOrb
 358 = AllHitOrb
-359 = Foe - Seal Orb
-360 = $$$
-361 = $$$
+359 = FoeSealOrb
 362 = LinkBox
-363 = $$$
 364 = GorgeousBox
 365 = GorgeousBox
 366 = GorgeousBox
@@ -1053,34 +1032,7 @@ typedef enum
 397 = Sinister Box
 398 = Sinister Box
 399 = Sinister Box
-400 = A - Stone
-401 = B - Stone
-402 = C - Stone
-403 = D - Stone
-404 = E - Stone
-405 = F - Stone
-406 = G - Stone
-407 = H - Stone
-408 = I - Stone
-409 = J - Stone
-410 = K - Stone
-411 = L - Stone
-412 = M - Stone
-413 = N - Stone
-414 = O - Stone
-415 = P - Stone
-416 = Q - Stone
-417 = R - Stone
-418 = S - Stone
-419 = T - Stone
-420 = U - Stone
-421 = V - Stone
-422 = W - Stone
-423 = X - Stone
-424 = Y - Stone
-425 = Z - Stone
-426 = !- Stone
-427 = ? -Stone
+
     Silver_Bow
 429 = Brown Bow
 430 = Red Bow
@@ -2086,11 +2038,13 @@ typedef enum
     Scatterbug,Spewpa,Vivillon,Litleo,Pyroar,Flabébé,Floette,Florges,Skiddo,Gogoat,Pancham,Pangoro,Furfrou,Espurr,Meowstic,Honedge,Doublade,Aegislash,Spritzee,Aromatisse,Swirlix,Slurpuff,
     Inkay,Malamar,Binacle,Barbaracle,Skrelp,Dragalge,Clauncher,Clawitzer,Helioptile,Heliolisk,Tyrunt,Tyrantrum,Amaura,Aurorus,Sylveon,Hawlucha,Dedenne,Carbink,Goomy,Sliggoo,Goodra,Klefki,
     Phantump,Trevenant,Pumpkaboo,Gourgeist,Bergmite,Avalugg,Noibat,Noivern,Xerneas,Yveltal,Zygarde,Diancie,Hoopa,Volcanion,
-} PokemonName;
+} PokemonSpecies;
 
 typedef struct
 {
     char name[20];
+    PokemonSpecies species;
+    Sex sex;
     u64 exp;
     int level;
     int hp;
@@ -2102,10 +2056,13 @@ typedef struct
 
     Items held_item;
     Moves move[4];
+    StatusState status;
 
 }Pokemon;
 
-Pokemon players_team[8];
+// Team members, including the leader
+#define NUMBER_OF_TEAMMATES 3
+Pokemon team_mates[NUMBER_OF_TEAMMATES];
 
 #define CURRENT_LEADER 0
 

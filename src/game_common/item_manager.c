@@ -19,6 +19,7 @@
 // THE SOFTWARE.
 
 #include "game_common/item_manager.h"
+#include "game_common/hunger_manager.h"
 
 void ClearBag()
 {
@@ -52,6 +53,21 @@ bool IsBagFull()
         return false;
     }
 }
+
+void AddEmptySlots()
+{
+    for (int i = bag.size; i < MAX_ITEMS; i++)
+    {
+        bag.items[i] = None;
+    }
+
+}
+
+void PushItemToTop(Items the_item)
+{
+    bag.items[bag.size] = the_item;
+}
+
 
 void AddItemToBag(Items the_item)
 {
@@ -87,8 +103,10 @@ void RemoveItemFromBag(Items the_item)
         {
             if (bag.items[i] == the_item) // Find the slot that has the item were looking for
             {
-                bag.items[i] = None;
                 bag.size--;
+                PushItemToTop(bag.items[i]);
+                bag.items[i] = bag.items[i + 1];
+                AddEmptySlots();
                 return;
             }
             else
@@ -160,6 +178,29 @@ void RemoveItemFromTeamMember(Pokemon *team_member, Items the_item)
     }
 }
 
+void UseItemFromBag(Pokemon *team_member, Items the_item)
+{
+    switch (the_item)
+    {
+    case 0:
+    {
+
+    }
+    case Apple:
+    {
+        AdjustBellySize(team_member, APPLE_HUNGER_REDUCE);
+        RemoveItemFromBag(Apple);
+        break;
+    }
+    
+    default:
+        break;
+    }
+
+
+
+}
+
 char *GetItemNameFromId(Items the_item)
 {
     char *item_name = NULL;
@@ -225,17 +266,17 @@ char *GetItemNameFromId(Items the_item)
         item_name = "PowerBand";
         break;
     }
-    case 70:
+    case 68:
     {
         item_name = "OranBerry";
         break;
     }
-    case 73:
+    case 71:
     {
         item_name = "ReviverSeed";
         break;
     }
-    case 89:
+    case 87:
     {
         item_name = "JoySeed";
         break;

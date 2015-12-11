@@ -19,41 +19,62 @@
 // THE SOFTWARE.
 
 #include "screen/screen.h"
-#include "screen/load_png.h"
 
-SDL_Window *window = NULL;
-SDL_Renderer *renderer = NULL;
-SDL_Texture *bitmapTex = NULL;
-SDL_Surface *bitmapSurface = NULL;
-SDL_Rect src, dest;
+GLFWwindow* window = NULL;
 
+static void error_callback(int error, const char* description)
+{
+    fputs(description, stderr);
+}
+
+static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+        glfwSetWindowShouldClose(window, GL_TRUE);
+}
 
 void screen_Init()
 {
-    SDL_Init(SDL_INIT_EVERYTHING);
+    //SDL_Init(SDL_INIT_EVERYTHING);
 
-    window = SDL_CreateWindow("Pmd_wip", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 640, 480, 0);
-    //GLFWwindow* window = glfwCreateWindow(640, 480, "Pmd_wip", NULL, NULL);
-    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-    bitmapSurface = SDL_GetWindowSurface(window);
+    if (!glfwInit())
+        exit(1);
+
+    glfwSetErrorCallback(error_callback);
+
+    GLFWwindow* window = glfwCreateWindow(640, 480, "Pmd_wip", NULL, NULL);
+
     if (window == NULL)
     {
-        ERROR("Error creating SDL window\n");
+        ERROR("Error creating GLFW window\n");
         exit(1);
-    } 
+    }
 
-    /*get RGBA components*/
-    char *file = GetPngFile("test2.png");
-    FreePngFile(file);
+    glfwMakeContextCurrent(window);
+    glfwSwapInterval(1);
+    glfwSetKeyCallback(window, key_callback);
+    while (!glfwWindowShouldClose(window))
+    {
+        float ratio;
+        int width, height;
+        glfwGetFramebufferSize(window, &width, &height);
+        ratio = width / (float)height;
+        glViewport(0, 0, width, height);
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        glfwSwapBuffers(window);
+        glfwPollEvents();
+    }
+
 
 }
 
 void screen_Free()
 {
     // Destroy window
-    SDL_DestroyWindow(window);
-    window = NULL;
+    glfwDestroyWindow(window);
+    glfwTerminate();
 
     // Quit SDL subsystems
-    SDL_Quit();
+    //SDL_Quit();
 }

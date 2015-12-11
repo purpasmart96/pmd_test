@@ -19,7 +19,8 @@
 // THE SOFTWARE.
 
 #include "screen/load_png.h"
-#include "lib/loadpng/lodepng.h"
+//#include "lib/loadpng/lodepng.h"
+/*
 
 void LoadPngFile(char *filename)
 {
@@ -31,7 +32,6 @@ void LoadPngFile(char *filename)
     if (error)
         printf("error %u: %s\n", error, lodepng_error_text(error));
 
-    /*use image here*/
 
     free(image);
 }
@@ -46,7 +46,6 @@ char *GetPngFile(char *filename)
     if (error)
         printf("error %u: %s\n", error, lodepng_error_text(error));
 
-    /*use image here*/
 
     return image;
 }
@@ -55,3 +54,4 @@ void FreePngFile(char *file)
 {
     free(file);
 }
+*/

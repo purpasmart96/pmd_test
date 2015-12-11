@@ -38,10 +38,13 @@ Bag bag;
 void ClearBag();
 bool IsBagEmpty();
 bool IsBagFull();
+void AddEmptySlots();
+void PushItemToTop(Items the_item);
 void GiveItemToTeamMember(Pokemon *team_member, Items the_item);
 void AddItemToBag(Items the_item);
 void RemoveItemFromBag(Items the_item);
 void RemoveItemFromTeamMember(Pokemon *team_member, Items the_item);
+void UseItemFromBag(Pokemon *team_member, Items the_item);
 char *GetItemNameFromId(Items the_item);
 
 #endif

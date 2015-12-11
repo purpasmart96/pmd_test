@@ -18,5 +18,19 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#include "pokemon/stats.h"
+#include "game_common/hunger_manager.h"
+
+void AdjustBellySize(Pokemon *team_member, int amount)
+{
+    if (team_member->status.belly == DEFUALT_BELLY_SIZE)
+    {
+        printf("Belly is Full!\n");
+    }
+    else
+    {
+        team_member->status.belly += amount;
+        CLAMP(team_member->status.belly, BELLY_EMPTY, DEFUALT_BELLY_SIZE);
+    }
+}
+
 

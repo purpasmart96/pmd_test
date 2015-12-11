@@ -28,12 +28,12 @@
 
 int main()
 {
-
+    screen_Init();
     ClearBag();
-    GiveItemToTeamMember(&players_team[CURRENT_LEADER], ReviverSeed);
-    printf("Item on player is %s\n", GetItemNameFromId(players_team[CURRENT_LEADER].held_item));
-    RemoveItemFromTeamMember(&players_team[CURRENT_LEADER], ReviverSeed);
-    printf("Item on player now is %s\n", GetItemNameFromId(players_team[CURRENT_LEADER].held_item));
+    GiveItemToTeamMember(&team_mates[CURRENT_LEADER], ReviverSeed);
+    printf("Item on player is %s\n", GetItemNameFromId(team_mates[CURRENT_LEADER].held_item));
+    RemoveItemFromTeamMember(&team_mates[CURRENT_LEADER], ReviverSeed);
+    printf("Item on player now is %s\n", GetItemNameFromId(team_mates[CURRENT_LEADER].held_item));
     printf("Item in Bag slot 0 = %s\n", GetItemNameFromId(bag.items[0]));
     AddItemToBag(OranBerry);
     AddItemToBag(OranBerry);
@@ -82,14 +82,28 @@ int main()
     AddItemToBag(ReviverSeed);
     AddItemToBag(ReviverSeed);
 
-    GiveItemToTeamMember(&players_team[CURRENT_LEADER], PowerBand);
-    RemoveItemFromTeamMember(&players_team[CURRENT_LEADER], PowerBand);
+    GiveItemToTeamMember(&team_mates[CURRENT_LEADER], PowerBand);
+    RemoveItemFromTeamMember(&team_mates[CURRENT_LEADER], PowerBand);
     RemoveItemFromBag(PowerBand);
     RemoveItemFromBag(ReviverSeed);
+    RemoveItemFromBag(ReviverSeed);
+    RemoveItemFromBag(OranBerry);
+    RemoveItemFromBag(OranBerry);
+    RemoveItemFromBag(OranBerry);
+    RemoveItemFromBag(OranBerry);
     SetUpDefualtStatus();
-    printf("Leaders belly is %d\n", team_mates[CURRENT_LEADER].belly);
-    screen_Init();
-    LoadPngFile("test.png");
+    AddItemToBag(Apple);
+    UseItemFromBag(&team_mates[CURRENT_LEADER], Apple);
+    AddItemToBag(Apple);
+    AddItemToBag(Apple);
+    AddItemToBag(Apple);
+    AddItemToBag(Apple);
+    AddItemToBag(Apple);
+    RemoveItemFromBag(JoySeed);
+    RemoveItemFromBag(JoySeed);
+    printf("Leaders belly is %d\n", team_mates[CURRENT_LEADER].status.belly);
+   
+    //LoadPngFile("test.png");
     printf("This is only the beginning!\n");
     printf("Press Any Key to Continue\n");
     _getch();

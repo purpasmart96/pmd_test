@@ -19,7 +19,7 @@
 // THE SOFTWARE.
 
 
-#include "common/stack.h"
+#include "common\stack.h"
 
 void stack_init(Stack *s)
 {

@@ -25,7 +25,8 @@
 //#define GLFW_INCLUDE_NONE
 //#include <GLFW/glfw3.h>
 #include <SDL.h>
-#include <SDL_image.h>
+#include <GLFW/glfw3.h>
+//#include <SDL_image.h>
 
 void screen_Init();
 void screen_Free();

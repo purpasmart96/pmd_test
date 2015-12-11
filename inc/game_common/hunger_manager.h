@@ -18,5 +18,17 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#include "pokemon/stats.h"
 
+#ifndef _HUNGER_MANAGER_H_
+#define _HUNGER_MANAGER_H_
+
+#include "pokemon/database.h"
+
+#define BELLY_EMPTY 0
+#define DEFUALT_BELLY_SIZE 100
+#define APPLE_HUNGER_REDUCE 50
+#define BERRY_HUNGER_REDUCE 2
+
+void AdjustBellySize(Pokemon *team_member, int amount);
+
+#endif

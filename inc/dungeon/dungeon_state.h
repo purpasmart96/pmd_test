@@ -18,5 +18,30 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#include "pokemon/stats.h"
 
+#ifndef _POKE_DUNGEON_STATE_H_
+#define _POKE_DUNGEON_STATE_H_
+
+#include "util.h"
+
+typedef struct
+{
+    u8 attack_multiplier;
+    u8 sp_attack_multiplier;
+    u8 defense_multiplier;
+    u8 sp_defense_multiplier;
+    u8 speed_multiplier;
+
+    s16 belly;
+
+    bool confused;
+    bool burned;
+    bool paralysis;
+    bool sleeping;
+    bool posioned;
+}StatusState;
+
+void SetUpDefualtStatus();
+void SetStatusAfterStairs();
+
+#endif

@@ -44,20 +44,29 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <LibraryPath>D:\SDL2-2.0.3\lib\x86;$(LibraryPath)</LibraryPath>
+    <LibraryPath>..\..\..\lib\SDL2-2.0.3\lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
-      <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <SDLCheck>true</SDLCheck>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>false</SDLCheck>
+      <AdditionalIncludeDirectories>..\inc;..\src;..\..\..\lib\glfw-3.1.2.bin.WIN32\include;G:\PokeMysteryDun\pmd_fix\lib\zlib\include;G:\PokeMysteryDun\pmd_fix\lib\SDL2-2.0.3\include</AdditionalIncludeDirectories>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>..\..\lib\glfw-3.1.2.bin.WIN32\lib-vc2013;G:\PokeMysteryDun\pmd_fix\lib\zlib\lib;G:\PokeMysteryDun\pmd_fix\lib\SDL2-2.0.3\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;zdll.lib;SDL2.lib;SDL2main.lib;SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -70,7 +79,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>false</SDLCheck>
-      <AdditionalIncludeDirectories>..\pmd_fix\inc;D:\glfw-3.1.2.bin.WIN32\include;G:\PokeMysteryDun\pmd_fix\inc\lib\zlib\include;D:\SDL2-2.0.3\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>...\..\inc;...\..\lib\glfw-3.1.2.bin.WIN32\include;...\..\lib\zlib\include;...\..\lib\SDL2-2.0.3\include</AdditionalIncludeDirectories>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
@@ -79,12 +88,11 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>D:\glfw-3.1.2.bin.WIN32\lib-vc2013;G:\PokeMysteryDun\pmd_fix\inc\lib\zlib\lib;D:\SDL2-2.0.3\include;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;zdll.lib;SDL2.lib;SDL2main.lib;SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>...\..\lib\glfw-3.1.2.bin.WIN32\lib-vc2013;...\..\lib\zlib\lib;...\..\lib\SDL2-2.0.3\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;zdll.lib;SDL2.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="inc\lib\loadpng\lodepng.c" />
     <ClCompile Include="src\audio\audio.c" />
     <ClCompile Include="src\common\d_list.c" />
     <ClCompile Include="src\common\queue.c" />
@@ -94,7 +102,9 @@
     <ClCompile Include="src\dungeon\dungeon_gen.c" />
     <ClCompile Include="src\dungeon\dungeon_state.c" />
     <ClCompile Include="src\dungeon\floor_function.c" />
+    <ClCompile Include="src\game_common\health_manager.c" />
     <ClCompile Include="src\game_common\item_manager.c" />
+    <ClCompile Include="src\game_common\hunger_manager.c" />
     <ClCompile Include="src\main.c" />
     <ClCompile Include="src\pokemon\database.c" />
     <ClCompile Include="src\pokemon\stats.c" />
@@ -102,7 +112,6 @@
     <ClCompile Include="src\screen\load_png.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="inc\audio\audio.h" />
     <ClInclude Include="inc\common\d_list.h" />
     <ClInclude Include="inc\common\queue.h" />
     <ClInclude Include="inc\common\rand_num.h" />
@@ -111,14 +120,13 @@
     <ClInclude Include="inc\dungeon\dungeon_gen.h" />
     <ClInclude Include="inc\dungeon\floor_function.h" />
     <ClInclude Include="inc\dungeon\dungeon_state.h" />
+    <ClInclude Include="inc\game_common\health_manager.h" />
+    <ClInclude Include="inc\game_common\hunger_manager.h" />
     <ClInclude Include="inc\game_common\item_manager.h" />
-    <ClInclude Include="inc\lib\loadpng\lodepng.h" />
     <ClInclude Include="inc\pokemon\stats.h" />
     <ClInclude Include="inc\pokemon\database.h" />
-    <ClInclude Include="inc\rand_num.h" />
     <ClInclude Include="inc\screen\load_png.h" />
     <ClInclude Include="inc\screen\screen.h" />
-    <ClInclude Include="inc\stack.h" />
     <ClInclude Include="inc\util.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

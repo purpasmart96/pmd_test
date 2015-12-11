@@ -18,7 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#include "audio/audio.h"
+#include "..\inc\audio\audio.h"
 
 
 void SOUND_FadeOutBgm(s64 seconds)

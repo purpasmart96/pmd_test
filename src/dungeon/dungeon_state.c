@@ -19,24 +19,25 @@
 // THE SOFTWARE.
 
 #include "dungeon/dungeon_state.h"
-
+#include "game_common/item_manager.h"
+#include "pokemon/database.h"
 
 // Called when starting a new dungeon
 void SetUpDefualtStatus()
 {
     for (int i = 0; i < NUMBER_OF_TEAMMATES; i++)
     {
-        team_mates[i].attack_multiplier = 1;
-        team_mates[i].sp_attack_multiplier = 1;
-        team_mates[i].defense_multiplier = 1;
-        team_mates[i].sp_defense_multiplier = 1;
-        team_mates[i].speed_multiplier = 1;
-        team_mates[i].belly = 100;
-        team_mates[i].burned = false;
-        team_mates[i].confused = false;
-        team_mates[i].paralysis = false;
-        team_mates[i].posioned = false;
-        team_mates[i].sleeping = false;
+        team_mates[i].status.attack_multiplier = 1;
+        team_mates[i].status.sp_attack_multiplier = 1;
+        team_mates[i].status.defense_multiplier = 1;
+        team_mates[i].status.sp_defense_multiplier = 1;
+        team_mates[i].status.speed_multiplier = 1;
+        team_mates[i].status.belly = 100;
+        team_mates[i].status.burned = false;
+        team_mates[i].status.confused = false;
+        team_mates[i].status.paralysis = false;
+        team_mates[i].status.posioned = false;
+        team_mates[i].status.sleeping = false;
     }
 }
 
@@ -45,15 +46,15 @@ void SetStatusAfterStairs()
 {
     for (int i = 0; i < NUMBER_OF_TEAMMATES; i++)
     {
-        team_mates[i].attack_multiplier = 1;
-        team_mates[i].sp_attack_multiplier = 1;
-        team_mates[i].defense_multiplier = 1;
-        team_mates[i].sp_defense_multiplier = 1;
-        team_mates[i].speed_multiplier = 1;
-        team_mates[i].burned = false;
-        team_mates[i].confused = false;
-        team_mates[i].paralysis = false;
-        team_mates[i].posioned = false;
-        team_mates[i].sleeping = false;
+        team_mates[i].status.attack_multiplier = 1;
+        team_mates[i].status.sp_attack_multiplier = 1;
+        team_mates[i].status.defense_multiplier = 1;
+        team_mates[i].status.sp_defense_multiplier = 1;
+        team_mates[i].status.speed_multiplier = 1;
+        team_mates[i].status.burned = false;
+        team_mates[i].status.confused = false;
+        team_mates[i].status.paralysis = false;
+        team_mates[i].status.posioned = false;
+        team_mates[i].status.sleeping = false;
     }
 }

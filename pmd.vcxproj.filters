@@ -57,10 +57,16 @@
     <ClCompile Include="src\screen\load_png.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="inc\lib\loadpng\lodepng.c">
+    <ClCompile Include="src\dungeon\dungeon_state.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\dungeon\dungeon_state.c">
+    <ClCompile Include="src\game_common\hunger_manager.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game_common\health_manager.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dungeon\dungeon_gen.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -68,22 +74,13 @@
     <ClInclude Include="inc\util.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="inc\stack.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="inc\dungeon\floor_function.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="inc\rand_num.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="inc\pokemon\database.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="inc\dungeon\dungeon_gen.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="inc\audio\audio.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="inc\common\rand_num.h">
@@ -113,10 +110,13 @@
     <ClInclude Include="inc\screen\load_png.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="inc\lib\loadpng\lodepng.h">
+    <ClInclude Include="inc\dungeon\dungeon_state.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="inc\dungeon\dungeon_state.h">
+    <ClInclude Include="inc\game_common\hunger_manager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\game_common\health_manager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
