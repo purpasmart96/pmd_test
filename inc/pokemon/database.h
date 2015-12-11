@@ -32,6 +32,19 @@ typedef enum
 
 typedef enum
 {
+    Blaze,
+}Ability;
+
+typedef enum
+{
+    TypeNone,
+    Grass,
+    Fire,
+    Water,
+}Type;
+
+typedef enum
+{
     Pound,
     KarateChop,
     DoubleSlap,
@@ -2005,7 +2018,29 @@ typedef enum
     Wigglytuff,
     Zubat,
     Golbat,
-    Oddish,Gloom,Vileplume,Paras,Parasect,Venonat,Venomoth,Diglett,Dugtrio,Meowth,Persian,Psyduck,Golduck,Mankey,Primeape,Growlithe,Arcanine,Poliwag,Poliwhirl,Poliwrath,Abra,Kadabra,Alakazam,
+    Oddish,
+    Gloom,
+    Vileplume,
+    Paras,
+    Parasect,
+    Venonat,
+    Venomoth,
+    Diglett,
+    Dugtrio,
+    Meowth,
+    Persian,
+    Psyduck,
+    Golduck,
+    Mankey,
+    Primeape,
+    Growlithe,
+    Arcanine,
+    Poliwag,
+    Poliwhirl,
+    Poliwrath,
+    Abra,
+    Kadabra,
+    Alakazam,
     Machop,Machoke,Machamp,
     Bellsprout,Weepinbell,Victreebel,Tentacool,Tentacruel,Geodude,Graveler,Golem,Ponyta,Rapidash,Slowpoke,Slowbro,Magnemite,Magneton,Farfetchd,Doduo,Dodrio,Seel,Dewgong,Grimer,Muk,
     Shellder,Cloyster,Gastly,Haunter,Gengar,Onix,Drowzee,Hypno,Krabby,Kingler,Voltorb,Electrode,Exeggcute,Exeggutor,Cubone,Marowak,Hitmonlee,Hitmonchan,Lickitung,Koffing,Weezing,

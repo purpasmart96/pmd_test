@@ -21,14 +21,14 @@
 #include "dungeon/dungeon_gen.h"
 #include "common/rand_num.h"
 
-    int xmax = 80;
-    int ymax = 25;
+    int xmax = 80; // 80
+    int ymax = 100; // 25
     int xsize = 0;
     int ysize = 0;
     int objects = 0;
     int chanceRoom = 75;
     int chanceCorridor = 25;
-    int dungeon_map[2048];
+    int *dungeon_map;
 
     u64 oldseed;
 
@@ -55,7 +55,7 @@ int getRand(int min, int max)
     seed = time(NULL) + oldseed;
     oldseed = seed;
 
-    srandom(seed, 1);
+    srandom(seed, 0xF23342);
 
     int n = max - min + 1;
     int i = random() % n;
@@ -152,18 +152,22 @@ bool makeCorridor(int x, int y, int lenght, int direction)
 
 bool makeRoom(int x, int y, int xlength, int ylength, int direction)
 {
-        //define the dimensions of the room, it should be at least 4x4 tiles (2x2 for walking on, the rest is walls)
-        int xlen = getRand(4, xlength);
-        int ylen = getRand(4, ylength);
-        //the tile type it's going to be filled with
-        int floor = tileDirtFloor; //jordgolv..
-        int wall = tileDirtWall; //jordv????gg
-        //choose the way it's pointing at
-        int dir = 0;
-        if (direction > 0 && direction < 4) dir = direction;
+    // define the dimensions of the room, it should be at least 4x4 tiles (2x2 for walking on, the rest is walls)
+    int xlen = getRand(4, xlength);
+    int ylen = getRand(4, ylength);
+    // the tile type it's going to be filled with
+    int floor = tileDirtFloor;
+    int wall = tileDirtWall;
+    // choose the way it's pointing at
+    int dir = 0;
 
-        switch (dir)
-        {
+    if (direction > 0 && direction < 4)
+    {
+        dir = direction;
+    }
+
+    switch (dir)
+    {
         case 0:
             //north
             //Check if there's enough space left for it
@@ -181,7 +185,8 @@ bool makeRoom(int x, int y, int xlength, int ylength, int direction)
             }
 
             //we're still here, build
-            for (int ytemp = y; ytemp >(y - ylen); ytemp--){
+            for (int ytemp = y; ytemp >(y - ylen); ytemp--)
+            {
                 for (int xtemp = (x - xlen / 2); xtemp < (x + (xlen + 1) / 2); xtemp++)
                 {
                     //start with the walls
@@ -288,7 +293,7 @@ void showDungeon()
                 switch (getCell(x, y))
                 {
                 case tileUnused:
-                    printf(" ");
+                    printf("#");
                     break;
                 case tileDirtWall:
                     printf("#");
@@ -303,16 +308,16 @@ void showDungeon()
                     printf(".");
                     break;
                 case tileDoor:
-                    printf("+");
+                    printf(".");
                     break;
                 case tileUpStairs:
                     printf("<");
                     break;
                 case tileDownStairs:
-                    printf(">");
+                    printf(".");
                     break;
                 case tileChest:
-                    printf("*");
+                    printf(".");
                     break;
                 };
             }
@@ -325,7 +330,6 @@ bool createDungeon(int inx, int iny, int inobj)
         if (inobj < 1) objects = 10;
         else objects = inobj;
 
-        //justera kartans storlek, om den ????r st????rre eller mindre ????n "gr????nserna"
         //adjust the size of the map, if it's smaller or bigger than the limits
         if (inx < 3) xsize = 3;
         else if (inx > xmax) xsize = xmax;
@@ -341,10 +345,9 @@ bool createDungeon(int inx, int iny, int inobj)
 
         //redefine the map var, so it's adjusted to our new map size
 
-        for (int size = 0; size < 2048; size++)
-        {
-            dungeon_map[size] = (xsize * ysize);
-        }
+
+        // dungeon_map = new int[xsize * ysize];
+        dungeon_map = (int*)malloc(sizeof(int) * (xsize * ysize));
 
         //start with making the "standard stuff" on the map
         for (int y = 0; y < ysize; y++)
@@ -366,7 +369,7 @@ bool createDungeon(int inx, int iny, int inobj)
         *******************************************************************************/
 
         //start with making a room in the middle, which we can start building upon
-        makeRoom(xsize / 2, ysize / 2, 8, 6, getRand(0, 3)); //getrand saken f????r att slumpa fram riktning p?? rummet
+        makeRoom(xsize / 2, ysize / 2, 8, 6, getRand(0, 3));
 
         //keep count of the number of "objects" we've made
         int currentFeatures = 1; //+1 for the first room we just made
@@ -392,7 +395,7 @@ bool createDungeon(int inx, int iny, int inobj)
                 newx = getRand(1, xsize - 1);
                 newy = getRand(1, ysize - 1);
                 validTile = -1;
-                //System.out.println("tempx: " + newx + "\ttempy: " + newy);
+
                 if (getCell(newx, newy) == tileDirtWall || getCell(newx, newy) == tileCorridor){
                     //check if we can reach the place
                     if (getCell(newx, newy + 1) == tileDirtFloor || getCell(newx, newy + 1) == tileCorridor)
@@ -437,7 +440,8 @@ bool createDungeon(int inx, int iny, int inobj)
                     if (validTile > -1) break;
                 }
             }
-            if (validTile > -1){
+            if (validTile > -1)
+            {
                 //choose what to build now at our newly found place, and at what direction
                 int feature = getRand(0, 100);
                 if (feature <= chanceRoom)
@@ -478,7 +482,8 @@ bool createDungeon(int inx, int iny, int inobj)
     int state = 0; //the state the loop is in, start with the stairs
     while (state != 10)
     {
-            for (int testing = 0; testing < 1000; testing++){
+            for (int testing = 0; testing < 1000; testing++)
+            {
                 newx = getRand(1, xsize - 1);
                 newy = getRand(1, ysize - 2); //cheap bugfix, pulls down newy to 0<y<24, from 0<y<25
 
@@ -542,14 +547,19 @@ bool createDungeon(int inx, int iny, int inobj)
 void dungeon_main()
 {
     int x = 80;
-    int y = 25;
+    int y = 100;
     int dungeon_objects = 100;
     
-    //dungeon_map = (int*)malloc(x * y);
+    dungeon_map = (int*)malloc(sizeof(int) * (x * y));
     //for (;;)
     //{
         if (createDungeon(x, y, dungeon_objects));
             showDungeon();
         //std::cin.get();
     //}
+}
+
+void dungeon_free()
+{
+    free(dungeon_map);
 }

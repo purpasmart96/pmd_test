@@ -33,5 +33,6 @@ bool makeRoom(int x, int y, int xlength, int ylength, int direction);
 void showDungeon();
 bool createDungeon(int inx, int iny, int inobj);
 void dungeon_main();
+void dungeon_free();
 
 #endif

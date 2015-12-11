@@ -104,6 +104,7 @@ int main()
     RemoveItemFromBag(JoySeed);
     printf("Leaders belly is %d\n", team_mates[CURRENT_LEADER].status.belly);
     dungeon_main();
+    dungeon_free();
     //LoadPngFile("test.png");
     screen_Free();
     printf("This is only the beginning!\n");
