@@ -22,5 +22,20 @@
 #define _AUDIO_H_
 
 #include "util.h"
+#include <AL/al.h>
+#include <AL/alc.h>
+
+ALenum     format;
+ALsizei    size;
+ALsizei    freq;
+ALboolean  loop;
+ALvoid*    data;
+ALCdevice  *device;
+ALCcontext *context;
+ALuint source;
+
+void SOUND_Main();
+
+#define NUM_BUFFERS 3
 
 #endif

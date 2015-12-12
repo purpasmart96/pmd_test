@@ -18,8 +18,35 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#include "..\inc\audio\audio.h"
+#include "audio\audio.h"
 
+void SOUND_Main()
+{
+    //alutInit(0, NULL);
+    // Clear Error Code (so we can catch any new errors)
+    alGetError();
+
+    device = alcOpenDevice(NULL);
+    context = alcCreateContext(device, NULL);
+    alcMakeContextCurrent(context);
+    alListener3f(AL_POSITION, 0, 0, 0);
+    alListener3f(AL_VELOCITY, 0, 0, 0);
+    alListener3f(AL_ORIENTATION, 0, 0, -1);
+
+    alGenSources(1, &source);
+
+    alSourcef(source, AL_PITCH, 1);
+    alSourcef(source, AL_GAIN, 1);
+    alSource3f(source, AL_POSITION, 0, 0, 0);
+    alSource3f(source, AL_VELOCITY, 0, 0, 0);
+    alSourcei(source, AL_LOOPING, AL_FALSE);
+
+    ALuint buffers;
+
+    // Create the buffers
+    //alGenBuffers(1, &buffers);
+
+}
 
 void SOUND_FadeOutBgm(s64 seconds)
 {

@@ -25,6 +25,23 @@ enum
     tileChest
 };
 
+typedef enum
+{
+    North,
+    South,
+    West,
+    East,
+    DirectionCount
+}Direction;
+
+typedef struct
+{
+    int x;
+    int y;
+    int width;
+    int height;
+} Rect;
+
 void setCell(int x, int y, int celltype);
 int getCell(int x, int y);
 int getRand(int min, int max);

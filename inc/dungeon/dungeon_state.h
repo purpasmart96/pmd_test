@@ -19,8 +19,8 @@
 // THE SOFTWARE.
 
 
-#ifndef _POKE_DUNGEON_STATE_H_
-#define _POKE_DUNGEON_STATE_H_
+#ifndef _DUNGEON_STATE_H_
+#define _DUNGEON_STATE_H_
 
 #include "util.h"
 
@@ -39,7 +39,7 @@ typedef struct
     bool paralysis;
     bool sleeping;
     bool posioned;
-}StatusState;
+} Status;
 
 void SetUpDefualtStatus();
 void SetStatusAfterStairs();

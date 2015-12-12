@@ -24,5 +24,10 @@
 
 #include "pokemon/database.h"
 
+#define HP_MIN 1 // The min amount of HP for a pokemon to be still alive
+#define HP_ZERO 0
+#define ORAN_BERRY_HEALTH_HEAL 100
+
+void AdjustHealth(Pokemon *team_member, int amount);
 
 #endif

@@ -21,3 +21,15 @@
 #include "game_common/health_manager.h"
 
 
+void AdjustHealth(Pokemon *team_member, int amount)
+{
+    if (team_member->current_hp == team_member->max_hp)
+    {
+        printf("HP is Full!\n");
+    }
+    else
+    {
+        team_member->current_hp += amount;
+        CLAMP(team_member->current_hp, HP_MIN, team_member->max_hp);
+    }
+}

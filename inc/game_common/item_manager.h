@@ -38,6 +38,7 @@ Bag bag;
 void ClearBag();
 bool IsBagEmpty();
 bool IsBagFull();
+void DisplayBag();
 void AddEmptySlots();
 void PushItemToTop(Items the_item);
 void GiveItemToTeamMember(Pokemon *team_member, Items the_item);

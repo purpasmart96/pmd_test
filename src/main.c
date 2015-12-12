@@ -25,6 +25,7 @@
 #include "dungeon/dungeon_state.h"
 #include "dungeon/dungeon_gen.h"
 #include "screen/load_png.h"
+#include "audio/audio.h"
 
 int main()
 {
@@ -35,7 +36,6 @@ int main()
     printf("Item on player is %s\n", GetItemNameFromId(team_mates[CURRENT_LEADER].held_item));
     RemoveItemFromTeamMember(&team_mates[CURRENT_LEADER], ReviverSeed);
     printf("Item on player now is %s\n", GetItemNameFromId(team_mates[CURRENT_LEADER].held_item));
-    printf("Item in Bag slot 0 = %s\n", GetItemNameFromId(bag.items[0]));
     AddItemToBag(OranBerry);
     AddItemToBag(OranBerry);
     AddItemToBag(JoySeed);
@@ -103,8 +103,11 @@ int main()
     RemoveItemFromBag(JoySeed);
     RemoveItemFromBag(JoySeed);
     printf("Leaders belly is %d\n", team_mates[CURRENT_LEADER].status.belly);
+    DisplayBag();
+    SOUND_Main();
     dungeon_main();
     dungeon_free();
+
     //LoadPngFile("test.png");
     screen_Free();
     printf("This is only the beginning!\n");

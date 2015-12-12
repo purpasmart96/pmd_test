@@ -21,6 +21,9 @@
 
 #include "common/rand_num.h"
 
+//#pragma warning disable C4244
+//#pragma warning disable C4146
+
 static pcg32_random_t pcg32_global = PCG32_INITIALIZER;
 
 // pcg32_srandom(initstate, initseq)

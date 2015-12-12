@@ -785,84 +785,76 @@ typedef enum
     OrenBerry,
     DoughSeed,
     WhiteGummi,
+    RedGummi,
+    BlueGummi,
+    GrassGummi,
+    YellowGummi,
+    ClearGummi,
+    OrangeGummi,
+    PinkGummi,
+    BrownGummi,
+    SkyGummi,
+    GoldGummi,
+    GreenGummi,
+    GrayGummi,
+    PurpleGummi,
+    RoyalGummi,
+    BlackGummi,
+    SilverGummi,
+    WonderGummi,
+    Gravelyrock,
+    Upgrade,
+    KingsRock,
+    Thunderstone,
+    Deepseascale,
+    Deepseatooth,
+    SunStone,
+    MoonStone,
+    FireStone,
+    WaterStone,
+    MetalCoat,
+    LeafStone,
+    DragonScale,
+    LinkCable,
+    DubiousDisc,
+    Protector,
+    ReaperCloth,
+    RazorFang,
+    RazorClaw,
+    Electirizer,
+    Magmarizer,
+    OvalStone,
+    DawnStone,
+    ShinyStone,
+    DuskStone,
+    CoronetRock,
+    MossyRock,
+    FrozenRock,
+    GonePebble,
+    WanderGummi,
+    PrizeTicket,
+    SilverTicket,
+    GoldTicket,
+    PrismTicket,
+    MysteryPart,
+    SecretSlab,
+    WonderEgg,
+    Gracidea,
+    SkyGift,
+    Key,
+    Poke,
+    LostLoot,
+    UsedTM,
 /*
-120 = RedGummi,
-121 = BlueGummi,
-122 = GrassGummi,
-123 = YellowGummi,
-124 = ClearGummi,
-125 = OrangeGummi,
-126 = PinkGummi,
-127 = BrownGummi,
-128 = SkyGummi,
-129 = GoldGummi,
-130 = GreenGummi,
-131 = GrayGummi,
-132 = PurpleGummi
-133 = RoyalGummi,
-134 = BlackGummi,
-135 = SilverGummi,
-136 = WonderGummi,
-137 = Gravelyrock,
-138 = unk5,
-139 = Upgrade,
-140 = KingsRock,
-141 = Thunderstone,
-142 = Deepseascale,
-143 = Deepseatooth,
-144 = SunStone,
-145 = MoonStone,
-146 = FireStone,
-147 = WaterStone,
-148 = MetalCoat,
-149 = LeafStone,
-150 = DragonScale,
-151 = LinkCable,
-152 = DubiousDisc,
-153 = Protector,
-154 = ReaperCloth,
-155 = RazorFang,
-156 = RazorClaw,
-157 = Electirizer,
-158 = Magmarizer,
-159 = OvalStone,
-160 = DawnStone,
-161 = ShinyStone,
-162 = DuskStone,
-163 = CoronetRock,
-164 = MossyRock
-165 = FrozenRock
-166 = unk6,
-167 = GonePebble,
-168 = WanderGummi
-169 = PrizeTicket
-170 = SilverTicket
-171 = GoldTicket
-172 = PrismTicket
-173 = MysteryPart
-174 = SecretSlab
-175 = unk7,
-176 = unk8,
-177 = unk9,
-178 = WonderEgg
-179 = Gracidea
-180 = SkyGift
-181 = unk10,
-182 = Key
-183 = Poke
-184 = unk11,
-185 = unk12,
-186 = LostLoot
-187 = UsedTM
-188 = FocusPunch
-189 = DragonClaw
-190 = WaterPulse
-191 = CalmMind
-192 = Roar
-193 = Toxic
-194 = Hail
-195 = BulkUp
-196 = BulletSeed
+188 = FocusPunch,
+189 = DragonClaw,
+190 = WaterPulse,
+191 = CalmMind,
+192 = Roar,
+193 = Toxic,
+194 = Hail,
+195 = BulkUp,
+196 = BulletSeed,
 197 = HiddenPower
 198 = unk13,
 199 = Taunt
@@ -892,32 +884,32 @@ typedef enum
 223 = SludgeBomb
 225 = FireBlast
 227 = AerialAce
-228 = Torment
-229 = Facade
-230 = SecretPower
-231 = Rest
-232 = Attract
-233 = Thief
-234 = SteelWing
-235 = SkillSwap
-237 = Overheat
-238 = Roost
-239 = FocusBlast
-240 = EnergyBall
-241 = FalseSwipe
-242 = Brine
-243 = Fling
-244 = ChargeBeam
-245 = Endure
-246 = DragonPulse
-247 = DrainPunch
-248 = WillOWisp
-249 = SilverWind
-250 = Embargo
-251 = Explosion
-252 = ShadowClaw
-253 = Payback
-254 = Recycle
+228 = Torment_TM
+229 = Facade_TM
+230 = SecretPower_TM
+231 = Rest_TM
+232 = Attract_TM
+233 = Thief_TM
+234 = SteelWing_TM
+235 = SkillSwap_TM
+237 = Overheat_TM
+238 = Roost_TM
+239 = FocusBlast_TM
+240 = EnergyBall_TM
+241 = FalseSwipe_TM
+242 = Brine_TM
+243 = Fling_TM
+244 = ChargeBeam_TM
+245 = Endure_TM
+246 = DragonPulse_TM
+247 = DrainPunch_TM
+248 = WillOWisp_TM
+249 = SilverWind_TM
+250 = Embargo_TM
+251 = Explosion_TM
+252 = ShadowClaw_TM
+253 = Payback_TM
+254 = Recycle_TM
 255 = GigaImpact_TM
 256 = RockPolish_TM
 257 = WideSlash_TM
@@ -2073,16 +2065,17 @@ typedef enum
     Scatterbug,Spewpa,Vivillon,Litleo,Pyroar,Flabébé,Floette,Florges,Skiddo,Gogoat,Pancham,Pangoro,Furfrou,Espurr,Meowstic,Honedge,Doublade,Aegislash,Spritzee,Aromatisse,Swirlix,Slurpuff,
     Inkay,Malamar,Binacle,Barbaracle,Skrelp,Dragalge,Clauncher,Clawitzer,Helioptile,Heliolisk,Tyrunt,Tyrantrum,Amaura,Aurorus,Sylveon,Hawlucha,Dedenne,Carbink,Goomy,Sliggoo,Goodra,Klefki,
     Phantump,Trevenant,Pumpkaboo,Gourgeist,Bergmite,Avalugg,Noibat,Noivern,Xerneas,Yveltal,Zygarde,Diancie,Hoopa,Volcanion,
-} PokemonSpecies;
+} Species;
 
 typedef struct
 {
     char name[20];
-    PokemonSpecies species;
+    Species species;
     Sex sex;
     u64 exp;
     int level;
-    int hp;
+    int current_hp;
+    int max_hp;
     u8 attack;
     u8 sp_attack;
     u8 defense;
@@ -2091,12 +2084,12 @@ typedef struct
 
     Items held_item;
     Moves move[4];
-    StatusState status;
+    Status status;
 
 }Pokemon;
 
 // Team members, including the leader
-#define NUMBER_OF_TEAMMATES 3
+#define NUMBER_OF_TEAMMATES 4
 Pokemon team_mates[NUMBER_OF_TEAMMATES];
 
 #define CURRENT_LEADER 0

@@ -26,8 +26,8 @@
     int xsize = 0;
     int ysize = 0;
     int objects = 0;
-    int chanceRoom = 75;
-    int chanceCorridor = 25;
+    int chanceRoom = 80;
+    int chanceCorridor = 20;
     int *dungeon_map;
 
     u64 oldseed;
@@ -44,7 +44,7 @@ void setCell(int x, int y, int celltype)
     dungeon_map[x + xsize * y] = celltype;
 }
 
-int getCell(int x, int y)
+int GetCell(int x, int y)
 {
     return dungeon_map[x + xsize * y];
 }
@@ -66,6 +66,23 @@ int getRand(int min, int max)
     return min + i;
 }
 
+int getRandSimple(int max)
+{
+    time_t seed;
+    seed = time(NULL) + oldseed;
+    oldseed = seed;
+
+    srandom(seed, 0xF23342);
+
+    int n = max - 1;
+    int i = random() % n;
+
+    if (i < 0)
+        i = -i;
+
+    return i;
+}
+
 bool makeCorridor(int x, int y, int lenght, int direction)
 {
         int len = getRand(2, lenght);
@@ -80,13 +97,16 @@ bool makeCorridor(int x, int y, int lenght, int direction)
         {
         case 0:
         {
-            if (x < 0 || x > xsize) return false;
+            if (x < 0 || x > xsize)
+                return false;
             else xtemp = x;
 
             for (ytemp = y; ytemp > (y - len); ytemp--)
             {
-                if (ytemp < 0 || ytemp > ysize) return false;
-                if (getCell(xtemp, ytemp) != tileUnused) return false;
+                if (ytemp < 0 || ytemp > ysize)
+                    return false;
+                if (GetCell(xtemp, ytemp) != tileUnused)
+                    return false;
             }
 
             for (ytemp = y; ytemp > (y - len); ytemp--)
@@ -103,8 +123,10 @@ bool makeCorridor(int x, int y, int lenght, int direction)
 
             for (xtemp = x; xtemp < (x + len); xtemp++)
             {
-                if (xtemp < 0 || xtemp > xsize) return false;
-                if (getCell(xtemp, ytemp) != tileUnused) return false;
+                if (xtemp < 0 || xtemp > xsize)
+                    return false;
+                if (GetCell(xtemp, ytemp) != tileUnused)
+                    return false;
             }
 
             for (xtemp = x; xtemp < (x + len); xtemp++)
@@ -120,10 +142,13 @@ bool makeCorridor(int x, int y, int lenght, int direction)
 
             for (ytemp = y; ytemp < (y + len); ytemp++)
             {
-                if (ytemp < 0 || ytemp > ysize) return false;
-                if (getCell(xtemp, ytemp) != tileUnused) return false;
+                if (ytemp < 0 || ytemp > ysize)
+                    return false;
+                if (GetCell(xtemp, ytemp) != tileUnused)
+                    return false;
             }
-            for (ytemp = y; ytemp < (y + len); ytemp++){
+            for (ytemp = y; ytemp < (y + len); ytemp++)
+            {
                 setCell(xtemp, ytemp, floor);
             }
             break;
@@ -135,8 +160,10 @@ bool makeCorridor(int x, int y, int lenght, int direction)
 
             for (xtemp = x; xtemp >(x - len); xtemp--)
             {
-                if (xtemp < 0 || xtemp > xsize) return false;
-                if (getCell(xtemp, ytemp) != tileUnused) return false;
+                if (xtemp < 0 || xtemp > xsize)
+                    return false;
+                if (GetCell(xtemp, ytemp) != tileUnused)
+                    return false;
             }
 
             for (xtemp = x; xtemp > (x - len); xtemp--)
@@ -152,7 +179,7 @@ bool makeCorridor(int x, int y, int lenght, int direction)
 
 bool makeRoom(int x, int y, int xlength, int ylength, int direction)
 {
-    // define the dimensions of the room, it should be at least 4x4 tiles (2x2 for walking on, the rest is walls)
+    // define the dimensions of the room, it should be at least 8x8 tiles (4x4 for walking on, the rest is walls)
     int xlen = getRand(4, xlength);
     int ylen = getRand(4, ylength);
     // the tile type it's going to be filled with
@@ -179,7 +206,7 @@ bool makeRoom(int x, int y, int xlength, int ylength, int direction)
                 {
                     if (xtemp < 0 || xtemp > xsize)
                         return false;
-                    if (getCell(xtemp, ytemp) != tileUnused)
+                    if (GetCell(xtemp, ytemp) != tileUnused)
                         return false; //no space left...
                 }
             }
@@ -206,7 +233,7 @@ bool makeRoom(int x, int y, int xlength, int ylength, int direction)
                 if (ytemp < 0 || ytemp > ysize) return false;
                 for (int xtemp = x; xtemp < (x + xlen); xtemp++){
                     if (xtemp < 0 || xtemp > xsize) return false;
-                    if (getCell(xtemp, ytemp) != tileUnused) return false;
+                    if (GetCell(xtemp, ytemp) != tileUnused) return false;
                 }
             }
 
@@ -232,7 +259,7 @@ bool makeRoom(int x, int y, int xlength, int ylength, int direction)
                 {
                     if (xtemp < 0 || xtemp > xsize)
                         return false;
-                    if (getCell(xtemp, ytemp) != tileUnused)
+                    if (GetCell(xtemp, ytemp) != tileUnused)
                         return false;
                 }
             }
@@ -255,11 +282,14 @@ bool makeRoom(int x, int y, int xlength, int ylength, int direction)
             //west
             for (int ytemp = (y - ylen / 2); ytemp < (y + (ylen + 1) / 2); ytemp++)
             {
-                if (ytemp < 0 || ytemp > ysize) return false;
+                if (ytemp < 0 || ytemp > ysize)
+                    return false;
                 for (int xtemp = x; xtemp >(x - xlen); xtemp--)
                 {
-                    if (xtemp < 0 || xtemp > xsize) return false;
-                    if (getCell(xtemp, ytemp) != tileUnused) return false;
+                    if (xtemp < 0 || xtemp > xsize)
+                        return false;
+                    if (GetCell(xtemp, ytemp) != tileUnused)
+                        return false;
                 }
             }
 
@@ -289,8 +319,8 @@ void showDungeon()
     {
             for (int x = 0; x < xsize; x++)
             {
-                //System.out.print(getCell(x, y));
-                switch (getCell(x, y))
+                //System.out.print(GetCell(x, y));
+                switch (GetCell(x, y))
                 {
                 case tileUnused:
                     printf("#");
@@ -327,214 +357,224 @@ void showDungeon()
 
 bool createDungeon(int inx, int iny, int inobj)
 {
-        if (inobj < 1) objects = 10;
-        else objects = inobj;
+    if (inobj < 1) objects = 10;
+    else objects = inobj;
 
-        //adjust the size of the map, if it's smaller or bigger than the limits
-        if (inx < 3) xsize = 3;
-        else if (inx > xmax) xsize = xmax;
-        else xsize = inx;
+    //adjust the size of the map, if it's smaller or bigger than the limits
+    if (inx < 3) xsize = 3;
+    else if (inx > xmax) xsize = xmax;
+    else xsize = inx;
 
-        if (iny < 3) ysize = 3;
-        else if (iny > ymax) ysize = ymax;
-        else ysize = iny;
+    if (iny < 3) ysize = 3;
+    else if (iny > ymax) ysize = ymax;
+    else ysize = iny;
 
-        //printf("%s %d\n", msgXSize.c_str(), xsize);
-        //printf("%s %d\n", msgYSize.c_str(),  + ysize);
-        //printf("%s %d\n", msgMaxObjects.c_str(), objects);
+    //printf("%s %d\n", msgXSize, xsize);
+    //printf("%s %d\n", msgYSize.c_str(),  + ysize);
+    //printf("%s %d\n", msgMaxObjects.c_str(), objects);
 
-        //redefine the map var, so it's adjusted to our new map size
+    //redefine the map var, so it's adjusted to our new map size
 
 
-        // dungeon_map = new int[xsize * ysize];
-        dungeon_map = (int*)malloc(sizeof(int) * (xsize * ysize));
+    // dungeon_map = new int[xsize * ysize];
+    dungeon_map = (int*)malloc(sizeof(int) * (xsize * ysize));
 
-        //start with making the "standard stuff" on the map
-        for (int y = 0; y < ysize; y++)
+    //start with making the "standard stuff" on the map
+    for (int y = 0; y < ysize; y++)
+    {
+        for (int x = 0; x < xsize; x++)
         {
-            for (int x = 0; x < xsize; x++){
-                //ie, making the borders of unwalkable walls
-                if (y == 0) setCell(x, y, tileStoneWall);
-                else if (y == ysize - 1) setCell(x, y, tileStoneWall);
-                else if (x == 0) setCell(x, y, tileStoneWall);
-                else if (x == xsize - 1) setCell(x, y, tileStoneWall);
+            //ie, making the borders of unwalkable walls
+            if (y == 0)
+                setCell(x, y, tileStoneWall);
+            else if (y == ysize - 1)
+                setCell(x, y, tileStoneWall);
+            else if (x == 0)
+                setCell(x, y, tileStoneWall);
+            else if (x == xsize - 1)
+                setCell(x, y, tileStoneWall);
 
-                //and fill the rest with dirt
-                else setCell(x, y, tileUnused);
-            }
+            //and fill the rest with dirt
+            else setCell(x, y, tileUnused);
+        }
+    }
+
+    /*******************************************************************************
+    And now the code of the random-map-generation-algorithm begins!
+    *******************************************************************************/
+
+    //start with making a room in the middle, which we can start building upon
+    makeRoom(xsize / 2, ysize / 2, 8, 6, getRand(0, 3));
+
+    //keep count of the number of "objects" we've made
+    int currentFeatures = 1; //+1 for the first room we just made
+
+    //then we sart the main loop
+    for (int countingTries = 0; countingTries < 1000; countingTries++)
+    {
+        //check if we've reached our quota
+        if (currentFeatures == objects)
+        {
+            break;
         }
 
-        /*******************************************************************************
-        And now the code of the random-map-generation-algorithm begins!
-        *******************************************************************************/
-
-        //start with making a room in the middle, which we can start building upon
-        makeRoom(xsize / 2, ysize / 2, 8, 6, getRand(0, 3));
-
-        //keep count of the number of "objects" we've made
-        int currentFeatures = 1; //+1 for the first room we just made
-
-        //then we sart the main loop
-        for (int countingTries = 0; countingTries < 1000; countingTries++)
+        //start with a random wall
+        int newx = 0;
+        int xmod = 0;
+        int newy = 0;
+        int ymod = 0;
+        int validTile = -1;
+        //1000 chances to find a suitable object (room or corridor)..
+        //(yea, i know it's kinda ugly with a for-loop... -_-')
+        for (int testing = 0; testing < 1000; testing++)
         {
-            //check if we've reached our quota
-            if (currentFeatures == objects){
-                break;
-            }
+            newx = getRand(1, xsize - 1);
+            newy = getRand(1, ysize - 1);
+            validTile = -1;
 
-            //start with a random wall
-            int newx = 0;
-            int xmod = 0;
-            int newy = 0;
-            int ymod = 0;
-            int validTile = -1;
-            //1000 chances to find a suitable object (room or corridor)..
-            //(yea, i know it's kinda ugly with a for-loop... -_-')
-            for (int testing = 0; testing < 1000; testing++)
+            if (GetCell(newx, newy) == tileDirtWall || GetCell(newx, newy) == tileCorridor)
             {
-                newx = getRand(1, xsize - 1);
-                newy = getRand(1, ysize - 1);
-                validTile = -1;
+                //check if we can reach the place
+                if (GetCell(newx, newy + 1) == tileDirtFloor || GetCell(newx, newy + 1) == tileCorridor)
+                {
+                    validTile = 0; //
+                    xmod = 0;
+                    ymod = -1;
+                }
+                else if (GetCell(newx - 1, newy) == tileDirtFloor || GetCell(newx - 1, newy) == tileCorridor)
+                {
+                    validTile = 1; //
+                    xmod = +1;
+                    ymod = 0;
+                }
+                else if (GetCell(newx, newy - 1) == tileDirtFloor || GetCell(newx, newy - 1) == tileCorridor)
+                {
+                    validTile = 2; //
+                    xmod = 0;
+                    ymod = +1;
+                }
+                else if (GetCell(newx + 1, newy) == tileDirtFloor || GetCell(newx + 1, newy) == tileCorridor)
+                {
+                    validTile = 3; //
+                    xmod = -1;
+                    ymod = 0;
+                }
 
-                if (getCell(newx, newy) == tileDirtWall || getCell(newx, newy) == tileCorridor){
-                    //check if we can reach the place
-                    if (getCell(newx, newy + 1) == tileDirtFloor || getCell(newx, newy + 1) == tileCorridor)
-                    {
-                        validTile = 0; //
-                        xmod = 0;
-                        ymod = -1;
-                    }
-                    else if (getCell(newx - 1, newy) == tileDirtFloor || getCell(newx - 1, newy) == tileCorridor)
-                    {
-                        validTile = 1; //
-                        xmod = +1;
-                        ymod = 0;
-                    }
-                    else if (getCell(newx, newy - 1) == tileDirtFloor || getCell(newx, newy - 1) == tileCorridor)
-                    {
-                        validTile = 2; //
-                        xmod = 0;
-                        ymod = +1;
-                    }
-                    else if (getCell(newx + 1, newy) == tileDirtFloor || getCell(newx + 1, newy) == tileCorridor)
-                    {
-                        validTile = 3; //
-                        xmod = -1;
-                        ymod = 0;
-                    }
+                //check that we haven't got another door nearby, so we won't get alot of openings besides
+                //each other
+                if (validTile > -1)
+                {
+                    if (GetCell(newx, newy + 1) == tileDoor) //north
+                        validTile = -1;
+                    else if (GetCell(newx - 1, newy) == tileDoor)//east
+                        validTile = -1;
+                    else if (GetCell(newx, newy - 1) == tileDoor)//south
+                        validTile = -1;
+                    else if (GetCell(newx + 1, newy) == tileDoor)//west
+                        validTile = -1;
+                }
 
-                    //check that we haven't got another door nearby, so we won't get alot of openings besides
-                    //each other
-                    if (validTile > -1){
-                        if (getCell(newx, newy + 1) == tileDoor) //north
-                            validTile = -1;
-                        else if (getCell(newx - 1, newy) == tileDoor)//east
-                            validTile = -1;
-                        else if (getCell(newx, newy - 1) == tileDoor)//south
-                            validTile = -1;
-                        else if (getCell(newx + 1, newy) == tileDoor)//west
-                            validTile = -1;
-                    }
+                //if we can, jump out of the loop and continue with the rest
+                if (validTile > -1) break;
+            }
+        }
+        if (validTile > -1)
+        {
+            //choose what to build now at our newly found place, and at what direction
+            int feature = getRand(0, 100);
+            if (feature <= chanceRoom)
+            { //a new room
+                if (makeRoom((newx + xmod), (newy + ymod), 8, 6, validTile))
+                {
+                    currentFeatures++; //add to our quota
 
-                    //if we can, jump out of the loop and continue with the rest
-                    if (validTile > -1) break;
+                    //then we mark the wall opening with a door
+                    setCell(newx, newy, tileDoor);
+
+                    //clean up infront of the door so we can reach it
+                    setCell((newx + xmod), (newy + ymod), tileDirtFloor);
                 }
             }
-            if (validTile > -1)
-            {
-                //choose what to build now at our newly found place, and at what direction
-                int feature = getRand(0, 100);
-                if (feature <= chanceRoom)
-                { //a new room
-                    if (makeRoom((newx + xmod), (newy + ymod), 8, 6, validTile))
-                    {
-                        currentFeatures++; //add to our quota
+            else if (feature >= chanceRoom)
+            { //new corridor
+                if (makeCorridor((newx + xmod), (newy + ymod), 6, validTile))
+                {
+                    //same thing here, add to the quota and a door
+                    currentFeatures++;
 
-                        //then we mark the wall opening with a door
-                        setCell(newx, newy, tileDoor);
-
-                        //clean up infront of the door so we can reach it
-                        setCell((newx + xmod), (newy + ymod), tileDirtFloor);
-                    }
-                }
-                else if (feature >= chanceRoom)
-                { //new corridor
-                    if (makeCorridor((newx + xmod), (newy + ymod), 6, validTile))
-                    {
-                        //same thing here, add to the quota and a door
-                        currentFeatures++;
-
-                        setCell(newx, newy, tileDoor);
-                    }
+                    setCell(newx, newy, tileDoor);
                 }
             }
         }
+    }
 
 
-        /*******************************************************************************
-        All done with the building, let's finish this one off
-        *******************************************************************************/
+    /*******************************************************************************
+    All done with the building, let's finish this one off
+    *******************************************************************************/
 
-        //sprinkle out the bonusstuff (stairs, chests etc.) over the map
+    //sprinkle out the bonusstuff (stairs, chests etc.) over the map
     int newx = 0;
     int newy = 0;
     int ways = 0; //from how many directions we can reach the random spot from
     int state = 0; //the state the loop is in, start with the stairs
     while (state != 10)
     {
-            for (int testing = 0; testing < 1000; testing++)
+        for (int testing = 0; testing < 1000; testing++)
+        {
+            newx = getRand(1, xsize - 1);
+            newy = getRand(1, ysize - 2); //cheap bugfix, pulls down newy to 0<y<24, from 0<y<25
+
+            //System.out.println("x: " + newx + "\ty: " + newy);
+            ways = 4; //the lower the better
+
+            //check if we can reach the spot
+            if (GetCell(newx, newy + 1) == tileDirtFloor || GetCell(newx, newy + 1) == tileCorridor)
             {
-                newx = getRand(1, xsize - 1);
-                newy = getRand(1, ysize - 2); //cheap bugfix, pulls down newy to 0<y<24, from 0<y<25
+                //north
+                if (GetCell(newx, newy + 1) != tileDoor)
+                    ways--;
+            }
+            if (GetCell(newx - 1, newy) == tileDirtFloor || GetCell(newx - 1, newy) == tileCorridor)
+            {
+                //east
+                if (GetCell(newx - 1, newy) != tileDoor)
+                    ways--;
+            }
+            if (GetCell(newx, newy - 1) == tileDirtFloor || GetCell(newx, newy - 1) == tileCorridor)
+            {
+                //south
+                if (GetCell(newx, newy - 1) != tileDoor)
+                    ways--;
+            }
+            if (GetCell(newx + 1, newy) == tileDirtFloor || GetCell(newx + 1, newy) == tileCorridor)
+            {
+                //west
+                if (GetCell(newx + 1, newy) != tileDoor)
+                    ways--;
+            }
 
-                //System.out.println("x: " + newx + "\ty: " + newy);
-                ways = 4; //the lower the better
-
-                //check if we can reach the spot
-                if (getCell(newx, newy + 1) == tileDirtFloor || getCell(newx, newy + 1) == tileCorridor)
+            if (state == 0)
+            {
+                if (ways == 0)
                 {
-                    //north
-                    if (getCell(newx, newy + 1) != tileDoor)
-                        ways--;
-                }
-                if (getCell(newx - 1, newy) == tileDirtFloor || getCell(newx - 1, newy) == tileCorridor)
-                {
-                    //east
-                    if (getCell(newx - 1, newy) != tileDoor)
-                        ways--;
-                }
-                if (getCell(newx, newy - 1) == tileDirtFloor || getCell(newx, newy - 1) == tileCorridor)
-                {
-                    //south
-                    if (getCell(newx, newy - 1) != tileDoor)
-                        ways--;
-                }
-                if (getCell(newx + 1, newy) == tileDirtFloor || getCell(newx + 1, newy) == tileCorridor)
-                {
-                    //west
-                    if (getCell(newx + 1, newy) != tileDoor)
-                        ways--;
-                }
-
-                if (state == 0){
-                    if (ways == 0){
-                        //we're in state 0, let's place a "upstairs" thing
-                        setCell(newx, newy, tileUpStairs);
-                        state = 1;
-                        break;
-                    }
-                }
-                else if (state == 1)
-                {
-                    if (ways == 0)
-                    {
-                        //state 1, place a "downstairs"
-                        setCell(newx, newy, tileDownStairs);
-                        state = 10;
-                        break;
-                    }
+                    //we're in state 0, let's place a "upstairs" thing
+                    setCell(newx, newy, tileUpStairs);
+                    state = 1;
+                    break;
                 }
             }
+            else if (state == 1)
+            {
+                if (ways == 0)
+                {
+                    //state 1, place a "downstairs"
+                    setCell(newx, newy, tileDownStairs);
+                    state = 10;
+                    break;
+                }
+            }
+        }
     }
 
 
@@ -547,8 +587,8 @@ bool createDungeon(int inx, int iny, int inobj)
 void dungeon_main()
 {
     int x = 80;
-    int y = 100;
-    int dungeon_objects = 100;
+    int y = 40;
+    int dungeon_objects = 150;
     
     dungeon_map = (int*)malloc(sizeof(int) * (x * y));
     //for (;;)

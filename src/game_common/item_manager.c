@@ -20,6 +20,7 @@
 
 #include "game_common/item_manager.h"
 #include "game_common/hunger_manager.h"
+#include "game_common/health_manager.h"
 
 void ClearBag()
 {
@@ -54,6 +55,17 @@ bool IsBagFull()
     }
 }
 
+void DisplayBag()
+{
+    printf("\n");
+    printf("Displaying Items currently in the bag\n");
+    for (int i = 0; i < bag.size; i++)
+    {
+        printf("%s\n", GetItemNameFromId(bag.items[i]));
+    }
+    printf("\n");
+}
+
 void AddEmptySlots()
 {
     for (int i = bag.size; i < MAX_ITEMS; i++)
@@ -67,7 +79,6 @@ void PushItemToTop(Items the_item)
 {
     bag.items[bag.size] = the_item;
 }
-
 
 void AddItemToBag(Items the_item)
 {
@@ -184,7 +195,13 @@ void UseItemFromBag(Pokemon *team_member, Items the_item)
     {
     case 0:
     {
-
+        break;
+    }
+    case OranBerry:
+    {
+        AdjustHealth(team_member, ORAN_BERRY_HEALTH_HEAL);
+        RemoveItemFromBag(OranBerry);
+        break;
     }
     case Apple:
     {
@@ -196,8 +213,6 @@ void UseItemFromBag(Pokemon *team_member, Items the_item)
     default:
         break;
     }
-
-
 
 }
 
@@ -213,34 +228,42 @@ char *GetItemNameFromId(Items the_item)
     }
     case Stick:
     {
+        item_name = "";
         break;
     }
     case IronThorn:
     {
+        item_name = "";
         break;
     }
     case SilverSpike:
     {
+        item_name = "";
         break;
     }
     case GoldFang:
     {
+        item_name = "";
         break;
     }
     case CacneaSpike:
     {
+        item_name = "";
         break;
     }
     case CorsolaTwig:
     {
+        item_name = "";
         break;
     }
     case Gravelerock:
     {
+        item_name = "";
         break;
     }
     case GeoPebble:
     {
+        item_name = "";
         break;
     }
     case GoldThorn:
@@ -250,10 +273,12 @@ char *GetItemNameFromId(Items the_item)
     }
     case RareFossil:
     {
+        item_name = "";
         break;
     }
     case NoSlipCap:
     {
+        item_name = "";
         break;
     }
     case YRaySpecs:
@@ -263,34 +288,42 @@ char *GetItemNameFromId(Items the_item)
     }
     case GaggleSpecs:
     {
+        item_name = "";
         break;
     }
     case MobileScarf:
     {
+        item_name = "";
         break;
     }
     case HealRibbon:
     {
+        item_name = "";
         break;
     }
     case TwistBand:
     {
+        item_name = "";
         break;
     }
     case ScopeLens:
     {
+        item_name = "";
         break;
     }
     case PatsyBand:
     {
+        item_name = "";
         break;
     }
     case NoStickCap:
     {
+        item_name = "";
         break;
     }
     case PierceBand:
     {
+        item_name = "";
         break;
     }
     case JoyRibbon:
@@ -300,10 +333,12 @@ char *GetItemNameFromId(Items the_item)
     }
     case XRaySpecs:
     {
+        item_name = "XRaySpecs";
         break;
     }
     case PersimBand:
     {
+        item_name = "PersimBand";
         break;
     }
     case PowerBand:
@@ -331,8 +366,14 @@ char *GetItemNameFromId(Items the_item)
         item_name = "JoySeed";
         break;
     }
+    case Apple:
+    {
+        item_name = "Apple";
+        break;
+    }
 
     default:
+        printf("Haven't added Item %d\n", the_item);
         break;
     }
 
