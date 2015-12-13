@@ -36,9 +36,6 @@
     <ClCompile Include="src\screen\screen.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\game_common\item_manager.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\pokemon\stats.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -60,10 +57,16 @@
     <ClCompile Include="src\dungeon\dungeon_state.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\game_common\health_manager.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="src\game_common\hunger_manager.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\game_common\health_manager.c">
+    <ClCompile Include="src\game_common\item_manager.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game_common\move_manager.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\dungeon\dungeon_gen.c">
@@ -92,9 +95,6 @@
     <ClInclude Include="inc\common\stack.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="inc\game_common\item_manager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="inc\pokemon\stats.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -113,10 +113,16 @@
     <ClInclude Include="inc\dungeon\dungeon_state.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="inc\game_common\health_manager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="inc\game_common\hunger_manager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="inc\game_common\health_manager.h">
+    <ClInclude Include="inc\game_common\item_manager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\game_common\move_manager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

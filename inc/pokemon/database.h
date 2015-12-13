@@ -28,12 +28,14 @@ typedef enum
 {
     Male,
     Female,
-}Sex;
+    GenderLess,
+} Sex;
 
 typedef enum
 {
+    NoAbility,
     Blaze,
-}Ability;
+} Ability;
 
 typedef enum
 {
@@ -41,10 +43,19 @@ typedef enum
     Grass,
     Fire,
     Water,
-}Type;
+} Type;
 
 typedef enum
 {
+    OneTile,
+    TwoTiles,
+    FourTiles,
+    EntireRoom,
+} TileRangeModes;
+
+typedef enum
+{
+    NoMove,
     Pound,
     KarateChop,
     DoubleSlap,
@@ -54,7 +65,7 @@ typedef enum
     FirePunch,
     IcePunch,
     ThunderPunch,
-    ScratchNormal,
+    Scratch,
     ViceGrip,
     Guillotine,
     RazorWind,
@@ -666,7 +677,7 @@ typedef enum
     PrecipiceBlades,
     DragonAscent,
     HyperspaceFury
-} Moves;
+} MoveNames;
 
 typedef enum 
 {
@@ -1038,14 +1049,14 @@ typedef enum
 398 = Sinister Box
 399 = Sinister Box
 
-    Silver_Bow
-429 = Brown Bow
-430 = Red Bow
-431 = Pink Bow
-432 = Orange Bow
-433 = Yellow Bow
-434 = Lime Bow
-435 = Green Bow
+    SilverBow
+429 = BrownBow
+430 = RedBow
+431 = PinkBow
+432 = OrangeBow
+433 = YellowBow
+434 = LimeBow
+435 = GreenBow
 436 = Viridian Bow
 437 = Minty Bow
 438 = Sky Blue Bow
@@ -2033,8 +2044,30 @@ typedef enum
     Abra,
     Kadabra,
     Alakazam,
-    Machop,Machoke,Machamp,
-    Bellsprout,Weepinbell,Victreebel,Tentacool,Tentacruel,Geodude,Graveler,Golem,Ponyta,Rapidash,Slowpoke,Slowbro,Magnemite,Magneton,Farfetchd,Doduo,Dodrio,Seel,Dewgong,Grimer,Muk,
+    Machop,
+    Machoke,
+    Machamp,
+    Bellsprout,
+    Weepinbell,
+    Victreebel,
+    Tentacool,
+    Tentacruel,
+    Geodude,
+    Graveler,
+    Golem,
+    Ponyta,
+    Rapidash,
+    Slowpoke,
+    Slowbro,
+    Magnemite,
+    Magneton,
+    Farfetchd,
+    Doduo,
+    Dodrio,
+    Seel,
+    Dewgong,
+    Grimer,
+    Muk,
     Shellder,Cloyster,Gastly,Haunter,Gengar,Onix,Drowzee,Hypno,Krabby,Kingler,Voltorb,Electrode,Exeggcute,Exeggutor,Cubone,Marowak,Hitmonlee,Hitmonchan,Lickitung,Koffing,Weezing,
     Rhyhorn,Rhydon,Chansey,Tangela,Kangaskhan,Horsea,Seadra,Goldeen,Seaking,Staryu,Starmie,Mr_Mime,Scyther,Jynx,Electabuzz,Magmar,Pinsir,Tauros,Magikarp,Gyarados,Lapras,Ditto,
     Eevee,Vaporeon,Jolteon,Flareon,Porygon,Omanyte,Omastar,Kabuto,Kabutops,Aerodactyl,Snorlax,Articuno,Zapdos,Moltres,Dratini,Dragonair,Dragonite,Mewtwo,Mew,Chikorita,Bayleef,Meganium,
@@ -2069,8 +2102,19 @@ typedef enum
 
 typedef struct
 {
+    u8 max_pp;
+    u8 current_pp;
+    u8 power;
+    u8 accuracy;
+    TileRangeModes tile_range;
+    MoveNames move_name;
+} Move;
+
+typedef struct
+{
     char name[20];
     Species species;
+    Ability ability;
     Sex sex;
     u64 exp;
     int level;
@@ -2083,15 +2127,15 @@ typedef struct
     u8 speed;
 
     Items held_item;
-    Moves move[4];
+    Move move[4];
     Status status;
 
-}Pokemon;
+} Pokemon;
 
 // Team members, including the leader
 #define NUMBER_OF_TEAMMATES 4
-Pokemon team_mates[NUMBER_OF_TEAMMATES];
-
 #define CURRENT_LEADER 0
+
+Pokemon team_mates[NUMBER_OF_TEAMMATES];
 
 #endif

@@ -56,7 +56,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>false</SDLCheck>
-      <AdditionalIncludeDirectories>..\inc;..\src;..\..\..\lib\glfw-3.1.2.bin.WIN32\include;G:\PokeMysteryDun\pmd_fix\lib\zlib\include;G:\PokeMysteryDun\pmd_fix\lib\SDL2-2.0.3\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>...\..\inc;...\..\lib\glfw-3.1.2.bin.WIN32\include;...\..\lib\zlib\include;...\..\lib\SDL2-2.0.3\include;...\..\lib\openal-soft-1.17.1-bin\include</AdditionalIncludeDirectories>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
@@ -65,8 +65,9 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>..\..\lib\glfw-3.1.2.bin.WIN32\lib-vc2013;G:\PokeMysteryDun\pmd_fix\lib\zlib\lib;G:\PokeMysteryDun\pmd_fix\lib\SDL2-2.0.3\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;zdll.lib;SDL2.lib;SDL2main.lib;SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>...\..\lib\glfw-3.1.2.bin.WIN32\lib-vc2013;...\..\lib\zlib\lib;...\..\lib\SDL2-2.0.3\lib\x86;...\..\lib\openal-soft-1.17.1-bin\libs\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;zdll.lib;OpenAL32.lib;SDL2.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -79,7 +80,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>false</SDLCheck>
-      <AdditionalIncludeDirectories>...\..\inc;...\..\lib\glfw-3.1.2.bin.WIN32\include;...\..\lib\zlib\include;...\..\lib\SDL2-2.0.3\include;G:\PokeMysteryDun\pmd_fix\lib\openal-soft-1.17.1-bin\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>...\..\inc;...\..\lib\glfw-3.1.2.bin.WIN32\include;...\..\lib\zlib\include;...\..\lib\SDL2-2.0.3\include;...\..\lib\openal-soft-1.17.1-bin\include</AdditionalIncludeDirectories>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
@@ -88,7 +89,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>...\..\lib\glfw-3.1.2.bin.WIN32\lib-vc2013;...\..\lib\zlib\lib;...\..\lib\SDL2-2.0.3\lib\x86;G:\PokeMysteryDun\pmd_fix\lib\openal-soft-1.17.1-bin\libs\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>...\..\lib\glfw-3.1.2.bin.WIN32\lib-vc2013;...\..\lib\zlib\lib;...\..\lib\SDL2-2.0.3\lib\x86;...\..\lib\openal-soft-1.17.1-bin\libs\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>glfw3.lib;opengl32.lib;zdll.lib;OpenAL32.lib;SDL2.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
@@ -106,6 +107,7 @@
     <ClCompile Include="src\game_common\health_manager.c" />
     <ClCompile Include="src\game_common\item_manager.c" />
     <ClCompile Include="src\game_common\hunger_manager.c" />
+    <ClCompile Include="src\game_common\move_manager.c" />
     <ClCompile Include="src\main.c" />
     <ClCompile Include="src\pokemon\database.c" />
     <ClCompile Include="src\pokemon\stats.c" />
@@ -124,6 +126,7 @@
     <ClInclude Include="inc\game_common\health_manager.h" />
     <ClInclude Include="inc\game_common\hunger_manager.h" />
     <ClInclude Include="inc\game_common\item_manager.h" />
+    <ClInclude Include="inc\game_common\move_manager.h" />
     <ClInclude Include="inc\pokemon\stats.h" />
     <ClInclude Include="inc\pokemon\database.h" />
     <ClInclude Include="inc\screen\load_png.h" />

@@ -200,6 +200,7 @@ void UseItemFromBag(Pokemon *team_member, Items the_item)
     case OranBerry:
     {
         AdjustHealth(team_member, ORAN_BERRY_HEALTH_HEAL);
+        AdjustBellySize(team_member, BERRY_HUNGER_REDUCE);
         RemoveItemFromBag(OranBerry);
         break;
     }

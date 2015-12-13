@@ -33,6 +33,7 @@ ALvoid*    data;
 ALCdevice  *device;
 ALCcontext *context;
 ALuint source;
+ALuint buffers;
 
 void SOUND_Main();
 

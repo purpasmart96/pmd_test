@@ -113,5 +113,6 @@ int main()
     printf("This is only the beginning!\n");
     printf("Press Any Key to Continue\n");
     _getch();
+    alDeleteBuffers(1, &buffers);
     return 0;
 }

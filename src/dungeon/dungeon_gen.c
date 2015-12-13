@@ -85,96 +85,101 @@ int getRandSimple(int max)
 
 bool makeCorridor(int x, int y, int lenght, int direction)
 {
-        int len = getRand(2, lenght);
-        int floor = tileCorridor;
-        int dir = 0;
-        if (direction > 0 && direction < 4) dir = direction;
+    int len = getRand(2, lenght);
+    int floor = tileCorridor;
+    int dir = 0;
+    if (direction > 0 && direction < 4)
+        dir = direction;
 
-        int xtemp = 0;
-        int ytemp = 0;
+    int xtemp = 0;
+    int ytemp = 0;
 
-        switch (dir)
+    switch (dir)
+    {
+    case 0:
+    {
+        if (x < 0 || x > xsize)
+            return false;
+        else xtemp = x;
+
+        for (ytemp = y; ytemp > (y - len); ytemp--)
         {
-        case 0:
-        {
-            if (x < 0 || x > xsize)
+            if (ytemp < 0 || ytemp > ysize)
                 return false;
-            else xtemp = x;
-
-            for (ytemp = y; ytemp > (y - len); ytemp--)
-            {
-                if (ytemp < 0 || ytemp > ysize)
-                    return false;
-                if (GetCell(xtemp, ytemp) != tileUnused)
-                    return false;
-            }
-
-            for (ytemp = y; ytemp > (y - len); ytemp--)
-            {
-                setCell(xtemp, ytemp, floor);
-            }
-            break;
-
+            if (GetCell(xtemp, ytemp) != tileUnused)
+                return false;
         }
-        case 1:
+
+        for (ytemp = y; ytemp > (y - len); ytemp--)
         {
-            if (y < 0 || y > ysize) return false;
-            else ytemp = y;
-
-            for (xtemp = x; xtemp < (x + len); xtemp++)
-            {
-                if (xtemp < 0 || xtemp > xsize)
-                    return false;
-                if (GetCell(xtemp, ytemp) != tileUnused)
-                    return false;
-            }
-
-            for (xtemp = x; xtemp < (x + len); xtemp++)
-            {
-                setCell(xtemp, ytemp, floor);
-            }
-            break;
+            setCell(xtemp, ytemp, floor);
         }
-        case 2:
+        break;
+
+    }
+    case 1:
+    {
+        if (y < 0 || y > ysize)
+            return false;
+        else ytemp = y;
+
+        for (xtemp = x; xtemp < (x + len); xtemp++)
         {
-            if (x < 0 || x > xsize) return false;
-            else xtemp = x;
-
-            for (ytemp = y; ytemp < (y + len); ytemp++)
-            {
-                if (ytemp < 0 || ytemp > ysize)
-                    return false;
-                if (GetCell(xtemp, ytemp) != tileUnused)
-                    return false;
-            }
-            for (ytemp = y; ytemp < (y + len); ytemp++)
-            {
-                setCell(xtemp, ytemp, floor);
-            }
-            break;
+            if (xtemp < 0 || xtemp > xsize)
+                return false;
+            if (GetCell(xtemp, ytemp) != tileUnused)
+                return false;
         }
-        case 3:
+
+        for (xtemp = x; xtemp < (x + len); xtemp++)
         {
-            if (ytemp < 0 || ytemp > ysize) return false;
-            else ytemp = y;
-
-            for (xtemp = x; xtemp >(x - len); xtemp--)
-            {
-                if (xtemp < 0 || xtemp > xsize)
-                    return false;
-                if (GetCell(xtemp, ytemp) != tileUnused)
-                    return false;
-            }
-
-            for (xtemp = x; xtemp > (x - len); xtemp--)
-            {
-                setCell(xtemp, ytemp, floor);
-            }
-            break;
+            setCell(xtemp, ytemp, floor);
         }
+        break;
+    }
+    case 2:
+    {
+        if (x < 0 || x > xsize)
+            return false;
+        else xtemp = x;
+
+        for (ytemp = y; ytemp < (y + len); ytemp++)
+        {
+            if (ytemp < 0 || ytemp > ysize)
+                return false;
+            if (GetCell(xtemp, ytemp) != tileUnused)
+                return false;
         }
-        //woot, we're still here! let's tell the other guys we're done!!
-        return true;
+        for (ytemp = y; ytemp < (y + len); ytemp++)
+        {
+            setCell(xtemp, ytemp, floor);
+        }
+        break;
+    }
+    case 3:
+    {
+        if (ytemp < 0 || ytemp > ysize)
+            return false;
+        else ytemp = y;
+
+        for (xtemp = x; xtemp > (x - len); xtemp--)
+        {
+            if (xtemp < 0 || xtemp > xsize)
+                return false;
+            if (GetCell(xtemp, ytemp) != tileUnused)
+                return false;
+        }
+
+        for (xtemp = x; xtemp > (x - len); xtemp--)
+        {
+            setCell(xtemp, ytemp, floor);
+        }
+        break;
+    }
+    }
+
+    // woot, we're still here! let's tell the other guys we're done!!
+    return true;
 }
 
 bool makeRoom(int x, int y, int xlength, int ylength, int direction)
@@ -217,10 +222,14 @@ bool makeRoom(int x, int y, int xlength, int ylength, int direction)
                 for (int xtemp = (x - xlen / 2); xtemp < (x + (xlen + 1) / 2); xtemp++)
                 {
                     //start with the walls
-                    if (xtemp == (x - xlen / 2)) setCell(xtemp, ytemp, wall);
-                    else if (xtemp == (x + (xlen - 1) / 2)) setCell(xtemp, ytemp, wall);
-                    else if (ytemp == y) setCell(xtemp, ytemp, wall);
-                    else if (ytemp == (y - ylen + 1)) setCell(xtemp, ytemp, wall);
+                    if (xtemp == (x - xlen / 2))
+                        setCell(xtemp, ytemp, wall);
+                    else if (xtemp == (x + (xlen - 1) / 2))
+                        setCell(xtemp, ytemp, wall);
+                    else if (ytemp == y)
+                        setCell(xtemp, ytemp, wall);
+                    else if (ytemp == (y - ylen + 1))
+                        setCell(xtemp, ytemp, wall);
                     //and then fill with the floor
                     else setCell(xtemp, ytemp, floor);
                 }
@@ -230,10 +239,14 @@ bool makeRoom(int x, int y, int xlength, int ylength, int direction)
             //east
             for (int ytemp = (y - ylen / 2); ytemp < (y + (ylen + 1) / 2); ytemp++)
             {
-                if (ytemp < 0 || ytemp > ysize) return false;
-                for (int xtemp = x; xtemp < (x + xlen); xtemp++){
-                    if (xtemp < 0 || xtemp > xsize) return false;
-                    if (GetCell(xtemp, ytemp) != tileUnused) return false;
+                if (ytemp < 0 || ytemp > ysize)
+                    return false;
+                for (int xtemp = x; xtemp < (x + xlen); xtemp++)
+                {
+                    if (xtemp < 0 || xtemp > xsize)
+                        return false;
+                    if (GetCell(xtemp, ytemp) != tileUnused)
+                        return false;
                 }
             }
 
@@ -242,9 +255,12 @@ bool makeRoom(int x, int y, int xlength, int ylength, int direction)
                 for (int xtemp = x; xtemp < (x + xlen); xtemp++){
 
                     if (xtemp == x) setCell(xtemp, ytemp, wall);
-                    else if (xtemp == (x + xlen - 1)) setCell(xtemp, ytemp, wall);
-                    else if (ytemp == (y - ylen / 2)) setCell(xtemp, ytemp, wall);
-                    else if (ytemp == (y + (ylen - 1) / 2)) setCell(xtemp, ytemp, wall);
+                    else if (xtemp == (x + xlen - 1))
+                        setCell(xtemp, ytemp, wall);
+                    else if (ytemp == (y - ylen / 2))
+                        setCell(xtemp, ytemp, wall);
+                    else if (ytemp == (y + (ylen - 1) / 2))
+                        setCell(xtemp, ytemp, wall);
 
                     else setCell(xtemp, ytemp, floor);
                 }
@@ -254,7 +270,8 @@ bool makeRoom(int x, int y, int xlength, int ylength, int direction)
             //south
             for (int ytemp = y; ytemp < (y + ylen); ytemp++)
             {
-                if (ytemp < 0 || ytemp > ysize) return false;
+                if (ytemp < 0 || ytemp > ysize)
+                    return false;
                 for (int xtemp = (x - xlen / 2); xtemp < (x + (xlen + 1) / 2); xtemp++)
                 {
                     if (xtemp < 0 || xtemp > xsize)
@@ -299,9 +316,12 @@ bool makeRoom(int x, int y, int xlength, int ylength, int direction)
                 {
 
                     if (xtemp == x) setCell(xtemp, ytemp, wall);
-                    else if (xtemp == (x - xlen + 1)) setCell(xtemp, ytemp, wall);
-                    else if (ytemp == (y - ylen / 2)) setCell(xtemp, ytemp, wall);
-                    else if (ytemp == (y + (ylen - 1) / 2)) setCell(xtemp, ytemp, wall);
+                    else if (xtemp == (x - xlen + 1))
+                        setCell(xtemp, ytemp, wall);
+                    else if (ytemp == (y - ylen / 2))
+                        setCell(xtemp, ytemp, wall);
+                    else if (ytemp == (y + (ylen - 1) / 2))
+                        setCell(xtemp, ytemp, wall);
 
                     else setCell(xtemp, ytemp, floor);
                 }
@@ -319,7 +339,6 @@ void showDungeon()
     {
             for (int x = 0; x < xsize; x++)
             {
-                //System.out.print(GetCell(x, y));
                 switch (GetCell(x, y))
                 {
                 case tileUnused:
@@ -361,12 +380,16 @@ bool createDungeon(int inx, int iny, int inobj)
     else objects = inobj;
 
     //adjust the size of the map, if it's smaller or bigger than the limits
-    if (inx < 3) xsize = 3;
-    else if (inx > xmax) xsize = xmax;
+    if (inx < 3)
+        xsize = 3;
+    else if (inx > xmax)
+        xsize = xmax;
     else xsize = inx;
 
-    if (iny < 3) ysize = 3;
-    else if (iny > ymax) ysize = ymax;
+    if (iny < 3)
+        ysize = 3;
+    else if (iny > ymax)
+        ysize = ymax;
     else ysize = iny;
 
     //printf("%s %d\n", msgXSize, xsize);
@@ -399,9 +422,7 @@ bool createDungeon(int inx, int iny, int inobj)
         }
     }
 
-    /*******************************************************************************
-    And now the code of the random-map-generation-algorithm begins!
-    *******************************************************************************/
+    // And now the code of the random-map-generation-algorithm begins!
 
     //start with making a room in the middle, which we can start building upon
     makeRoom(xsize / 2, ysize / 2, 8, 6, getRand(0, 3));
@@ -475,7 +496,8 @@ bool createDungeon(int inx, int iny, int inobj)
                 }
 
                 //if we can, jump out of the loop and continue with the rest
-                if (validTile > -1) break;
+                if (validTile > -1)
+                    break;
             }
         }
         if (validTile > -1)
@@ -577,7 +599,6 @@ bool createDungeon(int inx, int iny, int inobj)
         }
     }
 
-
     //all done with the map generation, tell the user about it and finish
     //printf("%s %d\n",msgNumObjects.c_str(), currentFeatures);
 
@@ -591,12 +612,9 @@ void dungeon_main()
     int dungeon_objects = 150;
     
     dungeon_map = (int*)malloc(sizeof(int) * (x * y));
-    //for (;;)
-    //{
-        if (createDungeon(x, y, dungeon_objects));
-            showDungeon();
-        //std::cin.get();
-    //}
+    if (createDungeon(x, y, dungeon_objects));
+        showDungeon();
+
 }
 
 void dungeon_free()

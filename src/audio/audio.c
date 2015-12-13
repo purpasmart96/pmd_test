@@ -41,10 +41,9 @@ void SOUND_Main()
     alSource3f(source, AL_VELOCITY, 0, 0, 0);
     alSourcei(source, AL_LOOPING, AL_FALSE);
 
-    ALuint buffers;
-
     // Create the buffers
-    //alGenBuffers(1, &buffers);
+    alGenBuffers(1, &buffers);
+    //alDeleteBuffers(1, &buffers);
 
 }
 
