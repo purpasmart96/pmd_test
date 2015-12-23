@@ -22,11 +22,42 @@
 #define _SCREEN_H_
 
 #include "util.h"
-//#define GLFW_INCLUDE_NONE
-//#include <GLFW/glfw3.h>
-#include <SDL.h>
+#include "dungeon/dungeon_gen.h"
+#define GLEW_STATIC
+#include <GL/glew.h>
 #include <GLFW/glfw3.h>
-//#include <SDL_image.h>
+#include <png.h>
+
+
+typedef struct
+{
+    const char *description;
+    int width;
+    int height;
+    bool is_widescreen;
+} ScreenModes;
+
+
+typedef struct
+{
+    int width;
+    int height;
+} CurrentFrameBufferSize;
+
+typedef struct 
+{
+    GLuint vao;
+    GLuint vbo;
+    GLuint ebo;
+
+    GLint position_attrib;
+} GLState;
+
+
+void png_texture_load(const char *file_name, int *width, int *height, void *texture_data);
+
+void ContextInit();
+void GLContextDrawFrame();
 
 void screen_Init();
 void screen_Free();

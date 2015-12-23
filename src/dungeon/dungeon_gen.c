@@ -21,8 +21,18 @@
 #include "dungeon/dungeon_gen.h"
 #include "common/rand_num.h"
 
+
+
+char *DecodeImage(char *filename)
+{
+    int width;
+    int height;
+    u8 *image = SOIL_load_image(filename, &width, &height, 0, SOIL_LOAD_RGBA);
+    return image;
+}
+
     int xmax = 80; // 80
-    int ymax = 100; // 25
+    int ymax = 32; // 25
     int xsize = 0;
     int ysize = 0;
     int objects = 0;
@@ -64,23 +74,6 @@ int getRand(int min, int max)
         i = -i;
 
     return min + i;
-}
-
-int getRandSimple(int max)
-{
-    time_t seed;
-    seed = time(NULL) + oldseed;
-    oldseed = seed;
-
-    srandom(seed, 0xF23342);
-
-    int n = max - 1;
-    int i = random() % n;
-
-    if (i < 0)
-        i = -i;
-
-    return i;
 }
 
 bool makeCorridor(int x, int y, int lenght, int direction)
@@ -608,7 +601,7 @@ bool createDungeon(int inx, int iny, int inobj)
 void dungeon_main()
 {
     int x = 80;
-    int y = 40;
+    int y = 32;
     int dungeon_objects = 150;
     
     dungeon_map = (int*)malloc(sizeof(int) * (x * y));

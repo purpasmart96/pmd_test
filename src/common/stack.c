@@ -21,6 +21,31 @@
 
 #include "common\stack.h"
 
+
+StackRect *stack_rect_new()
+{
+    StackRect *stack = (StackRect*)calloc(0, sizeof(Stack));
+    stack->capacity = STACK_MAX;
+    stack->data = malloc(sizeof(Rect) * stack->capacity);
+    stack->size = 0;
+    return stack;
+}
+
+Stack *stack_new()
+{
+    Stack *stack = (Stack*)calloc(0, sizeof(Stack));
+    stack->capacity = STACK_MAX;
+    stack->data = malloc(sizeof(u32) * stack->capacity);
+    stack->size = 0;
+    return stack;
+}
+
+void delete_stack(Stack *stack)
+{
+    free(stack->data);
+    free(stack);
+}
+
 void stack_init(Stack *s)
 {
     // Initialise its properties
@@ -92,6 +117,15 @@ void pop_back(Stack *s)
     else
     {
         s->size--;
+    }
+    return;
+}
+
+void clear(Stack *s)
+{
+    while (!empty(s))
+    {
+        pop_back(s);
     }
     return;
 }

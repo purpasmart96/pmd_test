@@ -34,15 +34,51 @@ typedef enum
 typedef enum
 {
     NoAbility,
-    Blaze,
-} Ability;
+    Stench, Drizzle, SpeedBoost, BattleArmor, Sturdy, Damp, Limber, SandVeil, Static,
+    VoltAbsorb, WaterAbsorb, Oblivious, CloudNine, Compoundeyes, Insomnia, ColorChange, Immunity, FlashFire,
+    ShieldDust, OwnTempo, SuctionCups, Intimidate, ShadowTag, RoughSkin, WonderGuard, Levitate, EffectSpore,
+    Synchronize, ClearBody, NaturalCure, Lightningrod, SereneGrace, SwiftSwim, Chlorophyll,
+    Illuminate, Trace, HugePower, PoisonPoint, InnerFocus, MagmaArmor, WaterVeil, MagnetPull,
+    Soundproof, RainDish, SandStream, Pressure, ThickFat, EarlyBird, FlameBody, RunAway, KeenEye, HyperCutter,
+    Pickup, Truant, Hustle, CuteCharm, Plus, Minus, Forecast, StickyHold, ShedSkin, Guts, MarvelScale,
+    LiquidOoze, Overgrow, Blaze, Torrent, Swarm, RockHead, Drought, ArenaTrap, VitalSpirit, WhiteSmoke,
+    PurePower, ShellArmor, AirLock, TangledFeet, MotorDrive, Rivalry, Steadfast, SnowCloak, Gluttony,
+    AngerPoint, Unburden, Heatproof, Simple, DrySkin, Download, IronFist, PoisonHeal, Adaptability,
+    SkillLink, Hydration, SolarPower, QuickFeet, Normalize, Sniper, MagicGuard, NoGuard, Stall, Technician,
+    LeafGuard, Klutz, MoldBreaker, SuperLuck, Aftermath, Anticipation, Forewarn, Unaware,
+    TintedLens, Filter, SlowStart, Scrappy, StormDrain, IceBody, SolidRock, SnowWarning, HoneyGather,
+    Frisk, Reckless, Multitype, FlowerGift, BadDreams, Pickpocket, SheerForce, Contrary, Unnerve,
+    Defiant, Defeatist, CursedBody, Healer, FriendGuard, WeakArmor, HeavyMetal, LightMetal, Multiscale,
+    ToxicBoost, FlareBoost, Harvest, Telepathy, Moody, Overcoat, PoisonTouch, Regenerator, BigPecks,
+    SandRush, WonderSkin, Analytic, Illusion, Imposter, Infiltrator, Mummy, Moxie, Justified, Rattled,
+    MagicBounce, SapSipper, Prankster, SandForce, IronBarbs, ZenMode, VictoryStar, Turboblaze, Teravolt,
+    AromaVeil, FlowerVeil, CheekPouch, Protean, FurCoat, Magician, Bulletproof, Competitive, StrongJaw,
+    Refrigerate, SweetVeil, StanceChange, GaleWings, MegaLauncher, GrassPelt, Symbiosis, ToughClaws,
+    Pixilate, Gooey, Aerilate, ParentalBond, DarkAura, FairyAura, AuraBreak, PrimordialSea, DesolateLand,
+    DeltaStream,
+} AbilityNameEnum;
 
 typedef enum
 {
     TypeNone,
-    Grass,
+    Normal,
+    Fighting,
+    Flying,
+    Poison,
+    Ground,
+    Rock,
+    Bug,
+    Ghost,
+    Steel,
     Fire,
     Water,
+    Grass,
+    Electric,
+    Psychc,
+    Ice,
+    Dragon,
+    Dark,
+    Fairy,
 } Type;
 
 typedef enum
@@ -2106,14 +2142,27 @@ typedef struct
     u8 current_pp;
     u8 power;
     u8 accuracy;
+    Type type;
     TileRangeModes tile_range;
     MoveNames move_name;
 } Move;
 
 typedef struct
 {
-    char name[20];
+    AbilityNameEnum ability_enum;
+    const char *name;
+    const char *description;
+} Ability;
+
+
+typedef void (*GetPokemonNameFunc)(struct pokemon *);
+
+typedef struct pokemon
+{
+    char *name;
     Species species;
+    Type primary_type;
+    Type sub_type;
     Ability ability;
     Sex sex;
     u64 exp;
@@ -2129,13 +2178,20 @@ typedef struct
     Items held_item;
     Move move[4];
     Status status;
+    GetPokemonNameFunc get_pokemon_name_func;
 
 } Pokemon;
+
 
 // Team members, including the leader
 #define NUMBER_OF_TEAMMATES 4
 #define CURRENT_LEADER 0
 
 Pokemon team_mates[NUMBER_OF_TEAMMATES];
+
+void SetPokemonName(Pokemon *team_member, char *name);
+void GetPokemonName(Pokemon *team_member);
+void SetPokemonAbility(Pokemon *team_member, AbilityNameEnum ability);
+void GetPokemonAbility(Pokemon *team_member);
 
 #endif

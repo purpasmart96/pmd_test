@@ -22,6 +22,7 @@
 #include "game_common/hunger_manager.h"
 #include "game_common/health_manager.h"
 
+
 void ClearBag()
 {
     for (int i = 0; i < MAX_ITEMS; i++)
@@ -106,6 +107,24 @@ void AddItemToBag(Items the_item)
     }
 }
 
+void UpdateBag()
+{
+    for (int i = 0; i < MAX_ITEMS; i++)
+    {
+        if (bag.items[i] != None) // Find a non-empty slot
+        {
+            temp_bag.items[temp_bag.size++] = bag.items[i];
+        }
+        else
+        {
+            continue; // Skip to the next slot in the bag from the bottem
+        }
+    }
+
+    memcpy(&bag.items, &temp_bag.items, sizeof(temp_bag.items));
+    memset(&temp_bag, 0, sizeof(temp_bag));
+}
+
 void RemoveItemFromBag(Items the_item)
 {
     if (!IsBagEmpty())
@@ -114,10 +133,9 @@ void RemoveItemFromBag(Items the_item)
         {
             if (bag.items[i] == the_item) // Find the slot that has the item were looking for
             {
+                bag.items[i] = None;
                 bag.size--;
-                PushItemToTop(bag.items[i]);
-                bag.items[i] = bag.items[i + 1];
-                AddEmptySlots();
+                UpdateBag();
                 return;
             }
             else
@@ -194,6 +212,106 @@ void UseItemFromBag(Pokemon *team_member, Items the_item)
     switch (the_item)
     {
     case 0:
+    {
+        break;
+    }
+    case Stick:
+    {
+        break;
+    }
+    case IronThorn:
+    {
+        break;
+    }
+    case SilverSpike:
+    {
+        break;
+    }
+    case GoldFang:
+    {
+        break;
+    }
+    case CacneaSpike:
+    {
+        break;
+    }
+    case CorsolaTwig:
+    {
+        break;
+    }
+    case Gravelerock:
+    {
+        break;
+    }
+    case GeoPebble:
+    {
+        break;
+    }
+    case GoldThorn:
+    {
+        break;
+    }
+    case RareFossil:
+    {
+        break;
+    }
+    case NoSlipCap:
+    {
+        break;
+    }
+    case YRaySpecs:
+    {
+        break;
+    }
+    case GaggleSpecs:
+    {
+        break;
+    }
+    case MobileScarf:
+    {
+        break;
+    }
+    case HealRibbon:
+    {
+        break;
+    }
+    case TwistBand:
+    {
+        break;
+    }
+    case ScopeLens:
+    {
+        break;
+    }
+    case PatsyBand:
+    {
+        break;
+    }
+    case NoStickCap:
+    {
+        break;
+    }
+    case PierceBand:
+    {
+        break;
+    }
+    case JoyRibbon:
+    {
+        break;
+    }
+    case XRaySpecs:
+    {
+        break;
+    }
+    case PersimBand:
+    {
+        break;
+    }
+    case PowerBand:
+    {
+        break;
+    }
+    case PechaScarf: // 25
     {
         break;
     }

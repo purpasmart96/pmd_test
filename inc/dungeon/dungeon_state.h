@@ -32,7 +32,8 @@ typedef struct
     u8 sp_defense_multiplier;
     u8 speed_multiplier;
 
-    s16 belly;
+    u16 current_belly;
+    u16 max_belly;
 
     bool confused;
     bool burned;

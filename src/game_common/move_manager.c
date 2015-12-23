@@ -47,27 +47,27 @@ char *GetMoveNameFromEnum(Move move)
     }
     case CometPunch:
     {
-        move_name = "";
+        move_name = "CometPunch";
         break;
     }
     case MegaPunch:
     {
-        move_name = "";
+        move_name = "MegaPunch";
         break;
     }
     case PayDay:
     {
-        move_name = "";
+        move_name = "PayDay";
         break;
     }
     case FirePunch:
     {
-        move_name = "";
+        move_name = "FirePunch";
         break;
     }
     case IcePunch:
     {
-        move_name = "";
+        move_name = "IcePunch";
         break;
     }
     case ThunderPunch:

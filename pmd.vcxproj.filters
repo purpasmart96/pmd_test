@@ -51,9 +51,6 @@
     <ClCompile Include="src\dungeon\dungeon_gen.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\screen\load_png.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\dungeon\dungeon_state.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -105,9 +102,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="inc\common\s_list.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="inc\screen\load_png.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="inc\dungeon\dungeon_state.h">

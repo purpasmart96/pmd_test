@@ -11,6 +11,7 @@
 #define _DUNGEON_GEN_H_
 
 #include "util.h"
+#include <SOIL.h>
 
 enum
 {
@@ -41,6 +42,20 @@ typedef struct
     int width;
     int height;
 } Rect;
+
+typedef struct
+{
+
+    int _width, _height;
+    //Stack _tiles; // char
+    //StackRect _rooms; // Rect  // rooms for place stairs or monsters
+    //StackRect _exits; // 4 sides of rooms or corridors
+
+
+} Dungeon;
+
+
+char *DecodeImage(char *filename);
 
 void setCell(int x, int y, int celltype);
 int getCell(int x, int y);

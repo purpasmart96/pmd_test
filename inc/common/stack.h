@@ -23,6 +23,7 @@
 #define _STACK_H_
 
 #include "util.h"
+#include "dungeon/dungeon_gen.h"
 
 #define STACK_MAX 100
 
@@ -32,6 +33,20 @@ typedef struct {
     int  capacity;
 } Stack;
 
+typedef struct {
+    char *data;
+    int  size;
+    int  capacity;
+} StackChar;
+
+typedef struct {
+    Rect *data;
+    int  size;
+    int  capacity;
+} StackRect;
+
+Stack *stack_new();
+void delete_stack(Stack *stack);
 void stack_init(Stack *s);
 void stack_static_init(Stack *s, int capacity);
 void stack_static_init_size(Stack *s, int capacity, int size);
@@ -39,5 +54,6 @@ bool empty(Stack *s);
 int  top(Stack *s);
 void push(Stack *s, int element);
 void pop_back(Stack *s);
+void clear(Stack *s);
 
 #endif

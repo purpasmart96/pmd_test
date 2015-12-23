@@ -39,6 +39,8 @@ typedef struct
 	int size;
 } List;
 
+Node *new_node();
+void delete_node(Node *node);
 void node_init(Node *n);
 void list_insert(Node * n, u32 data);
 int  list_find(Node *n, u32 data);

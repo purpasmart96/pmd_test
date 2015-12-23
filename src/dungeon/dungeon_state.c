@@ -20,7 +20,7 @@
 
 #include "dungeon/dungeon_state.h"
 #include "game_common/item_manager.h"
-#include "pokemon/database.h"
+#include "game_common/hunger_manager.h"
 
 // Called when starting a new dungeon
 void SetUpDefualtStatus()
@@ -32,7 +32,8 @@ void SetUpDefualtStatus()
         team_mates[i].status.defense_multiplier = 1;
         team_mates[i].status.sp_defense_multiplier = 1;
         team_mates[i].status.speed_multiplier = 1;
-        team_mates[i].status.belly = 100;
+        team_mates[i].status.current_belly = DEFUALT_BELLY_SIZE;
+        team_mates[i].status.max_belly = DEFUALT_BELLY_SIZE;
         team_mates[i].status.burned = false;
         team_mates[i].status.confused = false;
         team_mates[i].status.paralysis = false;

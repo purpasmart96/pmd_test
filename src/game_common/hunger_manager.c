@@ -22,14 +22,14 @@
 
 void AdjustBellySize(Pokemon *team_member, int amount)
 {
-    if (team_member->status.belly == DEFUALT_BELLY_SIZE)
+    if (team_member->status.current_belly == team_member->status.max_belly)
     {
         printf("Belly is Full!\n");
     }
     else
     {
-        team_member->status.belly += amount;
-        CLAMP(team_member->status.belly, BELLY_EMPTY, DEFUALT_BELLY_SIZE);
+        team_member->status.current_belly += amount;
+        CLAMP(team_member->status.current_belly, BELLY_EMPTY, team_member->status.max_belly);
     }
 }
 

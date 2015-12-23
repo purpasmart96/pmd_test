@@ -22,6 +22,20 @@
 #include "common/d_list.h"
 
 
+Node *new_node()
+{
+    Node *node = NULL;
+    node = (Node*)malloc(sizeof(Node));
+    node->next = NULL;
+    node->prev = NULL;
+    return node;
+}
+
+void delete_node(Node *node)
+{
+    free(node);
+}
+
 void node_init(Node *n)
 {
 	n = (Node*)malloc(sizeof(Node));

@@ -26,6 +26,12 @@
 
 #define NO_ITEMS 0
 #define MAX_ITEMS 48
+#define NEXT_SLOT i + 1
+
+typedef struct {
+    Items items[MAX_ITEMS]; // The amount of items that can be in the bag
+    int size; // Current amount of items in the bag
+}TempBag;
 
 typedef struct
 {
@@ -33,6 +39,7 @@ typedef struct
     int size; // Current amount of items in the bag
 }Bag;
 
+TempBag temp_bag;
 Bag bag;
 
 void ClearBag();
@@ -40,6 +47,7 @@ bool IsBagEmpty();
 bool IsBagFull();
 void DisplayBag();
 void AddEmptySlots();
+void UpdateBag();
 void PushItemToTop(Items the_item);
 void GiveItemToTeamMember(Pokemon *team_member, Items the_item);
 void AddItemToBag(Items the_item);

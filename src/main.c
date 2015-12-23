@@ -24,14 +24,14 @@
 #include "game_common/item_manager.h"
 #include "dungeon/dungeon_state.h"
 #include "dungeon/dungeon_gen.h"
-#include "screen/load_png.h"
 #include "audio/audio.h"
 
 int main()
 {
+    //dungeon_main();
+    screen_Init();
     ClearBag();
     printf("Press Esc in the other window to Continue!\n");
-    screen_Init();
     GiveItemToTeamMember(&team_mates[CURRENT_LEADER], ReviverSeed);
     printf("Item on player is %s\n", GetItemNameFromId(team_mates[CURRENT_LEADER].held_item));
     RemoveItemFromTeamMember(&team_mates[CURRENT_LEADER], ReviverSeed);
@@ -102,17 +102,24 @@ int main()
     AddItemToBag(Apple);
     RemoveItemFromBag(JoySeed);
     RemoveItemFromBag(JoySeed);
-    printf("Leaders belly is %d\n", team_mates[CURRENT_LEADER].status.belly);
+    UseItemFromBag(&team_mates[CURRENT_LEADER], OranBerry);
+    printf("Leaders belly is %d\n", team_mates[CURRENT_LEADER].status.current_belly);
+
+    SetPokemonName(&team_mates[CURRENT_LEADER], "TestName");
+    team_mates[CURRENT_LEADER].get_pokemon_name_func = GetPokemonName;
+    team_mates[CURRENT_LEADER].get_pokemon_name_func(&team_mates[CURRENT_LEADER]);
     DisplayBag();
     SOUND_Main();
     dungeon_main();
     dungeon_free();
 
     //LoadPngFile("test.png");
-    screen_Free();
+    //screen_Init();
+    //screen_Free();
     printf("This is only the beginning!\n");
     printf("Press Any Key to Continue\n");
     _getch();
     alDeleteBuffers(1, &buffers);
+    screen_Free();
     return 0;
 }
