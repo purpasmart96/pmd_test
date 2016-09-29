@@ -5,6 +5,9 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
+    <Filter Include="Source Files\game_common">
+      <UniqueIdentifier>{2237f5fa-b50e-2693-d311-374412eafa3b}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Header Files">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
@@ -13,111 +16,291 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Source Files\game_common\items">
+      <UniqueIdentifier>{99795d4e-7472-4b05-a35b-dec3a2157f73}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\game_common">
+      <UniqueIdentifier>{6423e880-c5bb-4b9d-8368-49be4ae9086a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\audio_core">
+      <UniqueIdentifier>{7bc60456-ceec-4d10-b129-36b1b0e12e3e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\audio_core">
+      <UniqueIdentifier>{27c897f3-90c4-45c5-af21-5d6e0a4e1c38}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\game_common\items">
+      <UniqueIdentifier>{0ee246a3-45fd-4097-8e53-7767641aafb1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\common">
+      <UniqueIdentifier>{9264e743-fb53-412f-b75e-ca91998706b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\common">
+      <UniqueIdentifier>{04f793bf-ee9b-4a1f-b3b6-36c1f4198d0b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\common\stack.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\dungeon\floor_function.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\common\rand_num.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\pokemon\database.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\audio\audio.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\screen\screen.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\pokemon\stats.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\common\queue.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\common\s_list.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\common\d_list.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\dungeon\dungeon_gen.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\dungeon\dungeon_state.c">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="src\game_common\controls_manager.c">
+      <Filter>Source Files\game_common</Filter>
     </ClCompile>
     <ClCompile Include="src\game_common\health_manager.c">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\game_common</Filter>
     </ClCompile>
     <ClCompile Include="src\game_common\hunger_manager.c">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\game_common</Filter>
     </ClCompile>
     <ClCompile Include="src\game_common\item_manager.c">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\game_common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game_common\game_manager.c">
+      <Filter>Source Files\game_common</Filter>
     </ClCompile>
     <ClCompile Include="src\game_common\move_manager.c">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\game_common</Filter>
     </ClCompile>
     <ClCompile Include="src\dungeon\dungeon_gen.c">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game_common\items\berries.c">
+      <Filter>Source Files\game_common\items</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game_common\items\apples.c">
+      <Filter>Source Files\game_common\items</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game_common\items\bands.c">
+      <Filter>Source Files\game_common\items</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game_common\items\chests.c">
+      <Filter>Source Files\game_common\items</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game_common\items\gummies.c">
+      <Filter>Source Files\game_common\items</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game_common\items\misc.c">
+      <Filter>Source Files\game_common\items</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game_common\items\orbs.c">
+      <Filter>Source Files\game_common\items</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game_common\items\projectiles.c">
+      <Filter>Source Files\game_common\items</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game_common\items\ribbons.c">
+      <Filter>Source Files\game_common\items</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game_common\items\scarfs.c">
+      <Filter>Source Files\game_common\items</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game_common\items\seeds.c">
+      <Filter>Source Files\game_common\items</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game_common\items\specs.c">
+      <Filter>Source Files\game_common\items</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game_common\items\tm.c">
+      <Filter>Source Files\game_common\items</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game_common\items\vitamins.c">
+      <Filter>Source Files\game_common\items</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game_common\menu_manager.c">
+      <Filter>Source Files\game_common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game_common\dungeon_manager.c">
+      <Filter>Source Files\game_common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\audio_core\sound_core.c">
+      <Filter>Source Files\audio_core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\audio_core\al_common.c">
+      <Filter>Source Files\audio_core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game_common\sound_manager.c">
+      <Filter>Source Files\game_common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game_common\shop_manager.c">
+      <Filter>Source Files\game_common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game_common\pokemon_manager.c">
+      <Filter>Source Files\game_common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game_common\display_manager.c">
+      <Filter>Source Files\game_common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game_common\tile_manager.c">
+      <Filter>Source Files\game_common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\common\stack.c">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\common\strlcat.c">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\common\strlcpy.c">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\common\vec.c">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\common\rand_num.c">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\common\mem_pool.c">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\common\list_generic.c">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\common\node_generic.c">
+      <Filter>Source Files\common</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="inc\util.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="inc\dungeon\floor_function.h">
+    <ClInclude Include="inc\dungeon\dungeon_gen.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="inc\pokemon\database.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="inc\dungeon\dungeon_gen.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="inc\common\rand_num.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="inc\screen\screen.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="inc\common\stack.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="inc\pokemon\stats.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="inc\common\queue.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="inc\game_common\controls_manager.h">
+      <Filter>Header Files\game_common</Filter>
     </ClInclude>
-    <ClInclude Include="inc\common\d_list.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="inc\common\s_list.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="inc\dungeon\dungeon_state.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="inc\game_common\health_manager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="inc\game_common\hunger_manager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="inc\game_common\item_manager.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="inc\game_common\game_manager.h">
+      <Filter>Header Files\game_common</Filter>
     </ClInclude>
     <ClInclude Include="inc\game_common\move_manager.h">
+      <Filter>Header Files\game_common</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\game_common\item_manager.h">
+      <Filter>Header Files\game_common</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\game_common\hunger_manager.h">
+      <Filter>Header Files\game_common</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\game_common\health_manager.h">
+      <Filter>Header Files\game_common</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\game_common\dungeon_manager.h">
+      <Filter>Header Files\game_common</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\audio_core\sound_core.h">
+      <Filter>Header Files\audio_core</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\dungeon\floor_function.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\audio_core\al_common.h">
+      <Filter>Header Files\audio_core</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\game_common\sound_manager.h">
+      <Filter>Header Files\game_common</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\game_common\text_manager.h">
+      <Filter>Header Files\game_common</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\game_common\items\apples.h">
+      <Filter>Header Files\game_common\items</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\game_common\items\bands.h">
+      <Filter>Header Files\game_common\items</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\game_common\items\berries.h">
+      <Filter>Header Files\game_common\items</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\game_common\items\chests.h">
+      <Filter>Header Files\game_common\items</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\game_common\items\gummies.h">
+      <Filter>Header Files\game_common\items</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\game_common\items\misc.h">
+      <Filter>Header Files\game_common\items</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\game_common\items\orbs.h">
+      <Filter>Header Files\game_common\items</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\game_common\items\projectiles.h">
+      <Filter>Header Files\game_common\items</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\game_common\items\ribbons.h">
+      <Filter>Header Files\game_common\items</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\game_common\items\scarfs.h">
+      <Filter>Header Files\game_common\items</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\game_common\items\seeds.h">
+      <Filter>Header Files\game_common\items</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\game_common\items\specs.h">
+      <Filter>Header Files\game_common\items</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\game_common\items\tm.h">
+      <Filter>Header Files\game_common\items</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\game_common\items\vitamins.h">
+      <Filter>Header Files\game_common\items</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\game_common\pokemon_manager.h">
+      <Filter>Header Files\game_common</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\game_common\map_manager.h">
+      <Filter>Header Files\game_common</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\game_common\display_manager.h">
+      <Filter>Header Files\game_common</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\game_common\tile_manager.h">
+      <Filter>Header Files\game_common</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\common\stack.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\common\strlcat.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\common\strlcpy.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\common\mem_pool.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\common\rand_num.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\common\vec.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\common\list_generic.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\common\list_types.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\common\template.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\common\node_generic.h">
+      <Filter>Header Files\common</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

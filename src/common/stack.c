@@ -19,70 +19,65 @@
 // THE SOFTWARE.
 
 
-#include "common\stack.h"
+#include "common/stack.h"
 
 
-StackRect *stack_rect_new()
+Stack *stack_new(size_t capacity)
 {
-    StackRect *stack = (StackRect*)calloc(0, sizeof(Stack));
-    stack->capacity = STACK_MAX;
-    stack->data = malloc(sizeof(Rect) * stack->capacity);
+    Stack *stack = malloc(sizeof(*stack));
+    stack->capacity = capacity;
+    stack->data = calloc(stack->capacity, sizeof(void *));
     stack->size = 0;
     return stack;
 }
 
-Stack *stack_new()
+void stack_resize(Stack *stack, size_t capacity)
 {
-    Stack *stack = (Stack*)calloc(0, sizeof(Stack));
-    stack->capacity = STACK_MAX;
-    stack->data = malloc(sizeof(u32) * stack->capacity);
-    stack->size = 0;
-    return stack;
+    stack->capacity = capacity;
+    void **temp = realloc(stack->data, sizeof(void *) * stack->capacity);
+
+    if (!temp)
+    {
+        ERROR("Memory allocation failure\n");
+    }
+    stack->data = temp;
 }
 
-void delete_stack(Stack *stack)
+void stack_delete(Stack *stack)
 {
     free(stack->data);
     free(stack);
 }
 
-void stack_init(Stack *s)
+bool stack_empty(Stack *stack)
 {
-    // Initialise its properties
-    s->capacity = STACK_MAX;
-    s->data = (u32*)malloc(sizeof(u32) * s->capacity);
-    s->size = 0;
+    return !stack->size;
 }
 
-void stack_static_init(Stack *s, int capacity)
+bool stack_full(Stack *stack)
 {
-    s->capacity = capacity;
-    s->data = (u32*)malloc(sizeof(u32) * s->capacity);
-    s->size = 0;
+    return stack->size == stack->capacity;
 }
 
-void stack_static_init_size(Stack *s, int capacity, int size)
+void stack_update(Stack *stack)
 {
-    s->capacity = capacity;
-    s->data = (u32*)malloc(sizeof(u32) * s->capacity);
-    s->size = size;
-}
+    Stack *stack_temp = stack_new(stack->capacity);
 
-bool empty(Stack *s)
-{
-    if (s->size == 0)
+    for (int i = 0; i < stack->size; i++)
     {
-        return true;
+        if (stack->data[i] != NULL) // Find a non-empty slot
+        {
+            stack_push(stack_temp, stack->data[i]);
+        }
     }
-    else
-    {
-        return false;
-    }
+
+    memcpy(stack, stack_temp, sizeof(stack));
+    stack_delete(stack_temp);
 }
 
-int top(Stack *s)
+void *stack_top(Stack *s)
 {
-    if (s->size == 0)
+    if (stack_empty(s))
     {
         ERROR("Stack is Empty\n");
     }
@@ -90,10 +85,34 @@ int top(Stack *s)
     return s->data[s->size - 1];
 }
 
-void push(Stack *s, int element)
+void *stack_find(Stack *stack, void *element)
+{
+    for (int i = 0; stack->size; i++)
+    {
+        if (stack->data[i] == element)
+        {
+            return stack->data[i];
+        }
+    }
+}
+
+void stack_remove(Stack *stack, void *element)
+{
+    for (int i = 0; stack->size; i++)
+    {
+        if (stack->data[i] == element)
+        {
+            stack->data[i] = NULL;
+            stack_update(stack);
+            return;
+        }
+    }
+}
+
+void stack_push(Stack *s, void *element)
 {
     // If the stack is full, we cannot push an element into it as there is no space for it.
-    if (s->size == s->capacity)
+    if (stack_full(s))
     {
         ERROR("Stack is Full\n");
     }
@@ -105,10 +124,10 @@ void push(Stack *s, int element)
     return;
 }
 
-void pop_back(Stack *s)
+void stack_pop(Stack *s)
 {
     // If stack size is zero then it is empty. So we cannot pop
-    if (s->size == 0)
+    if (stack_empty(s))
     {
         ERROR("Stack is Empty\n");
         return;
@@ -121,11 +140,7 @@ void pop_back(Stack *s)
     return;
 }
 
-void clear(Stack *s)
+void stack_clear(Stack *stack)
 {
-    while (!empty(s))
-    {
-        pop_back(s);
-    }
-    return;
+    stack->size = 0;
 }

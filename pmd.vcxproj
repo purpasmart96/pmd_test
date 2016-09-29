@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -14,6 +14,7 @@
     <ProjectGuid>{F4D5FD53-0F8A-4F93-9599-1EB94A953475}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>pmd</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -49,24 +50,24 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>false</SDLCheck>
-      <AdditionalIncludeDirectories>...\..\inc;...\..\lib\glfw-3.1.2.bin.WIN32\include;...\..\lib\zlib\include;...\..\lib\SDL2-2.0.3\include;...\..\lib\openal-soft-1.17.1-bin\include</AdditionalIncludeDirectories>
-      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <AdditionalIncludeDirectories>...\..\inc;...\..\lib\glfw-3.1.2.bin.WIN32\include;...\..\lib\zlib\include;...\..\lib\SDL2-2.0.3\include;...\..\lib\openal-soft-1.17.1-bin\include;...\..\lib\libpng-1.6.20;...\..\lib\glew-1.13.0\include;...\..\lib\Simple OpenGL Image Library\src;...\..\lib\libvorbis-1.3.5\include;...\..\lib\libogg-1.3.2\include</AdditionalIncludeDirectories>
+      <OpenMPSupport>true</OpenMPSupport>
+      <CompileAs>CompileAsC</CompileAs>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>...\..\lib\glfw-3.1.2.bin.WIN32\lib-vc2013;...\..\lib\zlib\lib;...\..\lib\SDL2-2.0.3\lib\x86;...\..\lib\openal-soft-1.17.1-bin\libs\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;zdll.lib;OpenAL32.lib;SDL2.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>...\..\lib\glfw-3.1.2.bin.WIN32\lib-vc2013;...\..\lib\zlib\lib;...\..\lib\SDL2-2.0.3\lib\x86;...\..\lib\openal-soft-1.17.1-bin\libs\Win32;...\..\lib\libpng-1.6.20\projects\vstudio\Release;...\..\lib\glew-1.13.0\lib\Release\Win32;...\..\lib\Simple OpenGL Image Library\projects\VC9\Release;...\..\lib\libvorbis-1.3.5\win32\VS2010\Win32\Release;...\..\lib\libogg-1.3.2\win32\VS2010\Win32\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3.lib;glew32s.lib;opengl32.lib;zdll.lib;OpenAL32.lib;SDL2.lib;SDL2main.lib;libpng16.lib;SOIL.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
   </ItemDefinitionGroup>
@@ -95,40 +96,93 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\audio\audio.c" />
-    <ClCompile Include="src\common\d_list.c" />
-    <ClCompile Include="src\common\queue.c" />
+    <ClCompile Include="src\audio_core\al_common.c" />
+    <ClCompile Include="src\audio_core\sound_core.c" />
+    <ClCompile Include="src\common\list_generic.c" />
+    <ClCompile Include="src\common\mem_pool.c" />
+    <ClCompile Include="src\common\node_generic.c" />
     <ClCompile Include="src\common\rand_num.c" />
-    <ClCompile Include="src\common\s_list.c" />
     <ClCompile Include="src\common\stack.c" />
+    <ClCompile Include="src\common\strlcat.c" />
+    <ClCompile Include="src\common\strlcpy.c" />
+    <ClCompile Include="src\common\vec.c" />
     <ClCompile Include="src\dungeon\dungeon_gen.c" />
-    <ClCompile Include="src\dungeon\dungeon_state.c" />
     <ClCompile Include="src\dungeon\floor_function.c" />
+    <ClCompile Include="src\game_common\controls_manager.c" />
+    <ClCompile Include="src\game_common\display_manager.c" />
+    <ClCompile Include="src\game_common\dungeon_manager.c" />
+    <ClCompile Include="src\game_common\game_manager.c" />
     <ClCompile Include="src\game_common\health_manager.c" />
+    <ClCompile Include="src\game_common\items\apples.c" />
+    <ClCompile Include="src\game_common\items\bands.c" />
+    <ClCompile Include="src\game_common\items\berries.c" />
+    <ClCompile Include="src\game_common\items\chests.c" />
+    <ClCompile Include="src\game_common\items\gummies.c" />
+    <ClCompile Include="src\game_common\items\misc.c" />
+    <ClCompile Include="src\game_common\items\orbs.c" />
+    <ClCompile Include="src\game_common\items\projectiles.c" />
+    <ClCompile Include="src\game_common\items\ribbons.c" />
+    <ClCompile Include="src\game_common\items\scarfs.c" />
+    <ClCompile Include="src\game_common\items\seeds.c" />
+    <ClCompile Include="src\game_common\items\specs.c" />
+    <ClCompile Include="src\game_common\items\tm.c" />
+    <ClCompile Include="src\game_common\items\vitamins.c" />
     <ClCompile Include="src\game_common\item_manager.c" />
     <ClCompile Include="src\game_common\hunger_manager.c" />
+    <ClCompile Include="src\game_common\menu_manager.c" />
     <ClCompile Include="src\game_common\move_manager.c" />
+    <ClCompile Include="src\game_common\pokemon_manager.c" />
+    <ClCompile Include="src\game_common\shop_manager.c" />
+    <ClCompile Include="src\game_common\sound_manager.c" />
+    <ClCompile Include="src\game_common\tile_manager.c" />
     <ClCompile Include="src\main.c" />
     <ClCompile Include="src\pokemon\database.c" />
     <ClCompile Include="src\pokemon\stats.c" />
-    <ClCompile Include="src\screen\screen.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="inc\common\d_list.h" />
-    <ClInclude Include="inc\common\queue.h" />
+    <ClInclude Include="inc\audio_core\al_common.h" />
+    <ClInclude Include="inc\audio_core\sound_core.h" />
+    <ClInclude Include="inc\common\list_generic.h" />
+    <ClInclude Include="inc\common\list_types.h" />
+    <ClInclude Include="inc\common\mem_pool.h" />
+    <ClInclude Include="inc\common\node_generic.h" />
     <ClInclude Include="inc\common\rand_num.h" />
-    <ClInclude Include="inc\common\s_list.h" />
     <ClInclude Include="inc\common\stack.h" />
+    <ClInclude Include="inc\common\strlcat.h" />
+    <ClInclude Include="inc\common\strlcpy.h" />
+    <ClInclude Include="inc\common\template.h" />
+    <ClInclude Include="inc\common\vec.h" />
     <ClInclude Include="inc\dungeon\dungeon_gen.h" />
     <ClInclude Include="inc\dungeon\floor_function.h" />
-    <ClInclude Include="inc\dungeon\dungeon_state.h" />
+    <ClInclude Include="inc\game_common\controls_manager.h" />
+    <ClInclude Include="inc\game_common\display_manager.h" />
+    <ClInclude Include="inc\game_common\dungeon_manager.h" />
+    <ClInclude Include="inc\game_common\game_manager.h" />
     <ClInclude Include="inc\game_common\health_manager.h" />
     <ClInclude Include="inc\game_common\hunger_manager.h" />
+    <ClInclude Include="inc\game_common\items\apples.h" />
+    <ClInclude Include="inc\game_common\items\bands.h" />
+    <ClInclude Include="inc\game_common\items\berries.h" />
+    <ClInclude Include="inc\game_common\items\chests.h" />
+    <ClInclude Include="inc\game_common\items\gummies.h" />
+    <ClInclude Include="inc\game_common\items\misc.h" />
+    <ClInclude Include="inc\game_common\items\orbs.h" />
+    <ClInclude Include="inc\game_common\items\projectiles.h" />
+    <ClInclude Include="inc\game_common\items\ribbons.h" />
+    <ClInclude Include="inc\game_common\items\scarfs.h" />
+    <ClInclude Include="inc\game_common\items\seeds.h" />
+    <ClInclude Include="inc\game_common\items\specs.h" />
+    <ClInclude Include="inc\game_common\items\tm.h" />
+    <ClInclude Include="inc\game_common\items\vitamins.h" />
     <ClInclude Include="inc\game_common\item_manager.h" />
+    <ClInclude Include="inc\game_common\map_manager.h" />
     <ClInclude Include="inc\game_common\move_manager.h" />
+    <ClInclude Include="inc\game_common\pokemon_manager.h" />
+    <ClInclude Include="inc\game_common\sound_manager.h" />
+    <ClInclude Include="inc\game_common\text_manager.h" />
+    <ClInclude Include="inc\game_common\tile_manager.h" />
     <ClInclude Include="inc\pokemon\stats.h" />
     <ClInclude Include="inc\pokemon\database.h" />
-    <ClInclude Include="inc\screen\screen.h" />
     <ClInclude Include="inc\util.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

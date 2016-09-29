@@ -21,8 +21,6 @@
 #include "dungeon/dungeon_gen.h"
 #include "common/rand_num.h"
 
-
-
 char *DecodeImage(char *filename)
 {
     int width;
@@ -31,23 +29,23 @@ char *DecodeImage(char *filename)
     return image;
 }
 
-    int xmax = 80; // 80
-    int ymax = 32; // 25
-    int xsize = 0;
-    int ysize = 0;
-    int objects = 0;
-    int chanceRoom = 80;
-    int chanceCorridor = 20;
-    int *dungeon_map;
+int xmax = 80; // 80
+int ymax = 32; // 25
+int xsize = 0;
+int ysize = 0;
+int objects = 0;
+int chanceRoom = 80;
+int chanceCorridor = 20;
+int *dungeon_map;
 
-    u64 oldseed;
+u64 oldseed;
 
-    char msgXSize[];
-    char msgYSize[];
-    char msgMaxObjects[];
-    char msgNumObjects[];
-    char msgHelp[];
-    char msgDetailedHelp[];
+char msgXSize[];
+char msgYSize[];
+char msgMaxObjects[];
+char msgNumObjects[];
+char msgHelp[];
+char msgDetailedHelp[];
 
 void setCell(int x, int y, int celltype)
 {
@@ -76,7 +74,7 @@ int getRand(int min, int max)
     return min + i;
 }
 
-bool makeCorridor(int x, int y, int lenght, int direction)
+bool makeCorridor(int x, int y, int lenght, Direction direction)
 {
     int len = getRand(2, lenght);
     int floor = tileCorridor;
@@ -89,7 +87,7 @@ bool makeCorridor(int x, int y, int lenght, int direction)
 
     switch (dir)
     {
-    case 0:
+    case North:
     {
         if (x < 0 || x > xsize)
             return false;
@@ -108,9 +106,9 @@ bool makeCorridor(int x, int y, int lenght, int direction)
             setCell(xtemp, ytemp, floor);
         }
         break;
-
     }
-    case 1:
+
+    case East:
     {
         if (y < 0 || y > ysize)
             return false;
@@ -130,7 +128,8 @@ bool makeCorridor(int x, int y, int lenght, int direction)
         }
         break;
     }
-    case 2:
+
+    case South:
     {
         if (x < 0 || x > xsize)
             return false;
@@ -149,33 +148,34 @@ bool makeCorridor(int x, int y, int lenght, int direction)
         }
         break;
     }
-    case 3:
-    {
-        if (ytemp < 0 || ytemp > ysize)
-            return false;
-        else ytemp = y;
 
-        for (xtemp = x; xtemp > (x - len); xtemp--)
+        case West:
         {
-            if (xtemp < 0 || xtemp > xsize)
+            if (ytemp < 0 || ytemp > ysize)
                 return false;
-            if (GetCell(xtemp, ytemp) != tileUnused)
-                return false;
-        }
+            else ytemp = y;
 
-        for (xtemp = x; xtemp > (x - len); xtemp--)
-        {
-            setCell(xtemp, ytemp, floor);
+            for (xtemp = x; xtemp > (x - len); xtemp--)
+            {
+                if (xtemp < 0 || xtemp > xsize)
+                    return false;
+                if (GetCell(xtemp, ytemp) != tileUnused)
+                    return false;
+            }
+
+            for (xtemp = x; xtemp > (x - len); xtemp--)
+            {
+                setCell(xtemp, ytemp, floor);
+            }
+            break;
         }
-        break;
-    }
     }
 
     // woot, we're still here! let's tell the other guys we're done!!
     return true;
 }
 
-bool makeRoom(int x, int y, int xlength, int ylength, int direction)
+bool makeRoom(int x, int y, int xlength, int ylength, Direction direction)
 {
     // define the dimensions of the room, it should be at least 8x8 tiles (4x4 for walking on, the rest is walls)
     int xlen = getRand(4, xlength);
@@ -186,190 +186,202 @@ bool makeRoom(int x, int y, int xlength, int ylength, int direction)
     // choose the way it's pointing at
     int dir = 0;
 
-    if (direction > 0 && direction < 4)
+    if (direction > North && direction < 4)
     {
         dir = direction;
     }
 
-    switch (dir)
+    switch (direction)
     {
-        case 0:
-            //north
-            //Check if there's enough space left for it
-            for (int ytemp = y; ytemp >(y - ylen); ytemp--)
+    case North:
+    {
+        //Check if there's enough space left for it
+        for (int ytemp = y; ytemp >(y - ylen); ytemp--)
+        {
+            if (ytemp < 0 || ytemp > ysize)
+                return false;
+            for (int xtemp = (x - xlen / 2); xtemp < (x + (xlen + 1) / 2); xtemp++)
             {
-                if (ytemp < 0 || ytemp > ysize)
+                if (xtemp < 0 || xtemp > xsize)
                     return false;
-                for (int xtemp = (x - xlen / 2); xtemp < (x + (xlen + 1) / 2); xtemp++)
-                {
-                    if (xtemp < 0 || xtemp > xsize)
-                        return false;
-                    if (GetCell(xtemp, ytemp) != tileUnused)
-                        return false; //no space left...
-                }
+                if (GetCell(xtemp, ytemp) != tileUnused)
+                    return false; //no space left...
             }
-
-            //we're still here, build
-            for (int ytemp = y; ytemp >(y - ylen); ytemp--)
-            {
-                for (int xtemp = (x - xlen / 2); xtemp < (x + (xlen + 1) / 2); xtemp++)
-                {
-                    //start with the walls
-                    if (xtemp == (x - xlen / 2))
-                        setCell(xtemp, ytemp, wall);
-                    else if (xtemp == (x + (xlen - 1) / 2))
-                        setCell(xtemp, ytemp, wall);
-                    else if (ytemp == y)
-                        setCell(xtemp, ytemp, wall);
-                    else if (ytemp == (y - ylen + 1))
-                        setCell(xtemp, ytemp, wall);
-                    //and then fill with the floor
-                    else setCell(xtemp, ytemp, floor);
-                }
-            }
-            break;
-        case 1:
-            //east
-            for (int ytemp = (y - ylen / 2); ytemp < (y + (ylen + 1) / 2); ytemp++)
-            {
-                if (ytemp < 0 || ytemp > ysize)
-                    return false;
-                for (int xtemp = x; xtemp < (x + xlen); xtemp++)
-                {
-                    if (xtemp < 0 || xtemp > xsize)
-                        return false;
-                    if (GetCell(xtemp, ytemp) != tileUnused)
-                        return false;
-                }
-            }
-
-            for (int ytemp = (y - ylen / 2); ytemp < (y + (ylen + 1) / 2); ytemp++)
-            {
-                for (int xtemp = x; xtemp < (x + xlen); xtemp++){
-
-                    if (xtemp == x) setCell(xtemp, ytemp, wall);
-                    else if (xtemp == (x + xlen - 1))
-                        setCell(xtemp, ytemp, wall);
-                    else if (ytemp == (y - ylen / 2))
-                        setCell(xtemp, ytemp, wall);
-                    else if (ytemp == (y + (ylen - 1) / 2))
-                        setCell(xtemp, ytemp, wall);
-
-                    else setCell(xtemp, ytemp, floor);
-                }
-            }
-            break;
-        case 2:
-            //south
-            for (int ytemp = y; ytemp < (y + ylen); ytemp++)
-            {
-                if (ytemp < 0 || ytemp > ysize)
-                    return false;
-                for (int xtemp = (x - xlen / 2); xtemp < (x + (xlen + 1) / 2); xtemp++)
-                {
-                    if (xtemp < 0 || xtemp > xsize)
-                        return false;
-                    if (GetCell(xtemp, ytemp) != tileUnused)
-                        return false;
-                }
-            }
-
-            for (int ytemp = y; ytemp < (y + ylen); ytemp++)
-            {
-                for (int xtemp = (x - xlen / 2); xtemp < (x + (xlen + 1) / 2); xtemp++)
-                {
-
-                    if (xtemp == (x - xlen / 2)) setCell(xtemp, ytemp, wall);
-                    else if (xtemp == (x + (xlen - 1) / 2)) setCell(xtemp, ytemp, wall);
-                    else if (ytemp == y) setCell(xtemp, ytemp, wall);
-                    else if (ytemp == (y + ylen - 1)) setCell(xtemp, ytemp, wall);
-
-                    else setCell(xtemp, ytemp, floor);
-                }
-            }
-            break;
-        case 3:
-            //west
-            for (int ytemp = (y - ylen / 2); ytemp < (y + (ylen + 1) / 2); ytemp++)
-            {
-                if (ytemp < 0 || ytemp > ysize)
-                    return false;
-                for (int xtemp = x; xtemp >(x - xlen); xtemp--)
-                {
-                    if (xtemp < 0 || xtemp > xsize)
-                        return false;
-                    if (GetCell(xtemp, ytemp) != tileUnused)
-                        return false;
-                }
-            }
-
-            for (int ytemp = (y - ylen / 2); ytemp < (y + (ylen + 1) / 2); ytemp++)
-            {
-                for (int xtemp = x; xtemp >(x - xlen); xtemp--)
-                {
-
-                    if (xtemp == x) setCell(xtemp, ytemp, wall);
-                    else if (xtemp == (x - xlen + 1))
-                        setCell(xtemp, ytemp, wall);
-                    else if (ytemp == (y - ylen / 2))
-                        setCell(xtemp, ytemp, wall);
-                    else if (ytemp == (y + (ylen - 1) / 2))
-                        setCell(xtemp, ytemp, wall);
-
-                    else setCell(xtemp, ytemp, floor);
-                }
-            }
-            break;
         }
 
-        //yay, all done
-        return true;
+        //we're still here, build
+        for (int ytemp = y; ytemp > (y - ylen); ytemp--)
+        {
+            for (int xtemp = (x - xlen / 2); xtemp < (x + (xlen + 1) / 2); xtemp++)
+            {
+                //start with the walls
+                if (xtemp == (x - xlen / 2))
+                    setCell(xtemp, ytemp, wall);
+                else if (xtemp == (x + (xlen - 1) / 2))
+                    setCell(xtemp, ytemp, wall);
+                else if (ytemp == y)
+                    setCell(xtemp, ytemp, wall);
+                else if (ytemp == (y - ylen + 1))
+                    setCell(xtemp, ytemp, wall);
+                //and then fill with the floor
+                else setCell(xtemp, ytemp, floor);
+            }
+        }
+        break;
     }
+
+    case East:
+    {
+        for (int ytemp = (y - ylen / 2); ytemp < (y + (ylen + 1) / 2); ytemp++)
+        {
+            if (ytemp < 0 || ytemp > ysize)
+                return false;
+            for (int xtemp = x; xtemp < (x + xlen); xtemp++)
+            {
+                if (xtemp < 0 || xtemp > xsize)
+                    return false;
+                if (GetCell(xtemp, ytemp) != tileUnused)
+                    return false;
+            }
+        }
+
+        for (int ytemp = (y - ylen / 2); ytemp < (y + (ylen + 1) / 2); ytemp++)
+        {
+            for (int xtemp = x; xtemp < (x + xlen); xtemp++) {
+                if (xtemp == x) setCell(xtemp, ytemp, wall);
+                else if (xtemp == (x + xlen - 1))
+                    setCell(xtemp, ytemp, wall);
+                else if (ytemp == (y - ylen / 2))
+                    setCell(xtemp, ytemp, wall);
+                else if (ytemp == (y + (ylen - 1) / 2))
+                    setCell(xtemp, ytemp, wall);
+
+                else setCell(xtemp, ytemp, floor);
+            }
+        }
+        break;
+    }
+
+    case South:
+    {
+        for (int ytemp = y; ytemp < (y + ylen); ytemp++)
+        {
+            if (ytemp < 0 || ytemp > ysize)
+                return false;
+            for (int xtemp = (x - xlen / 2); xtemp < (x + (xlen + 1) / 2); xtemp++)
+            {
+                if (xtemp < 0 || xtemp > xsize)
+                    return false;
+                if (GetCell(xtemp, ytemp) != tileUnused)
+                    return false;
+            }
+        }
+
+        for (int ytemp = y; ytemp < (y + ylen); ytemp++)
+        {
+            for (int xtemp = (x - xlen / 2); xtemp < (x + (xlen + 1) / 2); xtemp++)
+            {
+                if (xtemp == (x - xlen / 2))
+                    setCell(xtemp, ytemp, wall);
+                else if (xtemp == (x + (xlen - 1) / 2))
+                    setCell(xtemp, ytemp, wall);
+                else if (ytemp == y)
+                    setCell(xtemp, ytemp, wall);
+                else if (ytemp == (y + ylen - 1))
+                    setCell(xtemp, ytemp, wall);
+
+                else setCell(xtemp, ytemp, floor);
+            }
+        }
+        break;
+    }
+
+    case West:
+    {
+        for (int ytemp = (y - ylen / 2); ytemp < (y + (ylen + 1) / 2); ytemp++)
+        {
+            if (ytemp < 0 || ytemp > ysize)
+                return false;
+            for (int xtemp = x; xtemp > (x - xlen); xtemp--)
+            {
+                if (xtemp < 0 || xtemp > xsize)
+                    return false;
+                if (GetCell(xtemp, ytemp) != tileUnused)
+                    return false;
+            }
+        }
+
+        for (int ytemp = (y - ylen / 2); ytemp < (y + (ylen + 1) / 2); ytemp++)
+        {
+            for (int xtemp = x; xtemp > (x - xlen); xtemp--)
+            {
+                if (xtemp == x) setCell(xtemp, ytemp, wall);
+                else if (xtemp == (x - xlen + 1))
+                    setCell(xtemp, ytemp, wall);
+                else if (ytemp == (y - ylen / 2))
+                    setCell(xtemp, ytemp, wall);
+                else if (ytemp == (y + (ylen - 1) / 2))
+                    setCell(xtemp, ytemp, wall);
+
+                else setCell(xtemp, ytemp, floor);
+            }
+        }
+        break;
+    }
+
+    default:
+        break;
+    }
+
+    //yay, all done
+    return true;
+}
 
 void showDungeon()
 {
     for (int y = 0; y < ysize; y++)
     {
-            for (int x = 0; x < xsize; x++)
+        for (int x = 0; x < xsize; x++)
+        {
+            switch (GetCell(x, y))
             {
-                switch (GetCell(x, y))
-                {
-                case tileUnused:
-                    printf("#");
-                    break;
-                case tileDirtWall:
-                    printf("#");
-                    break;
-                case tileDirtFloor:
-                    printf(".");
-                    break;
-                case tileStoneWall:
-                    printf("X");
-                    break;
-                case tileCorridor:
-                    printf(".");
-                    break;
-                case tileDoor:
-                    printf(".");
-                    break;
-                case tileUpStairs:
-                    printf("<");
-                    break;
-                case tileDownStairs:
-                    printf(".");
-                    break;
-                case tileChest:
-                    printf(".");
-                    break;
-                };
-            }
-            //if (xsize <= xmax) printf("\n");
-   }
+            case tileUnused:
+                printf("#");
+                break;
+            case tileDirtWall:
+                printf("#");
+                break;
+            case tileDirtFloor:
+                printf(".");
+                break;
+            case tileStoneWall:
+                printf("X");
+                break;
+            case tileCorridor:
+                printf(".");
+                break;
+            case tileDoor:
+                printf(".");
+                break;
+            case tileUpStairs:
+                printf("<");
+                break;
+            case tileDownStairs:
+                printf(".");
+                break;
+            case tileChest:
+                printf(".");
+                break;
+            };
+        }
+        //if (xsize <= xmax) printf("\n");
+    }
 }
 
 bool createDungeon(int inx, int iny, int inobj)
 {
-    if (inobj < 1) objects = 10;
+    if (inobj < 1)
+        objects = 10;
     else objects = inobj;
 
     //adjust the size of the map, if it's smaller or bigger than the limits
@@ -390,7 +402,6 @@ bool createDungeon(int inx, int iny, int inobj)
     //printf("%s %d\n", msgMaxObjects.c_str(), objects);
 
     //redefine the map var, so it's adjusted to our new map size
-
 
     // dungeon_map = new int[xsize * ysize];
     dungeon_map = (int*)malloc(sizeof(int) * (xsize * ysize));
@@ -523,7 +534,6 @@ bool createDungeon(int inx, int iny, int inobj)
         }
     }
 
-
     /*******************************************************************************
     All done with the building, let's finish this one off
     *******************************************************************************/
@@ -550,19 +560,19 @@ bool createDungeon(int inx, int iny, int inobj)
                 if (GetCell(newx, newy + 1) != tileDoor)
                     ways--;
             }
-            if (GetCell(newx - 1, newy) == tileDirtFloor || GetCell(newx - 1, newy) == tileCorridor)
+            else if (GetCell(newx - 1, newy) == tileDirtFloor || GetCell(newx - 1, newy) == tileCorridor)
             {
                 //east
                 if (GetCell(newx - 1, newy) != tileDoor)
                     ways--;
             }
-            if (GetCell(newx, newy - 1) == tileDirtFloor || GetCell(newx, newy - 1) == tileCorridor)
+            else if (GetCell(newx, newy - 1) == tileDirtFloor || GetCell(newx, newy - 1) == tileCorridor)
             {
                 //south
                 if (GetCell(newx, newy - 1) != tileDoor)
                     ways--;
             }
-            if (GetCell(newx + 1, newy) == tileDirtFloor || GetCell(newx + 1, newy) == tileCorridor)
+            else if (GetCell(newx + 1, newy) == tileDirtFloor || GetCell(newx + 1, newy) == tileCorridor)
             {
                 //west
                 if (GetCell(newx + 1, newy) != tileDoor)
@@ -603,11 +613,10 @@ void dungeon_main()
     int x = 80;
     int y = 32;
     int dungeon_objects = 150;
-    
+
     dungeon_map = (int*)malloc(sizeof(int) * (x * y));
     if (createDungeon(x, y, dungeon_objects));
-        showDungeon();
-
+    showDungeon();
 }
 
 void dungeon_free()

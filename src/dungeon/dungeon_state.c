@@ -23,39 +23,39 @@
 #include "game_common/hunger_manager.h"
 
 // Called when starting a new dungeon
-void SetUpDefualtStatus()
+void SetUpDefualtStatus(PokemonParty *party)
 {
-    for (int i = 0; i < NUMBER_OF_TEAMMATES; i++)
+    for (int i = 0; i < party->size; i++)
     {
-        team_mates[i].status.attack_multiplier = 1;
-        team_mates[i].status.sp_attack_multiplier = 1;
-        team_mates[i].status.defense_multiplier = 1;
-        team_mates[i].status.sp_defense_multiplier = 1;
-        team_mates[i].status.speed_multiplier = 1;
-        team_mates[i].status.current_belly = DEFUALT_BELLY_SIZE;
-        team_mates[i].status.max_belly = DEFUALT_BELLY_SIZE;
-        team_mates[i].status.burned = false;
-        team_mates[i].status.confused = false;
-        team_mates[i].status.paralysis = false;
-        team_mates[i].status.posioned = false;
-        team_mates[i].status.sleeping = false;
+        party->members[i].status.attack_multiplier = 1;
+        party->members[i].status.sp_attack_multiplier = 1;
+        party->members[i].status.defense_multiplier = 1;
+        party->members[i].status.sp_defense_multiplier = 1;
+        party->members[i].status.speed_multiplier = 1;
+        party->members[i].status.current_belly = DEFUALT_BELLY_SIZE;
+        party->members[i].status.max_belly = DEFUALT_BELLY_SIZE;
+        party->members[i].status.burned = false;
+        party->members[i].status.confused = false;
+        party->members[i].status.paralysis = false;
+        party->members[i].status.posioned = false;
+        party->members[i].status.sleeping = false;
     }
 }
 
 // Called when then player gets past the stairs
-void SetStatusAfterStairs()
+void SetStatusAfterStairs(PokemonParty *party)
 {
-    for (int i = 0; i < NUMBER_OF_TEAMMATES; i++)
+    for (int i = 0; i < party->size; i++)
     {
-        team_mates[i].status.attack_multiplier = 1;
-        team_mates[i].status.sp_attack_multiplier = 1;
-        team_mates[i].status.defense_multiplier = 1;
-        team_mates[i].status.sp_defense_multiplier = 1;
-        team_mates[i].status.speed_multiplier = 1;
-        team_mates[i].status.burned = false;
-        team_mates[i].status.confused = false;
-        team_mates[i].status.paralysis = false;
-        team_mates[i].status.posioned = false;
-        team_mates[i].status.sleeping = false;
+        party->members[i].status.attack_multiplier = 1;
+        party->members[i].status.sp_attack_multiplier = 1;
+        party->members[i].status.defense_multiplier = 1;
+        party->members[i].status.sp_defense_multiplier = 1;
+        party->members[i].status.speed_multiplier = 1;
+        party->members[i].status.burned = false;
+        party->members[i].status.confused = false;
+        party->members[i].status.paralysis = false;
+        party->members[i].status.posioned = false;
+        party->members[i].status.sleeping = false;
     }
 }

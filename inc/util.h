@@ -34,8 +34,11 @@
 #include <unistd.h>
 #endif
 
-#include <stdint.h>
+#include "common/strlcpy.h"
+#include <stdlib.h>
+
 #include <time.h>
+#include <math.h>
 #include <stdbool.h>
 #include <string.h>
 #include <stdio.h>
@@ -65,6 +68,14 @@ typedef uint64_t u64;
 #ifndef s64
 typedef int64_t s64;
 #endif
+
+typedef struct
+{
+    u64 raw : 48;
+} u48;
+
+/// Creates a bitmask from a bit number.
+#define BIT(n) (1u << (n))
 
 #ifdef CONST
 #undef CONST
@@ -145,6 +156,8 @@ static void color_restore(int old)
 // Minimum and maximum of three values
 #define MIN3( X, Y, Z ) ((X) < (Y) ? MIN(X, Z) : MIN(Y, Z))
 #define MAX3( X, Y, Z ) ((X) > (Y) ? MAX(X, Z) : MAX(Y, Z))
+
+#define ARRAY_SIZE(s) (sizeof(s)/sizeof((s)[0]))
 
 #define foreach(item, array) \
     for(int keep = 1, \

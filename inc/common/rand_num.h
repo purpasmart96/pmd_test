@@ -56,4 +56,7 @@ u32 pcg32_random_r(pcg32_random_t *rng);
 u32 pcg32_boundedrand(u32 bound);
 u32 pcg32_boundedrand_r(pcg32_random_t* rng, u32 bound);
 
+u32 random_at_most(u32 max);
+u32 rand_interval(u32 min, u32 max);
+
 #endif

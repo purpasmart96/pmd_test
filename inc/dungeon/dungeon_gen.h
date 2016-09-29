@@ -26,6 +26,7 @@ enum
     tileChest
 };
 
+/*
 typedef enum
 {
     North,
@@ -33,7 +34,17 @@ typedef enum
     West,
     East,
     DirectionCount
-}Direction;
+} Direction;
+*/
+
+typedef enum
+{
+    North,
+    East,
+    South,
+    West,
+} Direction;
+
 
 typedef struct
 {
@@ -47,9 +58,6 @@ typedef struct
 {
 
     int _width, _height;
-    //Stack _tiles; // char
-    //StackRect _rooms; // Rect  // rooms for place stairs or monsters
-    //StackRect _exits; // 4 sides of rooms or corridors
 
 
 } Dungeon;
@@ -60,8 +68,8 @@ char *DecodeImage(char *filename);
 void setCell(int x, int y, int celltype);
 int getCell(int x, int y);
 int getRand(int min, int max);
-bool makeCorridor(int x, int y, int lenght, int direction);
-bool makeRoom(int x, int y, int xlength, int ylength, int direction);
+bool makeCorridor(int x, int y, int lenght, Direction direction);
+bool makeRoom(int x, int y, int xlength, int ylength, Direction direction);
 void showDungeon();
 bool createDungeon(int inx, int iny, int inobj);
 void dungeon_main();

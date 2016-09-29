@@ -1,4 +1,4 @@
-// Copyright(c) <2015> <Purpasmart>
+// Copyright(c) 2015 Purpasmart
 // The MIT License
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -20,9 +20,6 @@
 
 
 #include "common/rand_num.h"
-
-//#pragma warning disable C4244
-//#pragma warning disable C4146
 
 static pcg32_random_t pcg32_global = PCG32_INITIALIZER;
 
@@ -93,17 +90,55 @@ u32 pcg32_boundedrand_r(pcg32_random_t* rng, u32 bound)
     // (i.e., 2147483649), which invalidates almost 50% of the range.  In 
     // practice, bounds are typically small and only a tiny amount of the range
     // is eliminated.
-    for (;;) {
+    for (;;)
+    {
         u32 r = pcg32_random_r(rng);
         if (r >= threshold)
             return r % bound;
     }
 }
 
-
 u32 pcg32_boundedrand(u32 bound)
 {
     return pcg32_boundedrand_r(&pcg32_global, bound);
 }
 
+// Assumes 0 <= max <= RAND_MAX
+// Returns in the half-open interval [0, max]
+u32 random_at_most(u32 max)
+{
+    // max <= RAND_MAX < ULONG_MAX, so this is okay.
+    u32 num_bins = (u32)max + 1;
+    u32 num_rand = (u32)RAND_MAX + 1;
+    u32 bin_size = num_rand / num_bins;
+    u32 defect = num_rand % num_bins;
 
+    int x = 0;
+    // This is carefully written not to overflow
+    do
+    {
+        x = random();
+    } while (num_rand - defect <= (u32)x);
+
+    // Truncated division is intentional
+    return x / bin_size;
+}
+
+u32 rand_interval(u32 min, u32 max)
+{
+    int r = 0;
+    const u32 range = 1 + max - min;
+    const u32 buckets = RAND_MAX / range;
+    const u32 limit = buckets * range;
+
+   /* Create equal size buckets all in a row, then fire randomly towards
+    * the buckets until you land in one of them. All buckets are equally
+    * likely. If you land off the end of the line of buckets, try again.
+    */
+    do
+    {
+        r = random();
+    } while (r >= limit);
+
+    return min + (r / buckets);
+}

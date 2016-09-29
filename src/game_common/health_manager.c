@@ -18,10 +18,12 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+#include "util.h"
+#include "game_common/pokemon_manager.h"
 #include "game_common/health_manager.h"
 
 
-void AdjustHealth(Pokemon *team_member, int amount)
+void AddHealth(Pokemon *team_member, int amount)
 {
     if (team_member->current_hp == team_member->max_hp)
     {
@@ -31,5 +33,28 @@ void AdjustHealth(Pokemon *team_member, int amount)
     {
         team_member->current_hp += amount;
         CLAMP(team_member->current_hp, HP_MIN, team_member->max_hp);
+    }
+}
+
+void DecreaseHealth(Pokemon *defender, int amount)
+{
+    if (defender->current_hp != HP_ZERO)
+    {
+        defender->current_hp -= amount;
+        printf("%s Took %d Damage!\n", defender->name, amount);
+    }
+    else
+    {
+        return;
+    }
+
+    if (defender->current_hp < HP_MIN)
+    {
+        defender->current_hp = HP_ZERO;
+        printf("%s Fainted!\n", defender->name);
+    }
+    else
+    {
+        return;
     }
 }

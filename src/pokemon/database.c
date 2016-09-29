@@ -19,45 +19,8 @@
 // THE SOFTWARE.
 
 #include "pokemon/database.h"
+#include "game_common/item_manager.h"
+
+//Pokemon enemies[NUMBER_OF_ENEMIES];
 
 
-static Ability ability_table[] =
-{
-    { Stench,      "Stench",       "The stench may cause the target to flinch."           },
-    { Drizzle,     "Drizzle",      "The Pokémon makes it rain if it appears in battle."   },
-    { SpeedBoost,  "Speed Boost",  "The Pokémon’s Speed stat is gradually boosted."       },
-    { BattleArmor, "Battle Armor", "The Pokémon is protected against critical hits."      },
-    { Sturdy,      "Sturdy",       "The Pokémon is protected against 1-hit KO attacks."   },
-    { Damp,        "Damp",         "Prevents combatants from self destructing."           },
-    { Limber,      "Limber",       "The Pokémon is protected from paralysis."             },
-    { SandVeil,    "Sand Veil",    "Boosts the Pokémon’s evasion in a sandstorm."         },
-    { Static,      "Static",       "Contact with the Pokémon may cause paralysis."        },
-
-};
-
-
-int GetPokeDexNumFromPoke()
-{
-
-}
-
-void SetPokemonAbility(Pokemon *team_member, AbilityNameEnum ability)
-{
-    team_member->ability.ability_enum = ability;
-    team_member->ability = ability_table[team_member->ability.ability_enum];
-}
-
-void GetPokemonAbility(Pokemon *team_member)
-{
-
-}
-
-void SetPokemonName(Pokemon *team_member, char *name)
-{
-    team_member->name = name;
-}
-
-void GetPokemonName(Pokemon *team_member)
-{
-    printf("%s\n", team_member->name);
-}

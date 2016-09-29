@@ -18,18 +18,20 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+#include "game_common/dungeon_manager.h"
+#include "game_common/pokemon_manager.h"
 #include "game_common/hunger_manager.h"
 
-void AdjustBellySize(Pokemon *team_member, int amount)
+void AdjustBellySize(struct Pokemon *team_member, int amount)
 {
-    if (team_member->status.current_belly == team_member->status.max_belly)
+    if (team_member->status->current_belly == team_member->status->max_belly)
     {
         printf("Belly is Full!\n");
     }
     else
     {
-        team_member->status.current_belly += amount;
-        CLAMP(team_member->status.current_belly, BELLY_EMPTY, team_member->status.max_belly);
+        team_member->status->current_belly += amount;
+        CLAMP(team_member->status->current_belly, BELLY_EMPTY, team_member->status->max_belly);
     }
 }
 
