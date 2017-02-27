@@ -23,33 +23,14 @@
 
 ALState *ALState_New(int buffer_count, bool seprate_thread, bool init_sources)
 {
-    ALState *al = (ALState*)malloc(sizeof(*al));
+    ALState *al = malloc(sizeof(*al));
 
     if (!al)
     {
         return NULL;
     }
 
-    alGetError();
-    al->buffer_count = buffer_count;
-    al->device = alcOpenDevice(NULL);
-    al->context = alcCreateContext(al->device, NULL);
-    alcMakeContextCurrent(al->context);
-    //CreateThread(NULL, 0, althread, NULL, 0, NULL);
-    alListener3f(AL_POSITION, 0, 0, 0);
-    alListener3f(AL_VELOCITY, 0, 0, 0);
-    alListener3f(AL_ORIENTATION, 0, 0, -1);
-
-    alGenSources(al->buffer_count, &al->source);
-
-    alSourcef(al->source, AL_PITCH, 1);
-    alSourcef(al->source, AL_GAIN, 1);
-    alSource3f(al->source, AL_POSITION, 0, 0, 0);
-    alSource3f(al->source, AL_VELOCITY, 0, 0, 0);
-    alSourcei(al->source, AL_LOOPING, AL_FALSE);
-
-    // Create the buffers
-    alGenBuffers(al->buffer_count, &al->buffers);
+	ALState_Init(al, buffer_count, seprate_thread, init_sources);
 
     return al;
 }
@@ -81,10 +62,30 @@ DWORD WINAPI ALState_UpdateThread(ALState *self,  __in LPVOID lpParameter)
 
 }
 
-void ALState_Init(ALState *self)
+void ALState_Init(ALState *self, int buffer_count, bool seprate_thread, bool init_sources)
 {
+	alGetError();
+	self->buffer_count = buffer_count;
+	self->device = alcOpenDevice(NULL);
+	self->context = alcCreateContext(self->device, NULL);
+	alcMakeContextCurrent(self->context);
+	//CreateThread(NULL, 0, althread, NULL, 0, NULL);
+	alListener3f(AL_POSITION, 0, 0, 0);
+	alListener3f(AL_VELOCITY, 0, 0, 0);
+	alListener3f(AL_ORIENTATION, 0, 0, -1);
 
-    if (self->seprate_thread)
+	alGenSources(self->buffer_count, &self->source);
+
+	alSourcef(self->source, AL_PITCH, 1);
+	alSourcef(self->source, AL_GAIN, 1);
+	alSource3f(self->source, AL_POSITION, 0, 0, 0);
+	alSource3f(self->source, AL_VELOCITY, 0, 0, 0);
+	alSourcei(self->source, AL_LOOPING, AL_FALSE);
+
+	// Create the buffers
+	alGenBuffers(self->buffer_count, &self->buffers);
+
+    if (seprate_thread)
     {
         CreateThread(NULL, 0, ALState_UpdateThread, NULL, 0, NULL);
     }

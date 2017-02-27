@@ -43,7 +43,7 @@ static ALuint DecrementSource()
 
 SoundCore *SoundCore_New(bool seprate_thread, bool init_sources)
 {
-    SoundCore *sound_core = (SoundCore*)malloc(sizeof(*sound_core));
+    SoundCore *sound_core = malloc(sizeof(*sound_core));
 
     if (!sound_core)
     {

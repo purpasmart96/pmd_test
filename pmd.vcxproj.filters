@@ -37,6 +37,9 @@
     <Filter Include="Header Files\common">
       <UniqueIdentifier>{04f793bf-ee9b-4a1f-b3b6-36c1f4198d0b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\game_common\sounds">
+      <UniqueIdentifier>{633c0bfa-22a1-4785-bd86-f67c6b4bc80d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.c">
