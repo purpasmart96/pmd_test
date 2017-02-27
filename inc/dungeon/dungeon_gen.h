@@ -75,4 +75,6 @@ bool createDungeon(int inx, int iny, int inobj);
 void dungeon_main();
 void dungeon_free();
 
+void MapGenerate();
+
 #endif

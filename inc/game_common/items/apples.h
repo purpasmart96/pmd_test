@@ -21,12 +21,15 @@
 #ifndef _APPLES_H_
 #define _APPLES_H_
 
-void AppleUse(Bag *bag, PokemonParty *party, Pokemon *user, ItemLocation location);
-void AppleThrow(Bag *bag, PokemonParty *party, Pokemon *, ItemLocation location);
-void AppleDrop(Bag *bag, PokemonParty *party, Pokemon *, ItemLocation location);
+typedef struct PokemonParty PokemonParty;
+typedef Pokemon_t Pokemon_t;
 
-void BigAppleUse(Bag *bag, PokemonParty *party, Pokemon *user, ItemLocation location);
-void BigAppleThrow(Bag *bag, PokemonParty *party, Pokemon *user, ItemLocation location);
-void BigAppleDrop(Bag *bag, PokemonParty *party, Pokemon *user, ItemLocation location);
+void AppleUse(Bag *bag, PokemonParty *party, Pokemon_t *user, ItemLocation location);
+void AppleThrow(Bag *bag, PokemonParty *party, Pokemon_t *user, ItemLocation location);
+void AppleDrop(Bag *bag, PokemonParty *party, Pokemon_t *user, ItemLocation location);
+
+void BigAppleUse(Bag *bag, PokemonParty *party, Pokemon_t *user, ItemLocation location);
+void BigAppleThrow(Bag *bag, PokemonParty *party, Pokemon_t *user, ItemLocation location);
+void BigAppleDrop(Bag *bag, PokemonParty *party, Pokemon_t *user, ItemLocation location);
 
 #endif

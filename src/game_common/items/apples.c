@@ -1,4 +1,4 @@
-// Copyright(c) <2015> <Purpasmart>
+// Copyright(c) 2015 Purpasmart
 // The MIT License
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,38 +18,38 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#include "game_common/item_manager.h"
-#include "game_common/hunger_manager.h"
+#include "game_common/item.h"
+#include "game_common/hunger.h"
 #include "game_common/items/apples.h"
 
-void AppleUse(Bag *bag, PokemonParty *party, Pokemon *user, ItemLocation location)
+void AppleUse(Bag *bag, PokemonParty *party, Pokemon_t *user, ItemLocation location)
 {
     RemoveItem(bag, user, location, "Apple");
     AdjustBellySize(user, APPLE_HUNGER_REDUCE);
 }
 
-void AppleThrow(Bag *bag, PokemonParty *party, Pokemon *user, ItemLocation location)
+void AppleThrow(Bag *bag, PokemonParty *party, Pokemon_t *user, ItemLocation location)
 {
-
+    printf("AppleThrow stub called!\n");
 }
 
-void AppleDrop(Bag *bag, PokemonParty *party, Pokemon *user, ItemLocation location)
+void AppleDrop(Bag *bag, PokemonParty *party, Pokemon_t *user, ItemLocation location)
 {
-
+    printf("AppleDrop stub called!\n");
 }
 
-void BigAppleUse(Bag *bag, PokemonParty *party, Pokemon *user, ItemLocation location)
+void BigAppleUse(Bag *bag, PokemonParty *party, Pokemon_t *user, ItemLocation location)
 {
     RemoveItem(bag, user, location, "BigApple");
     AdjustBellySize(user, BIG_APPLE_HUNGER_REDUCE);
 }
 
-void BigAppleThrow(Bag *bag, PokemonParty *party, Pokemon *user, ItemLocation location)
+void BigAppleThrow(Bag *bag, PokemonParty *party, Pokemon_t *user, ItemLocation location)
 {
-
+    printf("BigAppleThrow stub called!\n");
 }
 
-void BigAppleDrop(Bag *bag, PokemonParty *party, Pokemon *user, ItemLocation location)
+void BigAppleDrop(Bag *bag, PokemonParty *party, Pokemon_t *user, ItemLocation location)
 {
-
+    printf("BigAppleDrop stub called!\n");
 }

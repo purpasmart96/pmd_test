@@ -43,31 +43,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdarg.h>
-
-#ifndef u8
-typedef uint8_t u8;
-#endif
-#ifndef s8
-typedef int8_t s8;
-#endif
-#ifndef u16
-typedef uint16_t u16;
-#endif
-#ifndef s16
-typedef int16_t s16;
-#endif
-#ifndef u32
-typedef uint32_t u32;
-#endif
-#ifndef s32
-typedef int32_t s32;
-#endif
-#ifndef u64
-typedef uint64_t u64;
-#endif
-#ifndef s64
-typedef int64_t s64;
-#endif
+#include "common/types.h"
 
 typedef struct
 {
@@ -166,5 +142,14 @@ static void color_restore(int old)
         keep && count != _size; \
         keep = !keep, count++) \
       for(item = (array) + count; keep; keep = !keep)
+
+typedef struct Texture_s
+{
+    u8 *image;
+    u32 width;
+    u32 height;
+
+} Texture_t;
+
 
 #endif

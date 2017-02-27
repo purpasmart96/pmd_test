@@ -26,19 +26,19 @@ Stack *stack_new(size_t capacity)
 {
     Stack *stack = malloc(sizeof(*stack));
     stack->capacity = capacity;
-    stack->data = calloc(stack->capacity, sizeof(void *));
+    stack->data = malloc(sizeof(void *) * stack->capacity);
     stack->size = 0;
     return stack;
 }
 
-void stack_resize(Stack *stack, size_t capacity)
+void *stack_resize(Stack *stack, size_t capacity)
 {
     stack->capacity = capacity;
     void **temp = realloc(stack->data, sizeof(void *) * stack->capacity);
 
     if (!temp)
     {
-        ERROR("Memory allocation failure\n");
+        return NULL;
     }
     stack->data = temp;
 }
@@ -63,7 +63,7 @@ void stack_update(Stack *stack)
 {
     Stack *stack_temp = stack_new(stack->capacity);
 
-    for (int i = 0; i < stack->size; i++)
+    for (size_t i = 0; i < stack->size; i++)
     {
         if (stack->data[i] != NULL) // Find a non-empty slot
         {
@@ -75,19 +75,19 @@ void stack_update(Stack *stack)
     stack_delete(stack_temp);
 }
 
-void *stack_top(Stack *s)
+void *stack_top(Stack *stack)
 {
-    if (stack_empty(s))
+    if (stack_empty(stack))
     {
         ERROR("Stack is Empty\n");
     }
     // Return the topmost element
-    return s->data[s->size - 1];
+    return stack->data[--stack->size];
 }
 
 void *stack_find(Stack *stack, void *element)
 {
-    for (int i = 0; stack->size; i++)
+    for (size_t i = 0; stack->size; i++)
     {
         if (stack->data[i] == element)
         {
@@ -98,7 +98,7 @@ void *stack_find(Stack *stack, void *element)
 
 void stack_remove(Stack *stack, void *element)
 {
-    for (int i = 0; stack->size; i++)
+    for (size_t i = 0; stack->size; i++)
     {
         if (stack->data[i] == element)
         {

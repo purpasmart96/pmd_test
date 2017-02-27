@@ -40,4 +40,22 @@ NODE_T *TEMPLATE(node_new, NODE_T)(T data)
 #undef T
 #undef NODE_T
 
+#define NODE_T ListNodeInt
+#define T int
+#include "node_generic.c"
+#undef T
+#undef NODE_T
+
+#define NODE_T ListNodeCharPtr
+#define T u8 *
+#include "node_generic.c"
+#undef T
+#undef NODE_T
+
+#define NODE_T ListNodeTexture
+#define T Texture_t
+#include "node_generic.c"
+#undef T
+#undef NODE_T
+
 #endif

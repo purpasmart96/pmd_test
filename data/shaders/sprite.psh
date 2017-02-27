@@ -1,0 +1,16 @@
+#version 330 core
+
+uniform mat4 ModelMatrix;
+uniform mat4 ProjectionMatrix;
+
+layout(binding = 0) uniform sampler2D image;
+
+in vec4 color;
+in vec2 texcoord;
+
+out vec4 result;
+
+void main()
+{
+    //result = frag.color * texture(image, frag.texcoord);
+}

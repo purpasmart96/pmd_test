@@ -1,4 +1,4 @@
-// Copyright(c) <2015> <Purpasmart>
+// Copyright(c) 2015 Purpasmart
 // The MIT License
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,60 +18,65 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#include "game_common/item_manager.h"
-#include "game_common/hunger_manager.h"
-#include "game_common/health_manager.h"
-#include "game_common/pokemon_manager.h"
+#include "game_common/item.h"
+#include "game_common/hunger.h"
+#include "game_common/health.h"
+#include "game_common/pokemon.h"
 
 #include "game_common/items/berries.h"
 
-void OranBerryUse(struct Bag *bag, struct PokemonParty *party, Pokemon *user, ItemLocation location)
+void OranBerryUse(Bag *bag, PokemonParty *party, Pokemon_t *user, ItemLocation location)
 {
     RemoveItem(bag, user, location, "OranBerry");
     AddHealth(user, ORAN_BERRY_HEALTH_HEAL);
     AdjustBellySize(user, BERRY_HUNGER_REDUCE);
 }
 
-void OranBerryThrow(struct Bag *bag, PokemonParty *party, Pokemon *user, ItemLocation location)
+void OranBerryThrow(Bag *bag, PokemonParty *party, Pokemon_t *user, ItemLocation location)
 {
+    printf("OranBerryThrow stub called!\n");
 }
 
-void OranBerryDrop(struct Bag *bag, PokemonParty *party, Pokemon *user, ItemLocation location)
+void OranBerryDrop(Bag *bag, PokemonParty *party, Pokemon_t *user, ItemLocation location)
 {
+    printf("OranBerryDrop stub called!\n");
 }
 
-void SitrusBerryBerryUse(Bag *bag, PokemonParty *party, Pokemon *user, ItemLocation location)
+void SitrusBerryUse(Bag *bag, PokemonParty *party, Pokemon_t *user, ItemLocation location)
 {
     RemoveItem(bag, user, location, "SitrusBerry");
     AddHealth(user, ORAN_BERRY_HEALTH_HEAL);
     AdjustBellySize(user, BERRY_HUNGER_REDUCE);
 }
 
-void SitrusBerryBerryThrow(Bag *bag, PokemonParty *party, Pokemon *user, ItemLocation location)
+void SitrusBerryThrow(Bag *bag, PokemonParty *party, Pokemon_t *user, ItemLocation location)
 {
+    printf("SitrusBerryThrow stub called!\n");
 }
 
-void SitrusBerryBerryDrop(Bag *bag, PokemonParty *party, Pokemon *user, ItemLocation location)
+void SitrusBerryDrop(Bag *bag, PokemonParty *party, Pokemon_t *user, ItemLocation location)
 {
+    printf("SitrusBerryDrop stub called!\n");
 }
 
-void RawstBerryBerryUse(Bag *bag, PokemonParty *party, Pokemon *user, ItemLocation location)
+void RawstBerryUse(Bag *bag, PokemonParty *party, Pokemon_t *user, ItemLocation location)
 {
     RemoveItem(bag, user, location, "RawstBerry");
 
     AdjustBellySize(user, BERRY_HUNGER_REDUCE);
 }
 
-void RawstBerryBerryThrow(Bag *bag, PokemonParty *party, Pokemon *user, ItemLocation location)
+void RawstBerryThrow(Bag *bag, PokemonParty *party, Pokemon_t *user, ItemLocation location)
 {
+    printf("RawstBerryThrow stub called!\n");
 }
 
-void RawstBerryBerryDrop(Bag *bag, PokemonParty *party, Pokemon *user, ItemLocation location)
+void RawstBerryDrop(Bag *bag, PokemonParty *party, Pokemon_t *user, ItemLocation location)
 {
-
+    printf("RawstBerryDrop stub called!\n");
 }
 
-void CheriBerryUse(Bag *bag, PokemonParty *party, Pokemon *user, ItemLocation location)
+void CheriBerryUse(Bag *bag, PokemonParty *party, Pokemon_t *user, ItemLocation location)
 {
     RemoveItem(bag, user, location, "CheriBerry");
 
@@ -79,30 +84,35 @@ void CheriBerryUse(Bag *bag, PokemonParty *party, Pokemon *user, ItemLocation lo
 
 }
 
-void CheriBerryThrow(Bag *bag, PokemonParty *party, Pokemon *user, ItemLocation location)
+void CheriBerryThrow(Bag *bag, PokemonParty *party, Pokemon_t *user, ItemLocation location)
 {
+    printf("CheriBerryThrow stub called!\n");
 }
 
-void CheriBerryDrop(Bag *bag, PokemonParty *party, Pokemon *user, ItemLocation location)
+void CheriBerryDrop(Bag *bag, PokemonParty *party, Pokemon_t *user, ItemLocation location)
 {
+    printf("CheriBerryDrop stub called!\n");
 }
 
-void PechaBerryUse(Bag *bag, PokemonParty *party, Pokemon *user, ItemLocation location)
+void PechaBerryUse(Bag *bag, PokemonParty *party, Pokemon_t *user, ItemLocation location)
 {
     RemoveItem(bag, user, location, "PechaBerry");
 
     AdjustBellySize(user, BERRY_HUNGER_REDUCE);
 }
 
-void PechaBerryThrow(Bag *bag, PokemonParty *party, Pokemon *user, ItemLocation location)
+void PechaBerryThrow(Bag *bag, PokemonParty *party, Pokemon_t *user, ItemLocation location)
 {
+    printf("PechaBerryThrow stub called!\n");
 }
 
-void PechaBerryDrop(Bag *bag, PokemonParty *party, Pokemon *user, ItemLocation location)
+void PechaBerryDrop(Bag *bag, PokemonParty *party, Pokemon_t *user, ItemLocation location)
 {
+    RemoveItem(bag, user, location, "PechaBerry");
+
 }
 
-void ChestoBerryUse(Bag *bag, PokemonParty *party, Pokemon *user, ItemLocation location)
+void ChestoBerryUse(Bag *bag, PokemonParty *party, Pokemon_t *user, ItemLocation location)
 {
     RemoveItem(bag, user, location, "ChestoBerry");
 
@@ -110,10 +120,12 @@ void ChestoBerryUse(Bag *bag, PokemonParty *party, Pokemon *user, ItemLocation l
 
 }
 
-void ChestoBerryThrow(Bag *bag, PokemonParty *party, Pokemon *user, ItemLocation location)
+void ChestoBerryThrow(Bag *bag, PokemonParty *party, Pokemon_t *user, ItemLocation location)
 {
+    printf("ChestoBerryThrow stub called!\n");
 }
 
-void ChestoBerryDrop(Bag *bag, PokemonParty *party, Pokemon *user, ItemLocation location)
+void ChestoBerryDrop(Bag *bag, PokemonParty *party, Pokemon_t *user, ItemLocation location)
 {
+    printf("ChestoBerryDrop stub called!\n");
 }

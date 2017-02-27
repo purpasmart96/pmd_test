@@ -117,7 +117,7 @@ u32 random_at_most(u32 max)
     // This is carefully written not to overflow
     do
     {
-        x = random();
+        x = rand();
     } while (num_rand - defect <= (u32)x);
 
     // Truncated division is intentional
@@ -137,7 +137,7 @@ u32 rand_interval(u32 min, u32 max)
     */
     do
     {
-        r = random();
+        r = rand();
     } while (r >= limit);
 
     return min + (r / buckets);

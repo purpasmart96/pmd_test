@@ -19,8 +19,8 @@
 // THE SOFTWARE.
 
 #include "dungeon/dungeon_state.h"
-#include "game_common/item_manager.h"
-#include "game_common/hunger_manager.h"
+#include "game_common/item.h"
+#include "game_common/hunger.h"
 
 // Called when starting a new dungeon
 void SetUpDefualtStatus(PokemonParty *party)

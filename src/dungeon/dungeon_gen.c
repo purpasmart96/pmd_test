@@ -21,13 +21,6 @@
 #include "dungeon/dungeon_gen.h"
 #include "common/rand_num.h"
 
-char *DecodeImage(char *filename)
-{
-    int width;
-    int height;
-    u8 *image = SOIL_load_image(filename, &width, &height, 0, SOIL_LOAD_RGBA);
-    return image;
-}
 
 int xmax = 80; // 80
 int ymax = 32; // 25
@@ -39,13 +32,6 @@ int chanceCorridor = 20;
 int *dungeon_map;
 
 u64 oldseed;
-
-char msgXSize[];
-char msgYSize[];
-char msgMaxObjects[];
-char msgNumObjects[];
-char msgHelp[];
-char msgDetailedHelp[];
 
 void setCell(int x, int y, int celltype)
 {
@@ -78,7 +64,7 @@ bool makeCorridor(int x, int y, int lenght, Direction direction)
 {
     int len = getRand(2, lenght);
     int floor = tileCorridor;
-    int dir = 0;
+    Direction dir = North;
     if (direction > 0 && direction < 4)
         dir = direction;
 
@@ -106,8 +92,8 @@ bool makeCorridor(int x, int y, int lenght, Direction direction)
             setCell(xtemp, ytemp, floor);
         }
         break;
-    }
 
+    }
     case East:
     {
         if (y < 0 || y > ysize)
@@ -128,7 +114,6 @@ bool makeCorridor(int x, int y, int lenght, Direction direction)
         }
         break;
     }
-
     case South:
     {
         if (x < 0 || x > xsize)
@@ -148,27 +133,26 @@ bool makeCorridor(int x, int y, int lenght, Direction direction)
         }
         break;
     }
+    case West:
+    {
+        if (ytemp < 0 || ytemp > ysize)
+            return false;
+        else ytemp = y;
 
-        case West:
+        for (xtemp = x; xtemp > (x - len); xtemp--)
         {
-            if (ytemp < 0 || ytemp > ysize)
+            if (xtemp < 0 || xtemp > xsize)
                 return false;
-            else ytemp = y;
-
-            for (xtemp = x; xtemp > (x - len); xtemp--)
-            {
-                if (xtemp < 0 || xtemp > xsize)
-                    return false;
-                if (GetCell(xtemp, ytemp) != tileUnused)
-                    return false;
-            }
-
-            for (xtemp = x; xtemp > (x - len); xtemp--)
-            {
-                setCell(xtemp, ytemp, floor);
-            }
-            break;
+            if (GetCell(xtemp, ytemp) != tileUnused)
+                return false;
         }
+
+        for (xtemp = x; xtemp > (x - len); xtemp--)
+        {
+            setCell(xtemp, ytemp, floor);
+        }
+        break;
+    }
     }
 
     // woot, we're still here! let's tell the other guys we're done!!
@@ -184,17 +168,17 @@ bool makeRoom(int x, int y, int xlength, int ylength, Direction direction)
     int floor = tileDirtFloor;
     int wall = tileDirtWall;
     // choose the way it's pointing at
-    int dir = 0;
+    Direction dir = North;
 
-    if (direction > North && direction < 4)
+    if (direction > 0 && direction < 4)
     {
         dir = direction;
     }
 
-    switch (direction)
+    switch (dir)
     {
     case North:
-    {
+        //north
         //Check if there's enough space left for it
         for (int ytemp = y; ytemp >(y - ylen); ytemp--)
         {
@@ -210,7 +194,7 @@ bool makeRoom(int x, int y, int xlength, int ylength, Direction direction)
         }
 
         //we're still here, build
-        for (int ytemp = y; ytemp > (y - ylen); ytemp--)
+        for (int ytemp = y; ytemp >(y - ylen); ytemp--)
         {
             for (int xtemp = (x - xlen / 2); xtemp < (x + (xlen + 1) / 2); xtemp++)
             {
@@ -228,10 +212,7 @@ bool makeRoom(int x, int y, int xlength, int ylength, Direction direction)
             }
         }
         break;
-    }
-
     case East:
-    {
         for (int ytemp = (y - ylen / 2); ytemp < (y + (ylen + 1) / 2); ytemp++)
         {
             if (ytemp < 0 || ytemp > ysize)
@@ -247,7 +228,8 @@ bool makeRoom(int x, int y, int xlength, int ylength, Direction direction)
 
         for (int ytemp = (y - ylen / 2); ytemp < (y + (ylen + 1) / 2); ytemp++)
         {
-            for (int xtemp = x; xtemp < (x + xlen); xtemp++) {
+            for (int xtemp = x; xtemp < (x + xlen); xtemp++){
+
                 if (xtemp == x) setCell(xtemp, ytemp, wall);
                 else if (xtemp == (x + xlen - 1))
                     setCell(xtemp, ytemp, wall);
@@ -260,10 +242,8 @@ bool makeRoom(int x, int y, int xlength, int ylength, Direction direction)
             }
         }
         break;
-    }
-
     case South:
-    {
+
         for (int ytemp = y; ytemp < (y + ylen); ytemp++)
         {
             if (ytemp < 0 || ytemp > ysize)
@@ -281,28 +261,23 @@ bool makeRoom(int x, int y, int xlength, int ylength, Direction direction)
         {
             for (int xtemp = (x - xlen / 2); xtemp < (x + (xlen + 1) / 2); xtemp++)
             {
-                if (xtemp == (x - xlen / 2))
-                    setCell(xtemp, ytemp, wall);
-                else if (xtemp == (x + (xlen - 1) / 2))
-                    setCell(xtemp, ytemp, wall);
-                else if (ytemp == y)
-                    setCell(xtemp, ytemp, wall);
-                else if (ytemp == (y + ylen - 1))
-                    setCell(xtemp, ytemp, wall);
+
+                if (xtemp == (x - xlen / 2)) setCell(xtemp, ytemp, wall);
+                else if (xtemp == (x + (xlen - 1) / 2)) setCell(xtemp, ytemp, wall);
+                else if (ytemp == y) setCell(xtemp, ytemp, wall);
+                else if (ytemp == (y + ylen - 1)) setCell(xtemp, ytemp, wall);
 
                 else setCell(xtemp, ytemp, floor);
             }
         }
         break;
-    }
 
     case West:
-    {
         for (int ytemp = (y - ylen / 2); ytemp < (y + (ylen + 1) / 2); ytemp++)
         {
             if (ytemp < 0 || ytemp > ysize)
                 return false;
-            for (int xtemp = x; xtemp > (x - xlen); xtemp--)
+            for (int xtemp = x; xtemp >(x - xlen); xtemp--)
             {
                 if (xtemp < 0 || xtemp > xsize)
                     return false;
@@ -313,8 +288,9 @@ bool makeRoom(int x, int y, int xlength, int ylength, Direction direction)
 
         for (int ytemp = (y - ylen / 2); ytemp < (y + (ylen + 1) / 2); ytemp++)
         {
-            for (int xtemp = x; xtemp > (x - xlen); xtemp--)
+            for (int xtemp = x; xtemp >(x - xlen); xtemp--)
             {
+
                 if (xtemp == x) setCell(xtemp, ytemp, wall);
                 else if (xtemp == (x - xlen + 1))
                     setCell(xtemp, ytemp, wall);
@@ -326,10 +302,6 @@ bool makeRoom(int x, int y, int xlength, int ylength, Direction direction)
                 else setCell(xtemp, ytemp, floor);
             }
         }
-        break;
-    }
-
-    default:
         break;
     }
 
@@ -380,8 +352,7 @@ void showDungeon()
 
 bool createDungeon(int inx, int iny, int inobj)
 {
-    if (inobj < 1)
-        objects = 10;
+    if (inobj < 1) objects = 10;
     else objects = inobj;
 
     //adjust the size of the map, if it's smaller or bigger than the limits
@@ -403,8 +374,9 @@ bool createDungeon(int inx, int iny, int inobj)
 
     //redefine the map var, so it's adjusted to our new map size
 
+
     // dungeon_map = new int[xsize * ysize];
-    dungeon_map = (int*)malloc(sizeof(int) * (xsize * ysize));
+    dungeon_map = malloc(sizeof(int) * (xsize * ysize));
 
     //start with making the "standard stuff" on the map
     for (int y = 0; y < ysize; y++)
@@ -534,6 +506,7 @@ bool createDungeon(int inx, int iny, int inobj)
         }
     }
 
+
     /*******************************************************************************
     All done with the building, let's finish this one off
     *******************************************************************************/
@@ -560,19 +533,19 @@ bool createDungeon(int inx, int iny, int inobj)
                 if (GetCell(newx, newy + 1) != tileDoor)
                     ways--;
             }
-            else if (GetCell(newx - 1, newy) == tileDirtFloor || GetCell(newx - 1, newy) == tileCorridor)
+            if (GetCell(newx - 1, newy) == tileDirtFloor || GetCell(newx - 1, newy) == tileCorridor)
             {
                 //east
                 if (GetCell(newx - 1, newy) != tileDoor)
                     ways--;
             }
-            else if (GetCell(newx, newy - 1) == tileDirtFloor || GetCell(newx, newy - 1) == tileCorridor)
+            if (GetCell(newx, newy - 1) == tileDirtFloor || GetCell(newx, newy - 1) == tileCorridor)
             {
                 //south
                 if (GetCell(newx, newy - 1) != tileDoor)
                     ways--;
             }
-            else if (GetCell(newx + 1, newy) == tileDirtFloor || GetCell(newx + 1, newy) == tileCorridor)
+            if (GetCell(newx + 1, newy) == tileDirtFloor || GetCell(newx + 1, newy) == tileCorridor)
             {
                 //west
                 if (GetCell(newx + 1, newy) != tileDoor)
@@ -602,9 +575,6 @@ bool createDungeon(int inx, int iny, int inobj)
         }
     }
 
-    //all done with the map generation, tell the user about it and finish
-    //printf("%s %d\n",msgNumObjects.c_str(), currentFeatures);
-
     return true;
 }
 
@@ -614,9 +584,10 @@ void dungeon_main()
     int y = 32;
     int dungeon_objects = 150;
 
-    dungeon_map = (int*)malloc(sizeof(int) * (x * y));
+    dungeon_map = malloc(sizeof(int) * (x * y));
     if (createDungeon(x, y, dungeon_objects));
     showDungeon();
+
 }
 
 void dungeon_free()

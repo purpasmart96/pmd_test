@@ -18,8 +18,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#include "game_common/item_manager.h"
-#include "game_common/hunger_manager.h"
+#include "game_common/item.h"
+#include "game_common/hunger.h"
 
 /*
 void AppleUse(Bag *self, Pokemon *poke)

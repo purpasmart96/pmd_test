@@ -20,6 +20,30 @@
 
 #include "common/vec.h"
 
+#define SQRT_MAGIC_F 0x5f3759df
+
+static float inverse_sqrt(const float x)
+{
+    const float xhalf = 0.5f * x;
+
+    union // get bits for floating value
+    {
+        float x;
+        int i;
+    } u;
+
+    u.x = x;
+    u.i = SQRT_MAGIC_F - (u.i >> 1);  // Gives initial guess
+
+    return x * u.x * (1.5f - xhalf * u.x * u.x); // Newton step, repeating increases accuracy 
+}
+
+double __declspec (naked) __fastcall sqrt14(double n)
+{
+    _asm fld qword ptr[esp + 4]
+    _asm fsqrt
+    _asm ret 8
+}
 
 float lerp(float a, float b, float t)
 {
@@ -129,7 +153,7 @@ ivec4 ivec4_cross(ivec4 a, ivec4 b)
     t.x = a.y * b.z - a.z * b.y;
     t.y = a.z * b.x - a.x * b.z;
     t.z = a.x * b.y - a.y * b.x;
-    t.w = 1.0;
+    t.w = 1;
     return t;
 }
 
@@ -201,12 +225,12 @@ ivec4 ivec4_ceil(ivec4 v)
 
 float vec4_length(vec4 a)
 {
-    return sqrtf(vec4_dot(a, a));
+    return inverse_sqrt(vec4_dot(a, a));
 }
 
 int ivec4_length(ivec4 a)
 {
-    return (int)sqrt(ivec4_dot(a, a));
+    return (int)inverse_sqrt((float)ivec4_dot(a, a));
 }
 
 vec4 vec4_scale(vec4 a, float lambda)
@@ -243,18 +267,12 @@ ivec4 ivec4_normalize(ivec4 a)
 
 vec4 vec4_mad(vec4 a, vec4 b, vec4 c)
 {
-    vec4 t;
-    t = vec4_add(vec4_mul(a, b), c);
-
-    return t;
+    return vec4_add(vec4_mul(a, b), c);
 }
 
 ivec4 ivec4_mad(ivec4 a, ivec4 b, ivec4 c)
 {
-    ivec4 t;
-    t = ivec4_add(ivec4_mul(a, b), c);
-
-    return t;
+    return ivec4_add(ivec4_mul(a, b), c);
 }
 
 vec4 make_vec4(float x, float y, float z, float w)
@@ -429,12 +447,12 @@ ivec3 ivec3_cross(ivec3 a, ivec3 b)
 
 float vec3_length(vec3 a)
 {
-    return sqrtf(vec3_dot(a, a));
+    return inverse_sqrt(vec3_dot(a, a));
 }
 
 int ivec3_length(ivec3 a)
 {
-    return (int)sqrt(ivec3_dot(a, a));
+    return (int)inverse_sqrt((float)ivec3_dot(a, a));
 }
 
 vec3 vec3_scale(vec3 a, float lambda)
@@ -459,7 +477,7 @@ ivec3 ivec3_scale(ivec3 a, int lambda)
 
 vec3 vec3_normalize(vec3 a)
 {
-    return vec3_scale(a, 1 / vec3_length(a));
+    return vec3_scale(a, 1.0f / vec3_length(a));
 }
 
 ivec3 ivec3_normalize(ivec3 a)
@@ -491,7 +509,7 @@ vec3 vec3_lerp(vec3 a, vec3 b, float t)
 {
     vec3 c;
     a = vec3_scale(a, t);
-    b = vec3_scale(b, 1 - t);
+    b = vec3_scale(b, 1.0f - t);
     c = vec3_add(a, b);
 
     return c;
@@ -509,17 +527,12 @@ ivec3 ivec3_lerp(ivec3 a, ivec3 b, int t)
 
 vec3 vec3_mad(vec3 a, vec3 b, vec3 c)
 {
-    vec3 t = vec3_add(vec3_mul(a, b), c);
-
-    return t;
+    return vec3_add(vec3_mul(a, b), c);
 }
 
 ivec3 ivec3_mad(ivec3 a, ivec3 b, ivec3 c)
 {
-    ivec3 t;
-    t = ivec3_add(ivec3_mul(a, b), c);
-
-    return t;
+    return ivec3_add(ivec3_mul(a, b), c);
 }
 
 vec2 vec2_add(vec2 a, vec2 b)
@@ -588,12 +601,12 @@ ivec2 ivec2_abs(ivec2 v)
 
 float vec2_length(vec2 a)
 {
-    return sqrtf(vec2_dot(a, a));
+    return inverse_sqrt(vec2_dot(a, a));
 }
 
 int ivec2_length(ivec2 a)
 {
-    return (int)sqrt(ivec2_dot(a, a));
+    return (int)inverse_sqrt((float)ivec2_dot(a, a));
 }
 
 vec2 vec2_scale(vec2 a, float lambda)
@@ -664,18 +677,12 @@ ivec2 ivec2_lerp(ivec2 a, ivec2 b, int t)
 
 vec2 vec2_mad(vec2 a, vec2 b, vec2 c)
 {
-    vec2 t;
-    t = vec2_add(vec2_mul(a, b), c);
-
-    return t;
+    return vec2_add(vec2_mul(a, b), c);
 }
 
 ivec2 ivec2_mad(ivec2 a, ivec2 b, ivec2 c)
 {
-    ivec2 t;
-    t = ivec2_add(ivec2_mul(a, b), c);
-
-    return t;
+    return ivec2_add(ivec2_mul(a, b), c);
 }
 
 mat4 mat4_make(vec4 a, vec4 b, vec4 c, vec4 d)
@@ -700,40 +707,99 @@ imat4 imat4_make(ivec4 a, ivec4 b, ivec4 c, ivec4 d)
     return m;
 }
 
-mat4 mat4_translate(float x, float y, float z)
+mat4 mat4_identity()
 {
-    return mat4_make(make_vec4(1.0, 0.0, 0.0, 0.0),
-                     make_vec4(0.0, 1.0, 0.0, 0.0),
-                     make_vec4(0.0, 0.0, 1.0, 0.0),
-                     make_vec4(x,   y,   z,   1.0));
+    return mat4_make(make_vec4(1.0f, 0.0f, 0.0f, 0.0f),
+                     make_vec4(0.0f, 1.0f, 0.0f, 0.0f),
+                     make_vec4(0.0f, 0.0f, 1.0f, 0.0f),
+                     make_vec4(0.0f, 0.0f, 0.0f, 1.0f));
 }
 
-imat4 imat4_translate(int x, int y, int z)
+mat4 mat4_scale(mat4 m, float lamba)
 {
-    return imat4_make(make_ivec4(1.0, 0.0, 0.0, 0.0),
-                      make_ivec4(0.0, 1.0, 0.0, 0.0),
-                      make_ivec4(0.0, 0.0, 1.0, 0.0),
-                      make_ivec4(x,   y,   z,   1.0));
-}
-
-mat4 mat4_rotate(float x, float y, float z)
-{
-    mat4 m;
+    m.a = vec4_scale(m.a, lamba);
+    m.b = vec4_scale(m.b, lamba);
+    m.c = vec4_scale(m.c, lamba);
+    m.d = vec4_scale(m.d, lamba);
 
     return m;
 }
 
-
-mat4 mat4_tranpose()
+mat4 mat4_translate(mat4 m, float x, float y, float z)
 {
-    mat4 m;
-
-    //swap(&m.a.y, &m.m[1][2]);
-	//swap(&m.a,z, &m.m[2][2]);
-	//swap(&m.m[0][3], &m.m[3][0]);
-	//swap(&m.m[1][2], &m.m[2][1]);
-	//swap(&m.m[1][3], &m.m[3][1]);
-    //swap(&m.m[2][3], &m.m[3][2]);
+    m.m[3] += x;
+    m.m[7] += y;
+    m.m[11] += z;
 
     return m;
 }
+
+imat4 imat4_translate(imat4 m, int x, int y, int z)
+{
+    m.m[3] += x;
+    m.m[7] += y;
+    m.m[11] += z;
+
+    return m;
+}
+
+mat4 mat4_rotate(float angle, float x, float y, float z)
+{
+    vec3 unit = vec3_normalize(make_vec3(x, y, z));
+    mat4 m = mat4_identity();
+
+    m.m[0] = cosf(angle) + (unit.x * unit.x) * (1.0f - cosf(angle));
+    m.m[1] = unit.x * unit.y * (1.0f - cosf(angle)) - unit.z * sinf(angle);
+    m.m[2] = unit.x * unit.z * (1.0f - cosf(angle)) + unit.y * sinf(angle);
+    m.m[4] = unit.y * unit.x * (1.0f - cosf(angle)) + unit.z * sinf(angle);
+    m.m[5] = cosf(angle) + (unit.y * unit.y) * (1.0f - cosf(angle));
+    m.m[6] = unit.y * unit.z * (1.0f - cosf(angle)) - unit.x * sinf(angle);
+    m.m[8] = unit.z * unit.x * (1.0f - cosf(angle)) - unit.y * sinf(angle);
+    m.m[9] = unit.z * unit.y * (1.0f - cosf(angle)) + unit.x * sinf(angle);
+    m.m[10] = cosf(angle) + (unit.z * unit.z) * (1.0f - cosf(angle));
+
+    return m;
+}
+
+mat4 mat4_mul(mat4 a, mat4 b)
+{
+    return mat4_make(vec4_mul(a.a, b.a),
+                     vec4_mul(a.b, b.b),
+                     vec4_mul(a.c, b.c),
+                     vec4_mul(a.d, b.d));
+}
+
+imat4 imat4_mul(imat4 a, imat4 b)
+{
+    return imat4_make(ivec4_mul(a.a, b.a),
+                      ivec4_mul(a.b, b.b),
+                      ivec4_mul(a.c, b.c),
+                      ivec4_mul(a.d, b.d));
+}
+
+
+mat4 mat4_tranpose(mat4 a)
+{
+    mat4 m;
+
+    for (int i = 0; i < 4; i++)
+    {
+        for (int j = 0; j < 4; j++)
+        {
+            m.m[i * 4 + j] = a.m[j * 4 + i];
+        }
+    }
+
+    return m;
+}
+
+mat4 mat4_ortho(float left, float right, float bottom, float top, float znear, float zfar)
+{
+    return mat4_make(make_vec4(2.0f / (right - left), 0.0f, 0.0f, 0.0f),
+                     make_vec4(0.0f, 2.0f / (top - bottom), 0.0f, 0.0f),
+                     make_vec4(0.0f, 0.0f, 2.0f / (zfar - znear), 0.0f),
+                     make_vec4((right + left) / (right - left) * -1.0f,
+                               (top + bottom) / (top - bottom) * -1.0f,
+                               (zfar + znear) / (zfar - znear) * -1.0f, 1.0f));
+}
+

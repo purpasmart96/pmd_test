@@ -1,4 +1,4 @@
-// Copyright(c) <2015> <Purpasmart>
+// Copyright(c) 2015 Purpasmart
 // The MIT License
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -35,12 +35,12 @@ typedef struct
 } Stack;
 
 Stack *stack_new(size_t capacity);
-void stack_resize(Stack *stack, size_t capacity);
+void *stack_resize(Stack *stack, size_t capacity);
 void stack_delete(Stack *stack);
 bool stack_empty(Stack *stack);
 bool stack_full(Stack *stack);
 void stack_update(Stack *stack);
-void *stack_top(Stack *s);
+void *stack_top(Stack *stack);
 void *stack_find(Stack *stack, void *element);
 void stack_remove(Stack *stack, void *element);
 void stack_push(Stack *s, void *element);

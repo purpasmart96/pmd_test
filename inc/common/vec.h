@@ -73,7 +73,7 @@ typedef union
 
 } ivec4;
 
-typedef union
+typedef union vec3
 {
     float v[3];
     struct
@@ -92,7 +92,7 @@ typedef union
 
 } vec3;
 
-typedef union
+typedef union ivec3
 {
     int v[3];
     struct
@@ -111,7 +111,7 @@ typedef union
 
 } ivec3;
 
-typedef union
+typedef union vec2
 {
     float v[2];
 
@@ -129,7 +129,7 @@ typedef union
 
 } vec2;
 
-typedef union
+typedef union ivec2
 {
     int v[2];
 
@@ -147,9 +147,9 @@ typedef union
 
 } ivec2;
 
-typedef union
+typedef union mat4
 {
-    vec4 m[4];
+    float m[16];
     struct
     {
         vec4 a;
@@ -160,9 +160,9 @@ typedef union
 
 } mat4;
 
-typedef union
+typedef union imat4
 {
-    ivec4 m[4];
+    float m[16];
     struct
     {
         ivec4 a;
@@ -173,6 +173,29 @@ typedef union
 
 } imat4;
 
+typedef union
+{
+    vec3 m[3];
+    struct
+    {
+        vec3 a;
+        vec3 b;
+        vec3 c;
+    };
+
+} mat3;
+
+typedef union
+{
+    ivec3 m[3];
+    struct
+    {
+        ivec3 a;
+        ivec3 b;
+        ivec3 c;
+    };
+
+} imat3;
 
 vec4  vec4_zero();
 vec4  vec4_add(vec4, vec4);
@@ -244,11 +267,16 @@ ivec2 make_ivec2(int x, int y);
 
 
 mat4 mat4_make(vec4 a, vec4 b, vec4 c, vec4 d);
-mat4 mat4_translate(float x, float y, float z);
-mat4 mat4_rotate(float x, float y, float z);
+mat4 mat4_identity();
+mat4 mat4_scale(mat4 m, float lamba);
+mat4 mat4_mul(mat4 a, mat4 b);
+mat4 mat4_translate(mat4 m, float x, float y, float z);
+mat4 mat4_rotate(float angle, float x, float y, float z);
+mat4 mat4_tranpose(mat4 a);
+mat4 mat4_ortho(float left, float right, float bottom, float top, float znear, float zfar);
 
 imat4 imat4_make(ivec4 a, ivec4 b, ivec4 c, ivec4 d);
-imat4 imat4_translate(int x, int y, int z);
+imat4 imat4_translate(imat4 m, int x, int y, int z);
 
 
 #endif

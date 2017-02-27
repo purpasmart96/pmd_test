@@ -19,7 +19,7 @@
 // THE SOFTWARE.
 
 #include "pokemon/database.h"
-#include "game_common/item_manager.h"
+#include "game_common/item.h"
 
 //Pokemon enemies[NUMBER_OF_ENEMIES];
 

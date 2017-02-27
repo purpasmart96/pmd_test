@@ -1,4 +1,4 @@
-// Copyright(c) <2016> <Purpasmart>
+// Copyright(c) 2016 <Purpasmart>
 // The MIT License
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -21,28 +21,31 @@
 #ifndef _BERRIES_H_
 #define _BERRIES_H_
 
-void OranBerryUse(Bag *bag, struct PokemonParty *party, struct Pokemon *user, ItemLocation location);
-void OranBerryThrow(Bag *bag, struct PokemonParty *party, struct Pokemon *user, ItemLocation location);
-void OranBerryDrop(Bag *bag, struct PokemonParty *party, struct Pokemon *user, ItemLocation location);
+typedef struct PokemonParty PokemonParty;
+typedef struct Pokemon_s Pokemon_t;
 
-void SitrusBerryBerryUse(Bag *bag, struct PokemonParty *party, struct Pokemon *user, ItemLocation location);
-void SitrusBerryBerryThrow(Bag *bag, struct PokemonParty *party, struct Pokemon *user, ItemLocation location);
-void SitrusBerryBerryDrop(Bag *bag, struct PokemonParty *party, struct Pokemon *user, ItemLocation location);
+void OranBerryUse(Bag *bag, PokemonParty *party, Pokemon_t *user, ItemLocation location);
+void OranBerryThrow(Bag *bag, PokemonParty *party, Pokemon_t *user, ItemLocation location);
+void OranBerryDrop(Bag *bag, PokemonParty *party, Pokemon_t *user, ItemLocation location);
 
-void RawstBerryBerryUse(Bag *bag, struct PokemonParty *party, struct Pokemon *user, ItemLocation location);
-void RawstBerryBerryThrow(Bag *bag, struct PokemonParty *party, struct Pokemon *user, ItemLocation location);
-void RawstBerryBerryDrop(Bag *bag, struct PokemonParty *party, struct Pokemon *user, ItemLocation location);
+void SitrusBerryUse(Bag *bag, PokemonParty *party, Pokemon_t *user, ItemLocation location);
+void SitrusBerryThrow(Bag *bag, PokemonParty *party, Pokemon_t *user, ItemLocation location);
+void SitrusBerryDrop(Bag *bag, PokemonParty *party, Pokemon_t *user, ItemLocation location);
 
-void CheriBerryUse(Bag *bag, struct PokemonParty *party, struct Pokemon *user, ItemLocation location);
-void CheriBerryThrow(Bag *bag, struct PokemonParty *party, struct Pokemon *user, ItemLocation location);
-void CheriBerryDrop(Bag *bag, struct PokemonParty *party, struct Pokemon *user, ItemLocation location);
+void RawstBerryUse(Bag *bag, PokemonParty *party, Pokemon_t *user, ItemLocation location);
+void RawstBerryThrow(Bag *bag, PokemonParty *party, Pokemon_t *user, ItemLocation location);
+void RawstBerryDrop(Bag *bag, PokemonParty *party, Pokemon_t *user, ItemLocation location);
 
-void PechaBerryUse(Bag *bag, struct PokemonParty *party, struct Pokemon *user, ItemLocation location);
-void PechaBerryThrow(Bag *bag, struct PokemonParty *party, struct Pokemon *user, ItemLocation location);
-void PechaBerryDrop(Bag *bag, struct PokemonParty *party, struct Pokemon *user, ItemLocation location);
+void CheriBerryUse(Bag *bag, PokemonParty *party, Pokemon_t *user, ItemLocation location);
+void CheriBerryThrow(Bag *bag, PokemonParty *party, Pokemon_t *user, ItemLocation location);
+void CheriBerryDrop(Bag *bag, PokemonParty *party, Pokemon_t *user, ItemLocation location);
 
-void ChestoBerryUse(Bag *bag, struct PokemonParty *party, struct Pokemon *user, ItemLocation location);
-void ChestoBerryThrow(Bag *bag, struct PokemonParty *party, struct Pokemon *user, ItemLocation location);
-void ChestoBerryDrop(Bag *bag, struct PokemonParty *party, struct Pokemon *user, ItemLocation location);
+void PechaBerryUse(Bag *bag, PokemonParty *party, Pokemon_t *user, ItemLocation location);
+void PechaBerryThrow(Bag *bag, PokemonParty *party, Pokemon_t *user, ItemLocation location);
+void PechaBerryDrop(Bag *bag, PokemonParty *party, Pokemon_t *user, ItemLocation location);
+
+void ChestoBerryUse(Bag *bag, PokemonParty *party, Pokemon_t *user, ItemLocation location);
+void ChestoBerryThrow(Bag *bag, PokemonParty *party, Pokemon_t *user, ItemLocation location);
+void ChestoBerryDrop(Bag *bag, PokemonParty *party, Pokemon_t *user, ItemLocation location);
 
 #endif

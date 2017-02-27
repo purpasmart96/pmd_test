@@ -35,5 +35,47 @@ typedef struct
 	ListNodeChar *last;
 } ListChar;
 
+typedef struct ListNodeInt
+{
+    struct ListNodeInt *next;
+    struct ListNodeInt *prev;
+    int data;
+} ListNodeInt;
+
+typedef struct ListInt
+{
+    u32 count;
+    ListNodeInt *first;
+    ListNodeInt *last;
+} ListInt;
+
+typedef struct ListNodeCharPtr
+{
+    struct ListNodeCharPtr *next;
+    struct ListNodeCharPtr *prev;
+    u8 *data;
+} ListNodeCharPtr;
+
+typedef struct ListCharPtr
+{
+    u32 count;
+    ListNodeCharPtr *first;
+    ListNodeCharPtr *last;
+} ListCharPtr;
+
+typedef struct ListNodeTexture
+{
+    struct ListNodeTexture *next;
+    struct ListNodeTexture *prev;
+    struct Texture_s data;
+} ListNodeTexture;
+
+typedef struct ListTexture
+{
+    u32 count;
+    ListNodeTexture *first;
+    ListNodeTexture *last;
+} ListTexture;
+
 
 #endif
