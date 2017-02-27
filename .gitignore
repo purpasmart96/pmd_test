@@ -3,8 +3,12 @@
 *.user
 *.sln.docstates
 *.o
+*.obj
 *.orig
 *.log
+*.tlog
+*.html
+*.css
 *.sdf
 *.exe
 *.png
