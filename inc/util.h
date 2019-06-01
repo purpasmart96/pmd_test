@@ -1,4 +1,4 @@
-// Copyright(c) <2015> <Purpasmart>
+// Copyright(c) 2015 <Purpasmart>
 // The MIT License
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -21,7 +21,6 @@
 
 #ifndef _UTIL_H_
 #define _UTIL_H_
-
 
 #ifdef _WIN32
 #include <direct.h>
@@ -136,16 +135,39 @@ static void color_restore(int old)
 #define ARRAY_SIZE(s) (sizeof(s)/sizeof((s)[0]))
 
 #define foreach(item, array) \
-    for(int keep = 1, \
+    for(size_t keep = 1, \
             count = 0,\
             _size = sizeof (array) / sizeof *(array); \
         keep && count != _size; \
         keep = !keep, count++) \
       for(item = (array) + count; keep; keep = !keep)
 
+/*
+#define FOR_EACH(item, array, length) \
+    for(int keep = 1, count = 0, _size = length; \
+			keep && count != _size; \
+			keep = !keep, count++) \
+      for (item = (array) + count; keep; keep = !keep)
+*/
+
+#define FOR_EACH(item, array, size) \
+    for(size_t i = 0, keep = 1;\
+        keep && i < size;\
+        keep = !keep, i++)\
+    for (item = array[i]; keep; keep = !keep)
+
 typedef struct Texture_s
 {
+    char *name;
     u8 *image;
+    int sampler;
+    int id;
+    int internal_format; // Format of texture object
+    int image_format; // Format of loaded image
+    int wrap_s; // Wrapping mode on S axis
+    int wrap_t; // Wrapping mode on T axis
+    int filter_min; // Filtering mode if texture pixels < screen pixels
+    int filter_max; // Filtering mode if texture pixels > screen pixels
     u32 width;
     u32 height;
 

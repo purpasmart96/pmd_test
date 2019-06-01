@@ -11,7 +11,7 @@
 #define _DUNGEON_GEN_H_
 
 #include "util.h"
-#include <SOIL.h>
+//#include <SOIL.h>
 
 enum
 {

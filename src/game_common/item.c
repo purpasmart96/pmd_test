@@ -19,6 +19,8 @@
 // THE SOFTWARE.
 
 #include "util.h"
+#include "common/error.h"
+#include "common/exception.h"
 
 #include "game_common/dungeon.h"
 #include "game_common/pokemon.h"
@@ -2094,14 +2096,14 @@ Bag *Bag_New(bool init)
 
 void Bag_Init(Bag *self)
 {
-	self->capacity = MAX_ITEMS;
-	self->items = malloc(sizeof(*self->items) * self->capacity);
+    self->capacity = MAX_ITEMS;
+    self->items = malloc(sizeof(*self->items) * self->capacity);
     ClearBag(self);
 }
 
 void Bag_ShutDown(Bag *self)
 {
-	free(self->items);
+    free(self->items);
     free(self);
 }
 
@@ -2124,26 +2126,72 @@ bool IsBagFull(struct Bag *self)
     return self->size == self->capacity;
 }
 
-static void RenameNullItems(struct Bag *self)
-{
-    for (int i = 0; i < MAX_ITEMS; i++)
-    {
-        if (self->items[i].type == None) // Find a NULL slot
-        {
-            Bag_AssignItem(self, i, "None");
-            return;
-        }
-    }
-}
-
 void RemoveBagIndex(struct Bag *self, int index)
 {
     for (int i = index; i < self->size - 1; i++)
     {
         self->items[i] = self->items[i + 1];
     }
-	Bag_AssignItem(self, self->size, "None");
+    Bag_AssignItem(self, self->size, "None");
     self->size--;
+}
+
+void Bag_CountSortItems(struct Bag *self, int n, int range)
+{
+    int *count = calloc(1, sizeof(int) * range);
+
+    for (int i = 0; i < self->size - 1; i++)
+    {
+        count[self->items[i].type]++;
+    }
+   
+    int index = 0;
+    for (int i = 0; i < range; i++)
+    {
+        while (count[i] != 0)
+        {
+            self->items[index++].type = i;
+            count[i]--;
+        }
+    }
+
+    free(count);
+}
+
+void Bag_CountSortItemsDesc(struct Bag *self, int n, int range)
+{
+    int *count = calloc(1, sizeof(int) * range);
+
+    for (int i = 0; i < self->size; i++)
+    {
+        count[self->items[i].type]++;
+    }
+
+    int k = range - 1;
+    for (int i = 0; i < range; i++)
+    {
+        for (int j = 0; j < count[i]; j++)
+        {
+            self->items[k--].type = i;
+        }
+    }
+
+    free(count);
+}
+
+void Bag_SortItems(struct Bag *self)
+{
+    for (int i = 1; i < self->size; i++)
+    {
+        Item key = self->items[i];
+        int j = i - 1;
+        while (j >= 0 && self->items[j].type < key.type)
+        {
+            self->items[j + 1] = self->items[j];
+            j--;
+        }
+        self->items[j + 1] = key;
+    }
 }
 
 void DisplayBag(struct Bag *self)
@@ -2157,6 +2205,30 @@ void DisplayBag(struct Bag *self)
     printf("\n");
 }
 
+void AddItemToBagByType(struct Bag *self, Items type)
+{
+    if (!IsBagFull(self))
+    {
+        for (int i = 0; i < self->capacity; i++)
+        {
+            if (self->items[i].type == None) // Find a empty slot
+            {
+                self->items[i].type = type;
+                Bag_AssignItem(self, i, item_to_string[type]);
+                if (type != None)
+                    self->size++;
+                return;
+            }
+        }
+    }
+    else
+    {
+        printf("Bag is currently full!\n");
+        printf("Can't add %s to the bag\n", item_to_string[type]);
+        return;
+    }
+}
+
 void AddItemToBag(struct Bag *self, Item item)
 {
     if (!IsBagFull(self))
@@ -2166,7 +2238,8 @@ void AddItemToBag(struct Bag *self, Item item)
             if (self->items[i].type == None) // Find a empty slot
             {
                 self->items[i] = item;
-                self->size++;
+                if (item.type != None)
+                    self->size++;
                 return;
             }
         }
@@ -2189,7 +2262,8 @@ void AddItemToBag_(Bag *self, const char *item_name)
             if (self->items[i].type == None) // Find a empty slot
             {
                 Bag_AssignItem(self, i, item_name);
-                self->size++;
+                if (item_name != "None")
+                    self->size++;
                 return;
             }
         }
@@ -2398,6 +2472,19 @@ void Bag_AssignItem(struct Bag *bag, int index, const char *item_name)
         if (item_to_string[item_table[i].type] == item_name)
         {
             bag->items[index].type  = item_table[i].type;
+            bag->items[index].Throw = item_table[i].Throw;
+            bag->items[index].Use   = item_table[i].Use;
+            bag->items[index].Drop  = item_table[i].Drop;
+        }
+    }
+}
+
+void Bag_AssignItemByType(struct Bag *bag, int index, Items type)
+{
+    for (int i = 0; i < ARRAY_SIZE(item_table); i++)
+    {
+        if (item_table[i].type == type)
+        {
             bag->items[index].Throw = item_table[i].Throw;
             bag->items[index].Use   = item_table[i].Use;
             bag->items[index].Drop  = item_table[i].Drop;

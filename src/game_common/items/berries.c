@@ -34,6 +34,7 @@ void OranBerryUse(Bag *bag, PokemonParty *party, Pokemon_t *user, ItemLocation l
 
 void OranBerryThrow(Bag *bag, PokemonParty *party, Pokemon_t *user, ItemLocation location)
 {
+    RemoveItem(bag, user, location, "OranBerry");
     printf("OranBerryThrow stub called!\n");
 }
 

@@ -67,7 +67,7 @@ typedef struct ListNodeTexture
 {
     struct ListNodeTexture *next;
     struct ListNodeTexture *prev;
-    struct Texture_s data;
+    struct Texture_s *data;
 } ListNodeTexture;
 
 typedef struct ListTexture

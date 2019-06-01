@@ -1,10 +1,15 @@
 #version 330 core
 
-in vec4 frag_color;
+in vec4 color;
+in vec2 tex_coord;
 
 out vec4 result;
 
+uniform sampler2D tex_sampler; 
+
 void main()
 {
-    result = frag_color;
+    //result = color;
+    //result = texture(tex_sampler, tex_coord) * vec4(color.rgb, 1.0);
+    result = color + texture(tex_sampler, tex_coord);
 }

@@ -36,7 +36,7 @@ size_t strlcpy(char *dst, const char *src, size_t dsize)
         }
     }
 
-	// Not enough room in dst, add NUL and traverse rest of src.
+    // Not enough room in dst, add NUL and traverse rest of src.
     if (nleft == 0)
     {
         if (dsize != 0)

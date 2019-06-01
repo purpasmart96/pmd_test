@@ -27,7 +27,7 @@
 
 #define STACK_DEFUALT 100
 
-typedef struct
+typedef struct Stack
 {
     void **data;
     int  size;

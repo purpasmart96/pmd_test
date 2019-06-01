@@ -57,8 +57,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>false</SDLCheck>
-      <AdditionalIncludeDirectories>...\..\inc;...\..\lib\glfw-3.2.1\include;...\..\lib\zlib\include;...\..\lib\SDL2-2.0.3\include;...\..\lib\openal-soft-1.17.1-bin\include;...\..\lib\libpng-1.6.20;...\..\lib\glew-2.0.0\include;...\..\lib\Simple OpenGL Image Library\src;...\..\lib\libvorbis-1.3.5\include;...\..\lib\libogg-1.3.2\include</AdditionalIncludeDirectories>
-      <OpenMPSupport>true</OpenMPSupport>
+      <AdditionalIncludeDirectories>...\..\inc;...\..\lib\glew-2.1.0\include;...\..\lib\glfw-3.2.1\include\GLFW;...\..\lib\zlib\include;...\..\lib\SDL2-2.0.3\include;...\..\lib\openal-soft-1.17.1-bin\include;...\..\lib\libpng-1.6.20;...\..\lib\libvorbis-1.3.5\include;...\..\lib\libogg-1.3.2\include;G:\PokeMysteryDun\pmd_fix\lib\Simple OpenGL Image Library\src</AdditionalIncludeDirectories>
       <CompileAs>CompileAsC</CompileAs>
     </ClCompile>
     <Link>
@@ -66,8 +65,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>...\..\lib\glfw-3.2.1\lib-vc2013;...\..\lib\zlib\lib;...\..\lib\SDL2-2.0.3\lib\x86;...\..\lib\openal-soft-1.17.1-bin\libs\Win32;...\..\lib\libpng-1.6.20\projects\vstudio\Release;...\..\lib\glew-2.0.0\lib\Release\Win32;...\..\lib\Simple OpenGL Image Library\projects\VC9\Release;...\..\lib\libvorbis-1.3.5\lib\x86;...\..\lib\libogg-1.3.2\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3.lib;glew32.lib;opengl32.lib;zdll.lib;OpenAL32.lib;SDL2.lib;SDL2main.lib;libpng16.lib;SOIL.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>...\..\lib\glew-2.1.0\lib\Release\Win32;...\..\lib\glfw-3.2.1\lib-vc2013;...\..\lib\zlib\lib;...\..\lib\SDL2-2.0.3\lib\x86;...\..\lib\openal-soft-1.17.1-bin\libs\Win32;...\..\lib\libpng-1.6.20\projects\vstudio\Release;...\..\lib\libogg-1.3.2\lib\x86;...\..\lib\libvorbis-1.3.5\lib\x86;G:\PokeMysteryDun\pmd_fix\lib\Simple OpenGL Image Library\projects\VC9\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3.lib;glew32.lib;glew32s.lib;opengl32.lib;zdll.lib;OpenAL32.lib;SDL2.lib;SDL2main.lib;libpng16.lib;libvorbis.lib;libogg.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
   </ItemDefinitionGroup>
@@ -81,7 +80,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>false</SDLCheck>
-      <AdditionalIncludeDirectories>...\..\inc;...\..\lib\glfw-3.1.2.bin.WIN32\include;...\..\lib\zlib\include;...\..\lib\SDL2-2.0.3\include;...\..\lib\openal-soft-1.17.1-bin\include;...\..\lib\libpng-1.6.20;...\..\lib\glew-1.13.0\include;G:\PokeMysteryDun\pmd_fix\lib\Simple OpenGL Image Library\src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>...\..\inc;...\..\lib\glew-2.1.0\include;...\..\lib\glfw-3.2.1\include\GLFW;...\..\lib\zlib\include;...\..\lib\SDL2-2.0.3\include;...\..\lib\openal-soft-1.17.1-bin\include;...\..\lib\libpng-1.6.20;...\..\lib\libvorbis-1.3.5\include;...\..\lib\libogg-1.3.2\include;G:\PokeMysteryDun\pmd_fix\lib\Simple OpenGL Image Library\src</AdditionalIncludeDirectories>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
@@ -90,8 +89,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>...\..\lib\glfw-3.1.2.bin.WIN32\lib-vc2013;...\..\lib\zlib\lib;...\..\lib\SDL2-2.0.3\lib\x86;...\..\lib\openal-soft-1.17.1-bin\libs\Win32;...\..\lib\libpng-1.6.20\projects\vstudio\Release;...\..\lib\glew-1.13.0\lib\Release\Win32;G:\PokeMysteryDun\pmd_fix\lib\Simple OpenGL Image Library\projects\VC9\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3.lib;glew32s.lib;opengl32.lib;zdll.lib;OpenAL32.lib;SDL2.lib;SDL2main.lib;libpng16.lib;SOIL.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>...\..\lib\glew-2.1.0\lib\Release\Win32;...\..\lib\glfw-3.2.1\lib-vc2013;...\..\lib\zlib\lib;...\..\lib\SDL2-2.0.3\lib\x86;...\..\lib\openal-soft-1.17.1-bin\libs\Win32;...\..\lib\libpng-1.6.20\projects\vstudio\Release;...\..\lib\libogg-1.3.2\lib\x86;...\..\lib\libvorbis-1.3.5\lib\x86;G:\PokeMysteryDun\pmd_fix\lib\Simple OpenGL Image Library\projects\VC9\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3.lib;glew32.lib;glew32s.lib;opengl32.lib;zdll.lib;OpenAL32.lib;SDL2.lib;SDL2main.lib;libpng16.lib;libvorbis.lib;libogg.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
   </ItemDefinitionGroup>
@@ -99,10 +98,10 @@
     <ClCompile Include="src\audio_core\al_common.c" />
     <ClCompile Include="src\audio_core\sound_core.c" />
     <ClCompile Include="src\common\dynamic_array.c" />
+    <ClCompile Include="src\common\file_io.c" />
     <ClCompile Include="src\common\list_generic.c" />
     <ClCompile Include="src\common\lodepng.c" />
     <ClCompile Include="src\common\mem_pool.c" />
-    <ClCompile Include="src\common\node_generic.c" />
     <ClCompile Include="src\common\rand_num.c" />
     <ClCompile Include="src\common\stack.c" />
     <ClCompile Include="src\common\stack_generic.c" />
@@ -135,6 +134,7 @@
     <ClCompile Include="src\game_common\hunger.c" />
     <ClCompile Include="src\game_common\menu.c" />
     <ClCompile Include="src\game_common\move.c" />
+    <ClCompile Include="src\game_common\player.c" />
     <ClCompile Include="src\game_common\pokemon.c" />
     <ClCompile Include="src\game_common\shader.c" />
     <ClCompile Include="src\game_common\shop.c" />
@@ -150,10 +150,12 @@
     <ClInclude Include="inc\audio_core\al_common.h" />
     <ClInclude Include="inc\audio_core\sound_core.h" />
     <ClInclude Include="inc\common\dynamic_array.h" />
+    <ClInclude Include="inc\common\error.h" />
+    <ClInclude Include="inc\common\exception.h" />
+    <ClInclude Include="inc\common\file_io.h" />
     <ClInclude Include="inc\common\list_generic.h" />
     <ClInclude Include="inc\common\list_types.h" />
     <ClInclude Include="inc\common\mem_pool.h" />
-    <ClInclude Include="inc\common\node_generic.h" />
     <ClInclude Include="inc\common\rand_num.h" />
     <ClInclude Include="inc\common\stack.h" />
     <ClInclude Include="inc\common\stack_error.h" />
@@ -190,9 +192,11 @@
     <ClInclude Include="inc\game_common\item.h" />
     <ClInclude Include="inc\game_common\map.h" />
     <ClInclude Include="inc\game_common\move.h" />
+    <ClInclude Include="inc\game_common\player.h" />
     <ClInclude Include="inc\game_common\pokemon.h" />
     <ClInclude Include="inc\game_common\shader.h" />
     <ClInclude Include="inc\game_common\sound.h" />
+    <ClInclude Include="inc\game_common\sprites.h" />
     <ClInclude Include="inc\game_common\text.h" />
     <ClInclude Include="inc\game_common\tile.h" />
     <ClInclude Include="inc\pokemon\stats.h" />

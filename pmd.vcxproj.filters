@@ -129,9 +129,6 @@
     <ClCompile Include="src\common\list_generic.c">
       <Filter>Source Files\common</Filter>
     </ClCompile>
-    <ClCompile Include="src\common\node_generic.c">
-      <Filter>Source Files\common</Filter>
-    </ClCompile>
     <ClCompile Include="src\common\string.c">
       <Filter>Source Files\common</Filter>
     </ClCompile>
@@ -191,6 +188,12 @@
     </ClCompile>
     <ClCompile Include="src\game_common\display.c">
       <Filter>Source Files\game_common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game_common\player.c">
+      <Filter>Source Files\game_common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\common\file_io.c">
+      <Filter>Source Files\common</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -284,9 +287,6 @@
     <ClInclude Include="inc\common\template.h">
       <Filter>Header Files\common</Filter>
     </ClInclude>
-    <ClInclude Include="inc\common\node_generic.h">
-      <Filter>Header Files\common</Filter>
-    </ClInclude>
     <ClInclude Include="inc\common\string.h">
       <Filter>Header Files\common</Filter>
     </ClInclude>
@@ -346,6 +346,21 @@
     </ClInclude>
     <ClInclude Include="inc\game_common\tile.h">
       <Filter>Header Files\game_common</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\common\exception.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\common\error.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\game_common\player.h">
+      <Filter>Header Files\game_common</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\game_common\sprites.h">
+      <Filter>Header Files\game_common</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\common\file_io.h">
+      <Filter>Header Files\common</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

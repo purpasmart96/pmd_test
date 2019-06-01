@@ -1,4 +1,4 @@
-// Copyright(c) <2015> <Purpasmart>
+// Copyright(c) 2015 Purpasmart
 // The MIT License
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -20,43 +20,9 @@
 
 #ifndef _RAND_NUM_H_
 #define _RAND_NUM_H_
-
 #include "util.h"
-
-struct pcg_state_setseq_64 {    // Internals are *Private*.
-    u64 state;             // RNG state.  All values are possible.
-    u64 inc;               // Controls which RNG sequence (stream) is
-    // selected. Must *always* be odd.
-};
-typedef struct pcg_state_setseq_64 pcg32_random_t;
-
-// If you *must* statically initialize it, here's one.
-
-#define PCG32_INITIALIZER   { 0x853c49e6748fea9bULL, 0xda3e39cb94b95bdbULL }
-
-// pcg32_srandom(initstate, initseq)
-// pcg32_srandom_r(rng, initstate, initseq):
-//     Seed the rng.  Specified in two parts, state initializer and a
-//     sequence selection constant (a.k.a. stream id)
-
-void srandom(u64 initstate, u64 initseq);
-void pcg32_srandom_r(pcg32_random_t *rng, u64 initstate, u64 initseq);
-
-// pcg32_random()
-// pcg32_random_r(rng)
-//     Generate a uniformly distributed 32-bit random number
-
-u32 random(void);
-u32 pcg32_random_r(pcg32_random_t *rng);
-
-// pcg32_boundedrand(bound):
-// pcg32_boundedrand_r(rng, bound):
-//     Generate a uniformly distributed number, r, where 0 <= r < bound
-
-u32 pcg32_boundedrand(u32 bound);
-u32 pcg32_boundedrand_r(pcg32_random_t* rng, u32 bound);
-
 u32 random_at_most(u32 max);
 u32 rand_interval(u32 min, u32 max);
+u32 rand_interval_seed(u32 min, u32 max);
 
 #endif

@@ -3,11 +3,6 @@
 
 #include "../../Utils/header/Logger.h"
 
-#ifdef _MSC_VER	
-	#pragma comment(lib, "libogg.lib")
-	#pragma comment(lib, "libvorbis.lib")
-	#pragma comment(lib, "libvorbisfile.lib")
-#endif
 
 #include <vorbis/vorbisfile.h>
 #include <vorbis/codec.h>
@@ -25,9 +20,9 @@
 
 size_t AR_readOgg(void* dst, size_t size1, size_t size2, void* fh)
 {
-    ogg_file* of = reinterpret_cast<ogg_file*>(fh);
+    ogg_file* of = (ogg_file*)fh;
     size_t len = size1 * size2;
-    if ( of->curPtr + len > of->filePtr + of->fileSize )
+    if (of->curPtr + len > of->filePtr + of->fileSize)
     {
         len = of->filePtr + of->fileSize - of->curPtr;
     }
@@ -36,8 +31,9 @@ size_t AR_readOgg(void* dst, size_t size1, size_t size2, void* fh)
     return len;
 }
 
-int AR_seekOgg( void *fh, ogg_int64_t to, int type ) {
-    ogg_file* of = reinterpret_cast<ogg_file*>(fh);
+int AR_seekOgg(void *fh, ogg_int64_t to, int type)
+{
+    ogg_file* of = (ogg_file*)fh;
 
     switch( type ) {
         case SEEK_CUR:
@@ -68,15 +64,15 @@ int AR_closeOgg(void* fh)
     return 0;
 }
 
-long AR_tellOgg(void *fh )
+long AR_tellOgg(void *fh)
 {
-    ogg_file* of = reinterpret_cast<ogg_file*>(fh);
+    ogg_file* of = (ogg_file*)fh;
     return (of->curPtr - of->filePtr);
 }
 
 static ov_callbacks callbacks_ogg;
 
-WrapperOgg::WrapperOgg(int minDecompressLengthAtOnce)
+void WrapperOgg(int minDecompressLengthAtOnce)
 {
 	callbacks_ogg.read_func = AR_readOgg;
 	callbacks_ogg.seek_func = AR_seekOgg;
@@ -108,13 +104,13 @@ WrapperOgg::~WrapperOgg()
 }
 
 
-void WrapperOgg::LoadFromMemory(char * data, int dataSize, SoundInfo * soundInfo)
+void WrapperOgg_LoadFromMemory(WrapperOgg *self, char * data, int dataSize, SoundInfo * soundInfo)
 {
 	//http://stackoverflow.com/questions/13437422/libvorbis-audio-decode-from-memory-in-c	
 	
 	
-	this->t.curPtr = this->t.filePtr = data;
-	this->t.fileSize = dataSize;
+	self->t.curPtr = self->t.filePtr = data;
+	self->t.fileSize = dataSize;
 				
 	this->ov = new OggVorbis_File;	
 	memset( ov, 0, sizeof( OggVorbis_File ) );
@@ -131,7 +127,7 @@ void WrapperOgg::LoadFromMemory(char * data, int dataSize, SoundInfo * soundInfo
 	soundInfo->freqency = vi->rate;
 	soundInfo->bitsPerChannel = 16;
     
-    if(ov_seekable(this->ov) == 0)
+    if(ov_seekable(self->ov) == 0)
     {
         // Disable seeking
         soundInfo->seekable = false;
@@ -145,7 +141,7 @@ void WrapperOgg::LoadFromMemory(char * data, int dataSize, SoundInfo * soundInfo
 				
 }
 
-void WrapperOgg::LoadFromFile(FILE * f, SoundInfo * soundInfo)
+void WrapperOgg_LoadFromFile(WrapperOgg *self, FILE *f, SoundInfo *soundInfo)
 {
 	
 	this->ov = new OggVorbis_File;	

@@ -21,12 +21,13 @@
 #include "util.h"
 
 #include <GL/glew.h>
-#include <GLFW/glfw3.h>
-#include <SOIL.h>
+#include <glfw3.h>
+//#include <SOIL.h>
 
 #include "common/vec.h"
 #include "common/list_generic.h"
 
+#include "game_common/sprites.h"
 #include "game_common/shader.h"
 
 
@@ -36,15 +37,8 @@ static mat4 projection_matrix;
 static mat4 model_view_matrix;
 static mat4 model_view_projection_matrix;
 
+static Texture_t *my_texture;
 
-// Set up vertex data (and buffer(s)) and attribute pointers
-GLfloat vertices[] =
-{
-    // Positions         // Colors
-    0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f,  // Bottom Right
-   -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,  // Bottom Left
-    0.0f,  0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f,   // Top 
-};
 
 Shader_t *Shader_New(bool init)
 {
@@ -92,20 +86,6 @@ static const char *OpenFileFromPath(const char *path)
     return source;
 }
 
-/*
-void ExitOnGLError(const char* error_message)
-{
-    const GLenum ErrorValue = glGetError();
-
-    if (ErrorValue != GL_NO_ERROR)
-    {
-        ERROR("%s: %s\n", error_message, glfwGe(ErrorValue));
-        exit(EXIT_FAILURE);
-    }
-}
-*/
-
-
 static GLuint LoadShader(const char *filename, GLenum shader_type)
 {
     GLuint shader_id = 0;
@@ -127,20 +107,23 @@ static GLuint LoadShader(const char *filename, GLenum shader_type)
                 {
                     glShaderSource(shader_id, 1, (const GLchar**)&glsl_source, NULL);
                     glCompileShader(shader_id);
-                    //ExitOnGLError("Could not compile a shader");
                 }
                 else
+                {
                     ERROR("Could not create a shader.\n");
+                }
             }
             else
+            {
                 ERROR("Could not read file %s\n", filename);
+            }
 
             free(glsl_source);
         }
-		else
-		{
-			ERROR("Could not allocate %ld bytes.\n", file_size);
-		}
+        else
+        {
+            ERROR("Could not allocate %ld bytes.\n", file_size);
+        }
 
         fclose(file);
     }
@@ -148,7 +131,7 @@ static GLuint LoadShader(const char *filename, GLenum shader_type)
     {
         if (NULL != file)
             fclose(file);
-        fprintf(stderr, "ERROR: Could not open file %s\n", filename);
+        ERROR("Could not open file %s\n", filename);
     }
 
     return shader_id;
@@ -165,54 +148,161 @@ static void VertexAttribsInit()
     //glVertexAttribPointer(5, 3, GL_FLOAT, false, sizeof(idDrawVert), attributeOffset(offset, idDrawVert::tangentOffset));
 }
 
-static void Shader_StoreDataInAttributeList(Shader_t *self, int attribute_num, int coord_size, float *data, int data_size)
+//static void Shader_StoreDataInAttributeList(Shader_t *self, int attribute_num, int coord_size, float *data, int data_size)
+//{
+//    int vbo_id;
+//    int *vbo = LIST_TO_ARRAY(ListInt, self->vbo);
+//    glGenBuffers(vbo_id, vbo);
+//    LIST_PUSH(ListInt, self->vbo, vbo_id);
+//    glBindBuffer(GL_ARRAY_BUFFER, vbo_id);
+//    glBufferData(GL_ARRAY_BUFFER, data_size, data, GL_STATIC_DRAW);
+//    glVertexAttribPointer(attribute_num, coord_size, GL_FLOAT, false, 0, 0);
+//    glBindBuffer(GL_ARRAY_BUFFER, 0);
+//}
+
+
+//static int Shader_MakeVAO(Shader_t *self)
+//{
+//    int vao_id;
+//    int *vao = LIST_TO_ARRAY(ListInt, self->vao);
+//    glGenVertexArrays(vao_id, vao);
+//    free(vao);
+//
+//    LIST_PUSH(ListInt, self->vao, vao_id);
+//    glBindVertexArray(vao_id);
+//    return vao_id;
+//}
+
+static GLfloat triangles[9];
+static GLfloat triangles_color[9];
+
+//static GLfloat quad[12];
+static GLfloat quad_color[12];
+
+GLfloat quad[] =
 {
-    int vbo_id;
-    int *vbo = LIST_TO_ARRAY(ListInt, self->vbo);
-    glGenBuffers(vbo_id, vbo);
-    LIST_PUSH(ListInt, self->vbo, vbo_id);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo_id);
-    glBufferData(GL_ARRAY_BUFFER, data_size, data, GL_STATIC_DRAW);
-    glVertexAttribPointer(attribute_num, coord_size, GL_FLOAT, false, 0, 0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-}
+    -1, -1, 0, // bottom left corner
+    -1,  1, 0, // top left corner
+     1,  1, 0, // top right corner
+     1, -1, 0 }; // bottom right corner
 
-
-static int Shader_MakeVAO(Shader_t *self)
+static GLfloat TexCoords[] =
 {
-    int vao_id;
-    int *vao = LIST_TO_ARRAY(ListInt, self->vao);
-    glGenVertexArrays(vao_id, vao);
-    free(vao);
+    0.0f, 0.0f,
+    1.0f, 0.0f,
+    1.0f, 1.0f,
+    0.0f, 1.0f
+};
 
-    LIST_PUSH(ListInt, self->vao, vao_id);
-    glBindVertexArray(vao_id);
-    return vao_id;
-}
+GLubyte indices[] =
+{
+    0,1,2, // first triangle (bottom left - top left - top right)
+    0,2,3 // second triangle (bottom left - top right - bottom right)
+};
 
 void Shader_Init(Shader_t *self)
 {
-    self->vao = LIST_NEW(ListInt);
-    self->vbo = LIST_NEW(ListInt);
+
+    // Setup quad colors
+    quad_color[0] = -0.6f; quad_color[1] =  1.0f; quad_color[2]  = 0.2f; quad_color[3] =  0.4f;
+    quad_color[4]  = 0.7f; quad_color[5] =  0.4f; quad_color[6] =  0.5f; quad_color[7]  = 0.1f;
+    quad_color[8]  = 0.1f; quad_color[9] =  0.3f; quad_color[10] = 0.1f; quad_color[11] = 0.2f; 
+
+    // Two VAO's, one triangle, one for quad
+    glGenVertexArrays(1, self->vao_);
+
+    // Now we create four VBOs
+    glGenBuffers(5, self->vbo_); 
+
+    // Setup whole triangle
+    glBindVertexArray(self->vao_[0]);
+
+    glBindBuffer(GL_ARRAY_BUFFER, self->vbo_[0]);
+    glBufferData(GL_ARRAY_BUFFER, 9 * sizeof(GLfloat), triangles, GL_STATIC_DRAW); 
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
+    glBindBuffer(GL_ARRAY_BUFFER, self->vbo_[1]);
+    glBufferData(GL_ARRAY_BUFFER, 9 * sizeof(GLfloat), triangles_color, GL_STATIC_DRAW); 
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
+    // Setup whole quad
+    glBindVertexArray(self->vao_[1]);
+
+    glBindBuffer(GL_ARRAY_BUFFER, self->vbo_[2]);
+    glBufferData(GL_ARRAY_BUFFER, 12 * sizeof(GLfloat), quad, GL_STATIC_DRAW); 
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
+    glBindBuffer(GL_ARRAY_BUFFER, self->vbo_[3]);
+    glBufferData(GL_ARRAY_BUFFER, 12 * sizeof(GLfloat), quad_color, GL_STATIC_DRAW); 
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
+    //glBindBuffer(GL_ARRAY_BUFFER, self->vbo_[4]);
+    //glBufferData(GL_ARRAY_BUFFER, 8 * sizeof(GLfloat), TexCoords, GL_STATIC_DRAW); 
+    //glEnableVertexAttribArray(0);
+    //glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, 0);
+
 
     self->vertex_shader = LoadShader("data/shaders/vertex.vsh", GL_VERTEX_SHADER);
     self->frag_shader = LoadShader("data/shaders/frag.psh", GL_FRAGMENT_SHADER);
     self->program = glCreateProgram();
     glAttachShader(self->program, self->vertex_shader);
     glAttachShader(self->program, self->frag_shader);
-    //Shader_BindAttributes(self);
+
     glLinkProgram(self->program);
-    glValidateProgram(self->program);
-    //Shader_GetAllUniformLocations();
+    //glValidateProgram(self->program);
+    Shader_Use(self);
+
+    glEnable(GL_TEXTURE_2D);
+    glEnable(GL_DEPTH_TEST);
+    glClearDepth(1.0);
+
+    my_texture = LoadTexture(my_texture, "water.png");
+
 }
 
 void Shader_Update(Shader_t *self)
 {
-    Shader_Use(self);
-    //DrawStuff();
-    glBindVertexArray((GLint)self->vao);
-    glDrawArrays(GL_TRIANGLES, 0, 3);
-    glBindVertexArray(0);
+
+    //Shader_Use(self);
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f); 
+    //mat4 m1 = mat4_identity();
+    //mat4 m2 = mat4_identity();
+
+    //glm::ortho(0, width, height, 0, 0, 1000)
+    //m1 = mat4_ortho2(m1, 1280, 720, 1.0f, 1.0f, 0.0f, 1000.0f);
+    //m2 = mat4_ortho3(m2, 1280, 720, 1.0f, 1.0f, 0.0f, 1000.0f);
+
+    // Triangle render
+    //glBindVertexArray(self->vao_[0]);
+
+    //Shader_SetMatrix4(self, "ProjectionMatrix", Shader_GetProjectionMatrix(self));
+
+    	// Texture binding - we set GL_ACTIVE_TEXTURE0, and then we tell fragment shader
+     // that gSampler variable will fetch data from GL_ACTIVE_TEXTURE0
+
+    Shader_SetInteger(self, "tex_sampler", 0);
+    Sprites_BindTexture(my_texture, 0);
+
+    //int iModelViewLoc = glGetUniformLocation(self->program, "ModelMatrix");
+    //int iProjectionLoc = glGetUniformLocation(self->program, "ProjectionMatrix");
+
+    //glUniformMatrix4fv(iProjectionLoc, 1, GL_FALSE, Shader_GetProjectionMatrix(self));
+
+    //mat4 ModelView = mat4_lookAt(make_vec3(0.0f, 15.0f, 40.0f), make_vec3(0.0f, 0.0f, 0.0f), make_vec3(0.0f, 1.0f, 0.0f));
+
+    //glDrawArrays(GL_TRIANGLES, 0, 3); 
+
+    // Quad render using triangle strip
+    glBindVertexArray(self->vao_[1]);
+
+    //GL_TRIANGLE_STRIP
+    //glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, indices);
+
 
     //DrawSprite(self, make_vec2(200.0f, 200.0f), make_vec2(64.0f, 64.0f), 45.0f, make_vec4(0.0f, 0.0f, 0.0f, 0.0f));
 }
@@ -223,10 +313,19 @@ void Shader_ShutDown(Shader_t *self)
     free(self);
 }
 
-
 void Shader_Use(Shader_t *self)
 {
     glUseProgram(self->program);
+}
+
+void Shader_SetProjectionMatrix(Shader_t *self, float fov, float aspect_ratio, float znear, float zfar)
+{
+    *self->projection_matrix = mat4_perspective(fov, aspect_ratio, znear, zfar);
+}
+
+mat4 *Shader_GetProjectionMatrix(Shader_t *self)
+{
+    return self->projection_matrix;
 }
 
 void Shader_SetFloat(Shader_t *self, const GLchar *name, GLfloat value)
@@ -239,50 +338,28 @@ void Shader_SetInteger(Shader_t *self, const GLchar *name, GLint value)
     glUniform1i(glGetUniformLocation(self->program, name), value);
 }
 
-void Shader_SetVector2f(Shader_t *self, const GLchar *name, const vec2 vector)
+void Shader_SetVector2f(Shader_t *self, const GLchar *name, const vec2 *vector)
 {
-    glUniform2fv(glGetUniformLocation(self->program, name), 1, vector.v);
+    glUniform2fv(glGetUniformLocation(self->program, name), 1, vector->v);
 }
 
-void Shader_SetVector3f(Shader_t *self, const GLchar *name, const vec3 vector)
+void Shader_SetVector3f(Shader_t *self, const GLchar *name, const vec3 *vector)
 {
-    glUniform3fv(glGetUniformLocation(self->program, name), 1, vector.v);
+    glUniform3fv(glGetUniformLocation(self->program, name), 1, vector->v);
 }
 
-void Shader_SetVector4f(Shader_t *self, const GLchar *name, const vec4 vector)
+void Shader_SetVector4f(Shader_t *self, const GLchar *name, const vec4 *vector)
 {
-    glUniform4fv(glGetUniformLocation(self->program, name), 1, vector.v);
+    glUniform4fv(glGetUniformLocation(self->program, name), 1, vector->v);
 }
 
-void Shader_SetMatrix4(Shader_t *self, const GLchar *name, const mat4 matrix)
+void Shader_SetMatrix3(Shader_t *self, const GLchar *name, const mat3 *matrix)
 {
-    glUniformMatrix4fv(glGetUniformLocation(self->program, name), 1, GL_FALSE, matrix.m);
+    glUniformMatrix3fv(glGetUniformLocation(self->program, name), 1, GL_FALSE, matrix->m);
 }
 
-void DrawSprite(Shader_t *self, vec2 position, vec2 size, GLfloat rotate, vec4 color)
+void Shader_SetMatrix4(Shader_t *self, const GLchar *name, const mat4 *matrix)
 {
-    int width = 0;
-    int height = 0;
-    u8 *image = SOIL_load_image("test.png", &width, &height, 0, SOIL_LOAD_RGBA);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
-    SOIL_free_image_data(image);
-    model_matrix = mat4_translate(model_matrix, position.x, position.y, 0.0f);  // First translate (transformations are: scale happens first, then rotation and then final translation happens; reversed order)
-    model_matrix = mat4_translate(model_matrix, 0.5f * size.x, 0.5f * size.y, 0.0f); // Move origin of rotation to center of quad
-    model_matrix = mat4_rotate(rotate, 0.0f, 0.0f, 1.0f); // Then rotate
-    model_matrix = mat4_translate(model_matrix, -0.5f * size.x, -0.5f * size.y, 0.0f); // Move origin back
-
-    //model_matrix = mat4_scale(model_matrix, size, 1.0f); // Last scale
-
-    Shader_SetMatrix4(self, "ModelMatrix", model_matrix);
-
-    // Render textured quad
-    Shader_SetVector4f(self, "vertex_color", color);
-
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE0, LIST_AT(ListInt, self->textures, 0));
-
-    glBindVertexArray(self->vao);
-    glDrawArrays(GL_TRIANGLES, 0, 6);
-    glBindVertexArray(0);
+    glUniformMatrix4fv(glGetUniformLocation(self->program, name), 1, GL_FALSE, matrix->m);
 }
 

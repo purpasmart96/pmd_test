@@ -30,11 +30,11 @@
 // so they must ask for structured updates
 typedef struct
 {
-	int	  handle;
-	int	  modification_count;
-	float value;
-	int   integer;
-	char  string[MAX_CVAR_VALUE_STRING];
+    int	  handle;
+    int	  modification_count;
+    float value;
+    int   integer;
+    char  string[MAX_CVAR_VALUE_STRING];
 } vmCvar_t;
 
 typedef struct Cvar
@@ -45,21 +45,22 @@ typedef struct Cvar
     char *latched_string;     // for CVAR_LATCH vars
     int  flags;
     bool modified;            // set each time the cvar is changed
-	int  modification_count;  // incremented each time the cvar is changed
-	float value;              // atof(string)
-	int	integer;              // atoi(string)
-	struct Cvar *next;
-	struct Cvar *hash_next;
+    int  modification_count;  // incremented each time the cvar is changed
+    float value;              // atof(string)
+    int	integer;              // atoi(string)
+    struct Cvar *next;
+    struct Cvar *hash_next;
 } Cvar;
 
 
 typedef struct Game_s
 {
     bool running;
-    struct Input_s *input;
+    struct Player_s *player;
     struct Screen_s *screen;
     struct Bag *bag;
     struct PokemonParty *party;
+    ALState *audio_state;
     //struct ListInt *list;
 } Game_t;
 

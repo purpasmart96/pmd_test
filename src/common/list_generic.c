@@ -24,6 +24,15 @@
 #if defined(LIST_T)
 #include "common/template.h"
 
+NODE_T *TEMPLATE(node_new, NODE_T)(T data)
+{
+    NODE_T *node = malloc(sizeof(*node));
+    node->next = NULL;
+    node->prev = NULL;
+    node->data = data;
+    return node;
+}
+
 LIST_T *TEMPLATE(list_new, LIST_T)()
 {
     LIST_T *list = malloc(sizeof(*list));
@@ -300,7 +309,7 @@ T *TEMPLATE(list_to_array, LIST_T)(LIST_T *list)
 
 #define LIST_T ListTexture
 #define NODE_T ListNodeTexture
-#define T Texture_t
+#define T struct Texture_s *
 #define _LIST_FOREACH(L, S, M, V) NODE_T *_node = NULL;\
     NODE_T *V = NULL;\
     for (V = _node = L->S; _node != NULL; V = _node = _node->M)

@@ -18,13 +18,14 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#include "common/rand_num.h"
-
 #include "game_common/health.h"
 #include "game_common/item.h"
 #include "game_common/dungeon.h"
 #include "game_common/pokemon.h"
 #include "game_common/move.h"
+
+
+#include "common/rand_num.h"
 
 typedef struct Pokemon_s Pokemon_t;
 

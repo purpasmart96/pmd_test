@@ -49,10 +49,10 @@ int getRand(int min, int max)
     seed = time(NULL) + oldseed;
     oldseed = seed;
 
-    srandom(seed, 0xF23342);
+    srand(seed);
 
     int n = max - min + 1;
-    int i = random() % n;
+    int i = rand() % n;
 
     if (i < 0)
         i = -i;

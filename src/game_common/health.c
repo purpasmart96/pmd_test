@@ -61,24 +61,6 @@ void DecreaseHealth(Pokemon_t *defender, int amount)
 
 void SetStatusAttribute(Pokemon_t *defender, int amount)
 {
-    if (defender->current_hp != HP_ZERO)
-    {
-        defender->current_hp -= amount;
-        printf("%s Took %d Damage!\n", defender->name, amount);
-    }
-    else
-    {
-        return;
-    }
 
-    if (defender->current_hp < HP_MIN)
-    {
-        defender->current_hp = HP_ZERO;
-        printf("%s Fainted!\n", defender->name);
-    }
-    else
-    {
-        return;
-    }
 }
 

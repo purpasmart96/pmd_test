@@ -20,7 +20,6 @@
 
 #include "util.h"
 #include "common/list_types.h"
-#include "common/node_generic.h"
 
 
 #ifndef LIST_NEW
@@ -71,6 +70,7 @@ TEMPLATE(list_at, LIST_T)(S, INDEX)
 #if defined(LIST_T)
 #include "common/template.h"
 
+NODE_T *TEMPLATE(node_new, NODE_T)(T data);
 LIST_T *TEMPLATE(list_new, LIST_T)();
 void TEMPLATE(list_delete, LIST_T)(LIST_T *list);
 void TEMPLATE(list_remove, LIST_T)(LIST_T *list, NODE_T *node);
@@ -126,7 +126,7 @@ T TEMPLATE(list_at, LIST_T)(LIST_T *list, int index);
 
 #define LIST_T ListTexture
 #define NODE_T ListNodeTexture
-#define T Texture_t
+#define T struct Texture_s *
 #define _LIST_FOREACH(L, S, M, V) NODE_T *_node = NULL;\
     NODE_T *V = NULL;\
     for (V = _node = L->S; _node != NULL; V = _node = _node->M)

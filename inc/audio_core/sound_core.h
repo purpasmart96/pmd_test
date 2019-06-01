@@ -23,11 +23,14 @@
 
 #include "audio_core/al_common.h"
 
+typedef struct Stack Stack;
+
+
 // 16 bit Stereo
 #define SFX_MAX_SOURCE          1
-#define MAX_BUFFERS         512
-#define MAX_SAMPLES         256
-#define MAX_SOURCES         16
+#define MAX_BUFFERS             512
+#define MAX_SAMPLES             256
+#define MAX_SOURCES             16
 #define STEREO_CHANNELS         2
 #define SIZE_SHORT              2
 #define SIZE_FLOAT              4   // size of a float in bytes
@@ -45,7 +48,7 @@ typedef struct SoundCore
     ALsizei    size;
     ALsizei    freq;
     ALboolean  loop;
-    ALvoid*    data;
+    ALvoid     *data;
     ALCdevice  *device;
     ALCcontext *context;
     SoundSource sources[MAX_SOURCES];
@@ -56,4 +59,20 @@ typedef struct SoundCore
 
 } SoundCore;
 
+typedef struct SoundInfo
+{
+    int freqency; //sound frequency (eg. 44100 Hz)
+    int channels; //nunber of channels (eg. Stereo = 2)
+    int bits_per_channel; //number of bits per channel (eg. 16 for 2 channel stereo)
+    int size;
+    char *buffer_data;
+} SoundInfo;
+
+//int ogg_decode(const char *file_name, const char *file_name_out);
+SoundInfo *ogg_decode(const char *file_name);
+//int ogg_decode(const char *file_name, char *raw_pcm_out);
+SoundInfo *SoundInfo_New(int freqency, int channels, int bits_per_channel, Stack *buffer, int size);
+
 #endif
+
+

@@ -1356,8 +1356,8 @@ typedef struct Item
 typedef struct Bag
 {
     struct Item *items;
-	u32 size;
-	u32 capacity;
+    u32 size;
+    u32 capacity;
 } Bag;
 
 Bag *Bag_New(bool init);
@@ -1368,10 +1368,13 @@ void ClearBag(struct Bag *self);
 bool IsBagEmpty(struct Bag *self);
 bool IsBagFull(struct Bag *self);
 void DisplayBag(struct Bag *self);
-void AddEmptySlots(struct Bag *self);
-void UpdateBag(struct Bag *self);
+void Bag_SortItems(struct Bag *self);
+void Bag_CountSortItemsDesc(struct Bag *self, int n, int range);
+//void AddEmptySlots(struct Bag *self);
+//void UpdateBag(struct Bag *self);
 void GiveItemToTeamMember(struct Bag *self, struct Pokemon_s *team_member, struct Item item);
 void GiveItemToTeamMember_(struct Bag *self, struct Pokemon_s *team_member, const char *item_name);
+void AddItemToBagByType(struct Bag *self, Items type);
 void AddItemToBag(struct Bag *self, struct Item item);
 // String version
 void AddItemToBag_(Bag *self, const char *item_name);
@@ -1385,6 +1388,7 @@ void RemoveItem(struct Bag *bag, struct Pokemon_s *poke, enum ItemLocation locat
 
 void Pokemon_AssignItem(struct Pokemon_s *dst_poke, const char *item_name);
 void Bag_AssignItem(struct Bag *bag, int index, const char *item_name);
+void Bag_AssignItemByType(struct Bag *bag, int index, Items type);
 
 void UseItem(struct Bag *bag, struct PokemonParty *party, struct Pokemon_s *user, const char *item_name, ItemLocation location);
 void UseItemFromBag(struct Bag *bag, struct PokemonParty *party, struct Pokemon_s *user, const char *item_name);

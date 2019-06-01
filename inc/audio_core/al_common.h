@@ -44,6 +44,7 @@ typedef struct ALState
 ALState *ALState_New(int buffer_count, bool seprate_thread, bool init_sources);
 
 void ALState_Init(ALState *self, int buffer_count, bool seprate_thread, bool init_sources);
+void AL_State_LoadBuffer(ALState * self);
 void ALState_Delete(ALState *self);
 
 #define NUM_BUFFERS 3

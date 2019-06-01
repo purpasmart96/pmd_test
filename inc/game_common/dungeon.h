@@ -24,6 +24,17 @@
 
 #include "util.h"
 
+typedef enum
+{
+    tileUnused = 0,
+    tileEnd,
+    tileWall,
+    tileFloor,
+    tileHall,
+    tileStairs,
+    tileLava,
+} Tile;
+
 typedef enum WeatherState
 {
     WeatherClear,
@@ -56,6 +67,30 @@ typedef struct DungeonStatus
     bool posioned;
 } DungeonStatus;
 
+typedef struct 
+{
+    int **tiles;
+    int width;
+    int height;
+    int start_x;
+    int start_y;
+    int end_x;
+    int end_y;
+    //SDL_Surface* surface;
+} Floor;
+
+typedef struct
+{
+    int name;
+    int seed;
+    int difficulty;
+    int *floor_seeds;
+    int total_floors;
+    int floor_counter;
+    Floor *floor;
+
+} Dungeon;
+
 typedef struct
 {
     struct Item **items;
@@ -65,6 +100,11 @@ typedef struct
     int floor_level;
     WeatherState current_weather;
 } DungeonState;
+
+
+Floor *GenerateFloor(int seed);
+void PrintFloor(Floor *floor);
+void Dungeon_Init(struct PokemonParty *party);
 
 void Dungeon_SetUpDefualtStatus(struct PokemonParty *party);
 void Dungeon_SetStatusAfterStairs(struct PokemonParty *party);

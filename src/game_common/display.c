@@ -22,7 +22,7 @@
 #include "util.h"
 
 #include <GL/glew.h>
-#include <GLFW/glfw3.h>
+#include <glfw3.h>
 
 #include "common/vec.h"
 #include "game_common/shader.h"
@@ -65,6 +65,7 @@ void Screen_Init(Screen_t *self)
         glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
         // Create window
+        //self->window = glfwCreateWindow(1920, 1080, "Pmd_wip", NULL, NULL);
         self->window = glfwCreateWindow(1280, 720, "Pmd_wip", NULL, NULL);
         glfwMakeContextCurrent(self->window);
 
@@ -83,9 +84,10 @@ void Screen_Init(Screen_t *self)
         }
         else
         {
+            glfwSetWindowAspectRatio(self->window, 16, 9);
             glViewport(0, 0, 1280, 720);
             glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-            //self->shader = Shader_New(true);
+            self->shader = Shader_New(true);
         }
     }
 
@@ -95,6 +97,7 @@ void Screen_Update(Screen_t *self)
 {
     // Clear color and depth buffer  
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    Shader_Update(self->shader);
     // Swap the buffers  
     glfwSwapBuffers(self->window);
     glfwSwapInterval(self->vsync);
@@ -103,6 +106,7 @@ void Screen_Update(Screen_t *self)
 
 void Screen_Shutdown(Screen_t *self)
 {
+    Shader_ShutDown(self->shader);
     glfwDestroyWindow(self->window);
     glfwTerminate();
     free(self);
