@@ -727,7 +727,7 @@ void CalculateDamage(MoveNames the_move, Pokemon_t *attacker, Pokemon_t *defende
 
         if (move.type == attacker->primary_type || attacker->sub_type)
         {
-            E *= 1.5;
+            E *= 1.5f;
         }
 
         damage = (((A + move.power) * 39168 / 65536) - (D / 2) + E) / N;

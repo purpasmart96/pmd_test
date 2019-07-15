@@ -39,6 +39,12 @@ static mat4 model_view_projection_matrix;
 
 static Texture_t *my_texture;
 
+struct VertexData
+{
+    GLfloat quad[12];
+    GLfloat quad_color[12];
+    GLfloat tex_coord[8];
+};
 
 Shader_t *Shader_New(bool init)
 {
@@ -97,13 +103,15 @@ static GLuint LoadShader(const char *filename, GLenum shader_type)
     {
         rewind(file);
 
-        if (NULL != (glsl_source = malloc(file_size + 1)))
+        glsl_source = malloc(file_size + 1);
+        if (glsl_source != NULL)
         {
             if (file_size == fread(glsl_source, sizeof(char), file_size, file))
             {
                 glsl_source[file_size] = '\0';
 
-                if (0 != (shader_id = glCreateShader(shader_type)))
+                shader_id = glCreateShader(shader_type);
+                if (shader_id != 0)
                 {
                     glShaderSource(shader_id, 1, (const GLchar**)&glsl_source, NULL);
                     glCompileShader(shader_id);
@@ -129,7 +137,7 @@ static GLuint LoadShader(const char *filename, GLenum shader_type)
     }
     else
     {
-        if (NULL != file)
+        if (file != NULL)
             fclose(file);
         ERROR("Could not open file %s\n", filename);
     }
@@ -137,16 +145,6 @@ static GLuint LoadShader(const char *filename, GLenum shader_type)
     return shader_id;
 }
 
-
-static void VertexAttribsInit()
-{
-    //glVertexAttribPointer(0, 4, GL_FLOAT, false, sizeof(GL_FLOAT) * 7, attributeOffset(offset, idDrawVert::xyzOffset));
-    //glVertexAttribPointer(1, 2, GL_FLOAT, false, sizeof(idDrawVert), attributeOffset(offset, idDrawVert::texcoordOffset));
-    //glVertexAttribPointer(2, 3, GL_FLOAT, false, sizeof(idDrawVert), attributeOffset(offset, idDrawVert::normalOffset));
-    //glVertexAttribPointer(3, 4, GL_UNSIGNED_BYTE, false, sizeof(idDrawVert), attributeOffset(offset, idDrawVert::colorOffset));
-    //glVertexAttribPointer(4, 3, GL_FLOAT, false, sizeof(idDrawVert), attributeOffset(offset, idDrawVert::binormalOffset));
-    //glVertexAttribPointer(5, 3, GL_FLOAT, false, sizeof(idDrawVert), attributeOffset(offset, idDrawVert::tangentOffset));
-}
 
 //static void Shader_StoreDataInAttributeList(Shader_t *self, int attribute_num, int coord_size, float *data, int data_size)
 //{
@@ -173,10 +171,6 @@ static void VertexAttribsInit()
 //    return vao_id;
 //}
 
-static GLfloat triangles[9];
-static GLfloat triangles_color[9];
-
-//static GLfloat quad[12];
 static GLfloat quad_color[12];
 
 GLfloat quad[] =
@@ -186,7 +180,7 @@ GLfloat quad[] =
      1,  1, 0, // top right corner
      1, -1, 0 }; // bottom right corner
 
-static GLfloat TexCoords[] =
+static GLfloat tex_coords[] =
 {
     0.0f, 0.0f,
     1.0f, 0.0f,
@@ -194,81 +188,192 @@ static GLfloat TexCoords[] =
     0.0f, 1.0f
 };
 
-GLubyte indices[] =
+static GLfloat tex_coords2[] =
+{
+    0.0f, 0.0f,
+    0.0f, 1.0f,
+    1.0f, 1.0f,
+    1.0f, 0.0f
+};
+
+// OpenGL textures are loaded left to right, bottom to top.
+static GLfloat tex_coords3[] =
+{
+    0.0f, 0.0f,
+    1.0f, 0.0f,
+    0.0f, 1.0f,
+    1.0f, 1.0f
+};
+
+//static GLfloat tex_coords[] =
+//{
+//    0.0f, 0.0f,
+//    1.0f, 0.0f,
+//    1.0f, 1.0f,
+//    0.0f, 1.0f
+//};
+
+static GLubyte indices[] =
 {
     0,1,2, // first triangle (bottom left - top left - top right)
     0,2,3 // second triangle (bottom left - top right - bottom right)
 };
 
-void Shader_Init(Shader_t *self)
+static GLubyte indices2[] =
 {
+    0,1,2, // first triangle (bottom left - top left - top right)
+    2,3,0 // second triangle (bottom left - top right - bottom right)
+};
 
-    // Setup quad colors
-    quad_color[0] = -0.6f; quad_color[1] =  1.0f; quad_color[2]  = 0.2f; quad_color[3] =  0.4f;
-    quad_color[4]  = 0.7f; quad_color[5] =  0.4f; quad_color[6] =  0.5f; quad_color[7]  = 0.1f;
-    quad_color[8]  = 0.1f; quad_color[9] =  0.3f; quad_color[10] = 0.1f; quad_color[11] = 0.2f; 
+//GLuint elements[] =
+//{
+//    0, 1, 2,
+//    2, 3, 0
+//};
 
-    // Two VAO's, one triangle, one for quad
-    glGenVertexArrays(1, self->vao_);
 
-    // Now we create four VBOs
-    glGenBuffers(5, self->vbo_); 
+void ShaderRenderer_DrawSprite(Shader_t *self, Texture_t *texture, vec2 position, vec2 size, GLfloat rotate, vec3 color)
+{
+    Shader_Use(self);
 
-    // Setup whole triangle
-    glBindVertexArray(self->vao_[0]);
+    mat4 model = mat4_translate(model, position.x, position.y, 0.0f, 0.0f);
 
-    glBindBuffer(GL_ARRAY_BUFFER, self->vbo_[0]);
-    glBufferData(GL_ARRAY_BUFFER, 9 * sizeof(GLfloat), triangles, GL_STATIC_DRAW); 
+    model = mat4_translate(model, 0.5f * size.x, 0.5f * size.y, 0.0f);
+    model = mat4_rotate(model, rotate, 0.0f, 0.0f, 1.0f);
+    model = mat4_translate(model, -0.5f * size.x, -0.5f * size.y, 0.0f);
+
+    model = mat4_scale_xyz(model, size.x, size.y, 1.0f);
+
+    Shader_SetMatrix4(self, "ModelMatrix", &model);
+    Shader_SetVector3f(self, "vertex_color", &color);
+
+    glActiveTexture(GL_TEXTURE0);
+
+    glBindTexture(GL_TEXTURE_2D, texture->id);
+
+    glBindVertexArray(self->quad_vao);
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+    glBindVertexArray(0);
+}
+
+void Shader_InitSprite(Shader_t *self)
+{
+    // Configure VAO/VBO
+    GLuint VBO;
+    GLfloat vertices[] = {
+        // Pos      // Tex
+        0.0f, 1.0f, 0.0f, 1.0f,
+        1.0f, 0.0f, 1.0f, 0.0f,
+        0.0f, 0.0f, 0.0f, 0.0f,
+
+        0.0f, 1.0f, 0.0f, 1.0f,
+        1.0f, 1.0f, 1.0f, 1.0f,
+        1.0f, 0.0f, 1.0f, 0.0f
+    };
+
+    glGenVertexArrays(1, &self->quad_vao);
+    glGenBuffers(1, &VBO);
+
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+    glBindVertexArray(self->quad_vao);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
-
-    glBindBuffer(GL_ARRAY_BUFFER, self->vbo_[1]);
-    glBufferData(GL_ARRAY_BUFFER, 9 * sizeof(GLfloat), triangles_color, GL_STATIC_DRAW); 
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
-
-    // Setup whole quad
-    glBindVertexArray(self->vao_[1]);
-
-    glBindBuffer(GL_ARRAY_BUFFER, self->vbo_[2]);
-    glBufferData(GL_ARRAY_BUFFER, 12 * sizeof(GLfloat), quad, GL_STATIC_DRAW); 
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
-
-    glBindBuffer(GL_ARRAY_BUFFER, self->vbo_[3]);
-    glBufferData(GL_ARRAY_BUFFER, 12 * sizeof(GLfloat), quad_color, GL_STATIC_DRAW); 
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
-
-    //glBindBuffer(GL_ARRAY_BUFFER, self->vbo_[4]);
-    //glBufferData(GL_ARRAY_BUFFER, 8 * sizeof(GLfloat), TexCoords, GL_STATIC_DRAW); 
-    //glEnableVertexAttribArray(0);
-    //glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, 0);
+    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (GLvoid*)0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
 
 
+
+    //int scale_x = 1920 / VIRTUAL_WIDTH;
+    //int scale_y = 1080 / VIRTUAL_HEIGHT;
+    //mat4 sprite_matrix = { 0 };
+    //mat4 matrix = mat4_scale_xyz(sprite_matrix, scale_x, scale_y, 1.0f);
+
+    //_spriteBatch.Begin(transformMatrix: matrix);
+}
+
+
+static void Renderer_Init(Shader_t *self)
+{
+}
+
+void Shader_LoadShaders(Shader_t *self)
+{
     self->vertex_shader = LoadShader("data/shaders/vertex.vsh", GL_VERTEX_SHADER);
     self->frag_shader = LoadShader("data/shaders/frag.psh", GL_FRAGMENT_SHADER);
     self->program = glCreateProgram();
     glAttachShader(self->program, self->vertex_shader);
     glAttachShader(self->program, self->frag_shader);
-
     glLinkProgram(self->program);
-    //glValidateProgram(self->program);
+}
+
+void Shader_Init(Shader_t *self)
+{
+    float fov = 90.0f;
+    float width = 1280.0f;
+    float height = 720.0f;
+    float znear = 0.1f; 
+    float zfar = 100.0f;
+
+    float aspect_ratio = width / (float)height;
+
+    Shader_SetProjectionMatrix(self, fov, aspect_ratio, znear, zfar);
+
+    Shader_LoadShaders(self);
+    // Setup quad colors
+    quad_color[0] =  -0.6f; quad_color[1] =  1.0f; quad_color[2]  = 0.2f; quad_color[3] =  0.4f;
+    quad_color[4]  = 0.7f; quad_color[5] =  0.4f; quad_color[6] =  0.5f; quad_color[7]  = 0.1f;
+    quad_color[8]  = 0.1f; quad_color[9] =  0.3f; quad_color[10] = 0.1f; quad_color[11] = 0.2f; 
+
+    GLint attrib_position  = glGetAttribLocation(self->program, "vertex_position");
+    GLint attrib_color     = glGetAttribLocation(self->program, "vertex_color");
+    GLint attrib_tex_coord = glGetAttribLocation(self->program, "vertex_texcoord");
+    GLint uniform_sampler  = glGetUniformLocation(self->program, "tex_sampler");
+
+    // setup and copy
+    struct VertexData *vertex_data = malloc(sizeof(struct VertexData));
+
+    memcpy(vertex_data->quad, quad, sizeof(GLfloat) * 12);
+    memcpy(vertex_data->quad_color, quad_color, sizeof(GLfloat) * 12);
+    memcpy(vertex_data->tex_coord, tex_coords2, sizeof(GLfloat) * 8);
+
+    // Generate VBO handle for drawing
+    glGenBuffers(1, &self->vbo_);
+
+    // Generate VAO
+    glGenVertexArrays(1, &self->vao_);
+    glBindVertexArray(self->vao_);
+
+    // Attach vertex data to VAO
+    glBindBuffer(GL_ARRAY_BUFFER, self->vbo_);
+
+    glBufferData(GL_ARRAY_BUFFER, sizeof(struct VertexData), vertex_data, GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (GLvoid*)offsetof(struct VertexData, quad));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (GLvoid*)offsetof(struct VertexData, quad_color));
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, (GLvoid*)offsetof(struct VertexData, tex_coord));
+
+    glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(1);
+    glEnableVertexAttribArray(2);
+
+    my_texture = LoadTexture(my_texture, "test.png");
+    //glUniform1i(glGetUniformLocation(self->program, "tex_sampler"), 0);
+    
     Shader_Use(self);
 
     glEnable(GL_TEXTURE_2D);
     glEnable(GL_DEPTH_TEST);
     glClearDepth(1.0);
 
-    my_texture = LoadTexture(my_texture, "water.png");
-
+    free(vertex_data);
 }
 
 void Shader_Update(Shader_t *self)
 {
-
     //Shader_Use(self);
-    glClearColor(0.0f, 0.0f, 0.0f, 0.0f); 
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+
     //mat4 m1 = mat4_identity();
     //mat4 m2 = mat4_identity();
 
@@ -276,31 +381,30 @@ void Shader_Update(Shader_t *self)
     //m1 = mat4_ortho2(m1, 1280, 720, 1.0f, 1.0f, 0.0f, 1000.0f);
     //m2 = mat4_ortho3(m2, 1280, 720, 1.0f, 1.0f, 0.0f, 1000.0f);
 
-    // Triangle render
-    //glBindVertexArray(self->vao_[0]);
 
     //Shader_SetMatrix4(self, "ProjectionMatrix", Shader_GetProjectionMatrix(self));
 
     	// Texture binding - we set GL_ACTIVE_TEXTURE0, and then we tell fragment shader
      // that gSampler variable will fetch data from GL_ACTIVE_TEXTURE0
 
-    Shader_SetInteger(self, "tex_sampler", 0);
+    //Shader_SetInteger(self, "tex_sampler", 0);
+    //
+    //glUniform1i(glGetUniformLocation(self->program, "tex_sampler"), 0);
     Sprites_BindTexture(my_texture, 0);
+    //GLint uniform_sampler  = glGetUniformLocation(self->program, "tex_sampler");
+    //glUniform1i(uniform_sampler, 0);
 
     //int iModelViewLoc = glGetUniformLocation(self->program, "ModelMatrix");
     //int iProjectionLoc = glGetUniformLocation(self->program, "ProjectionMatrix");
 
-    //glUniformMatrix4fv(iProjectionLoc, 1, GL_FALSE, Shader_GetProjectionMatrix(self));
+    //glUniformMatrix4fv(iProjectionLoc, 1, GL_FALSE, Shader_GetProjectionMatrix(self).m);
 
     //mat4 ModelView = mat4_lookAt(make_vec3(0.0f, 15.0f, 40.0f), make_vec3(0.0f, 0.0f, 0.0f), make_vec3(0.0f, 1.0f, 0.0f));
 
-    //glDrawArrays(GL_TRIANGLES, 0, 3); 
+    // Quad render
 
-    // Quad render using triangle strip
-    glBindVertexArray(self->vao_[1]);
+    glBindVertexArray(self->vao_);
 
-    //GL_TRIANGLE_STRIP
-    //glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, indices);
 
 
@@ -320,7 +424,9 @@ void Shader_Use(Shader_t *self)
 
 void Shader_SetProjectionMatrix(Shader_t *self, float fov, float aspect_ratio, float znear, float zfar)
 {
-    *self->projection_matrix = mat4_perspective(fov, aspect_ratio, znear, zfar);
+    self->projection_matrix = mat4_perspective(fov, aspect_ratio, znear, zfar);
+    //mat4 matrix = mat4_perspective(fov, aspect_ratio, znear, zfar);
+    //memcpy(&self->projection_matrix, &matrix, sizeof(mat4));
 }
 
 mat4 *Shader_GetProjectionMatrix(Shader_t *self)

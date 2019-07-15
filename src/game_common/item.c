@@ -2179,6 +2179,7 @@ void Bag_CountSortItemsDesc(struct Bag *self, int n, int range)
     free(count);
 }
 
+// Insertion sort
 void Bag_SortItems(struct Bag *self)
 {
     for (int i = 1; i < self->size; i++)

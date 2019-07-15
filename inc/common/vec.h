@@ -309,7 +309,7 @@ mat4 mat4_tranpose2(mat4 m);
 mat4 mat4_ortho(float left, float right, float bottom, float top, float znear, float zfar);
 mat4 mat4_ortho2(mat4 mtx, float left, float right, float bottom, float top, float znear, float zfar);
 mat4 mat4_ortho3(mat4 mtx, float left, float right, float bottom, float top, float znear, float zfar);
-mat4 mat4_perspective(float angle, float ratio, float znear, float zfar);
+mat4 *mat4_perspective(float angle, float ratio, float znear, float zfar);
 mat4 mat4_lookAt(vec3 eye, vec3 center, vec3 up);
 
 imat4 imat4_make(ivec4 a, ivec4 b, ivec4 c, ivec4 d);

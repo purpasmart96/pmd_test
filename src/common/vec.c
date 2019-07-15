@@ -229,12 +229,12 @@ ivec4 ivec4_ceil(ivec4 v)
 
 float vec4_length(vec4 a)
 {
-    return inverse_sqrt(vec4_dot(a, a));
+    return sqrtf(vec4_dot(a, a));
 }
 
 int ivec4_length(ivec4 a)
 {
-    return (int)inverse_sqrt((float)ivec4_dot(a, a));
+    return roundl(sqrtf((float)ivec4_dot(a, a)));
 }
 
 vec4 vec4_scale(vec4 a, float lambda)
@@ -494,12 +494,12 @@ ivec3 ivec3_cross(ivec3 a, ivec3 b)
 
 float vec3_length(vec3 a)
 {
-    return inverse_sqrt(vec3_dot(a, a));
+    return sqrtf(vec3_dot(a, a));
 }
 
 int ivec3_length(ivec3 a)
 {
-    return (int)inverse_sqrt((float)ivec3_dot(a, a));
+    return roundl(sqrtf((float)ivec3_dot(a, a)));
 }
 
 vec3 vec3_scale(vec3 a, float lambda)
@@ -668,12 +668,12 @@ ivec2 ivec2_abs(ivec2 v)
 
 float vec2_length(vec2 a)
 {
-    return inverse_sqrt(vec2_dot(a, a));
+    return sqrtf(vec2_dot(a, a));
 }
 
 int ivec2_length(ivec2 a)
 {
-    return (int)inverse_sqrt((float)ivec2_dot(a, a));
+    return roundl(sqrtf((float)ivec2_dot(a, a)));
 }
 
 vec2 vec2_scale(vec2 a, float lambda)
@@ -951,15 +951,15 @@ mat4 mat4_ortho3(mat4 mtx, float left, float right, float bottom, float top, flo
     mtx.a.x = 2.0f * rl;
     mtx.b.y = 2.0f  * tb;
     mtx.c.z = 2.0f * fn;
-    mtx.d.x =- (right  + left)    * rl;
-    mtx.d.y =- (top    + bottom)  * tb;
+    mtx.d.x =- (right + left)   * rl;
+    mtx.d.y =- (top   + bottom) * tb;
     mtx.d.z = (zfar + znear) * fn;
     mtx.d.w = 1.0f;
 
     return mtx;
 }
 
-mat4	mat4_perspective(float angle, float ratio, float znear, float zfar)
+mat4	*mat4_perspective(float angle, float ratio, float znear, float zfar)
 {
     mat4	ret = mat4_init();
     float	t = tanf(angle / 2.0f);
@@ -981,7 +981,7 @@ mat4	mat4_perspective(float angle, float ratio, float znear, float zfar)
     ret.m[14] = -2.0f * zfar * znear / (zfar - znear);
     ret.m[15] = 0.f;
 
-    return ret;
+    return &ret;
 }
 
 

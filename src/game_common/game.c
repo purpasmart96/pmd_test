@@ -233,8 +233,8 @@ void Game_Init(Game_t *self)
 
 void Game_Update(Game_t *self)
 {
-    Screen_Update(self->screen);
     Player_Update(self->player);
+    Screen_Update(self->screen);
 
     if (glfwWindowShouldClose(self->screen->window))
     {

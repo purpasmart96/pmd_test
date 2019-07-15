@@ -101,7 +101,6 @@ void Screen_Update(Screen_t *self)
     // Swap the buffers  
     glfwSwapBuffers(self->window);
     glfwSwapInterval(self->vsync);
-    glfwPollEvents();
 }
 
 void Screen_Shutdown(Screen_t *self)

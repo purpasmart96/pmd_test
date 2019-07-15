@@ -10,6 +10,9 @@ uniform sampler2D tex_sampler;
 void main()
 {
     //result = color;
-    //result = texture(tex_sampler, tex_coord) * vec4(color.rgb, 1.0);
-    result = color + texture(tex_sampler, tex_coord);
+    //vec4 new_color = color * vec4(2.2f, 2.2f, 2.2f, 2.2f);
+    vec2 flipped_coord = tex_coord;
+    flipped_coord.y = 1.0 - tex_coord.y;
+    result = texture(tex_sampler, flipped_coord) * vec4(color.rgb, 1.0);
+    //result = texture(tex_sampler, tex_coord);
 }

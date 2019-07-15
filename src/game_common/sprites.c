@@ -21,9 +21,10 @@
 #include "util.h"
 #include <GL/glew.h>
 #include <glfw3.h>
+#include <lodepng.h>
 #include "common/vec.h"
 #include "common/strlcat.h"
-#include "common/lodepng.h"
+
 #include "common/list_generic.h"
 
 #include "game_common/shader.h"
@@ -59,28 +60,29 @@ typedef struct Coords_s
     int h;
 } Coords_t;
 
-void SpriteRenderer_DrawSprite(Sprites_t *self, Texture_t *texture, vec2 position, vec2 size, GLfloat rotate, vec3 color)
-{
-    //Shader_Use(self);
-
-    //mat4 model = mat4_translate(model, position.x, position.y, 0.0f, 0.0f);
-
-    //model = mat4_translate(model, 0.5f * size.x, 0.5f * size.y, 0.0f);
-    //model = mat4_rotate(model, rotate, 0.0f, 0.0f, 1.0f);
-    //model = mat4_translate(model, -0.5f * size.x, -0.5f * size.y, 0.0f);
-
-    //model = mat4_scale_xyz(model, size.x, size.y, 1.0f);
-
-    //Shader_SetMatrix4(self, "model", &model);
-    //Shader_SetVector3f(self, "vertex_color", &color);
-
-    //glActiveTexture(GL_TEXTURE0);
-    //glBindTexture(GL_TEXTURE_2D, texture->id);
-
-    ////glBindVertexArray(self->shader->vao->);
-    //glDrawArrays(GL_TRIANGLES, 0, 6);
-    //glBindVertexArray(0);
-}
+//void SpriteRenderer_DrawSprite(Sprites_t *self, Texture_t *texture, vec2 position, vec2 size, GLfloat rotate, vec3 color)
+//{
+//    Shader_Use(self);
+//
+//    mat4 model = mat4_translate(model, position.x, position.y, 0.0f, 0.0f);
+//
+//    model = mat4_translate(model, 0.5f * size.x, 0.5f * size.y, 0.0f);
+//    model = mat4_rotate(model, rotate, 0.0f, 0.0f, 1.0f);
+//    model = mat4_translate(model, -0.5f * size.x, -0.5f * size.y, 0.0f);
+//
+//    model = mat4_scale_xyz(model, size.x, size.y, 1.0f);
+//
+//    Shader_SetMatrix4(self, "ModelMatrix", &model);
+//    Shader_SetVector3f(self, "vertex_color", &color);
+//
+//    glActiveTexture(GL_TEXTURE0);
+//
+//    glBindTexture(GL_TEXTURE_2D, texture->id);
+//
+//    glBindVertexArray(self->shader->quad_vao);
+//    glDrawArrays(GL_TRIANGLES, 0, 6);
+//    glBindVertexArray(0);
+//}
 
 
 Sprites_t *Sprites_New(bool init)
@@ -102,30 +104,30 @@ Sprites_t *Sprites_New(bool init)
 
 void Sprites_Init(Sprites_t *self)
 {
-    //// Configure VAO/VBO
-    //GLuint VBO;
-    //GLfloat vertices[] = {
-    //    // Pos      // Tex
-    //    0.0f, 1.0f, 0.0f, 1.0f,
-    //    1.0f, 0.0f, 1.0f, 0.0f,
-    //    0.0f, 0.0f, 0.0f, 0.0f,
+    // Configure VAO/VBO
+    GLuint VBO;
+    GLfloat vertices[] = {
+        // Pos      // Tex
+        0.0f, 1.0f, 0.0f, 1.0f,
+        1.0f, 0.0f, 1.0f, 0.0f,
+        0.0f, 0.0f, 0.0f, 0.0f,
 
-    //    0.0f, 1.0f, 0.0f, 1.0f,
-    //    1.0f, 1.0f, 1.0f, 1.0f,
-    //    1.0f, 0.0f, 1.0f, 0.0f
-    //};
+        0.0f, 1.0f, 0.0f, 1.0f,
+        1.0f, 1.0f, 1.0f, 1.0f,
+        1.0f, 0.0f, 1.0f, 0.0f
+    };
 
-    //glGenVertexArrays(1, &self->shader->vao);
-    //glGenBuffers(1, &VBO);
+    glGenVertexArrays(1, &self->shader->quad_vao);
+    glGenBuffers(1, &VBO);
 
-    //glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    //glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-    //glBindVertexArray(self->shader->vao);
-    //glEnableVertexAttribArray(0);
-    //glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (GLvoid*)0);
-    //glBindBuffer(GL_ARRAY_BUFFER, 0);
-    //glBindVertexArray(0);
+    glBindVertexArray(self->shader->quad_vao);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (GLvoid*)0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
 
 
 
@@ -156,6 +158,26 @@ Texture_t *Texture_New(const char *name, u8 *image,GLuint internal_format, GLuin
     return texture;
 }
 
+u32 Texture_GetWidth(Texture_t *texture)
+{
+    return texture->width;
+}
+
+u32 Texture_GetHeight(Texture_t *texture)
+{
+    return texture->height;
+}
+
+void Texture_Bind(Texture_t *texture)
+{
+    glBindTexture(GL_TEXTURE_2D, texture->id);
+}
+
+void Texture_Unbind(Texture_t *texture)
+{
+    glBindTexture(GL_TEXTURE_2D, 0);
+}
+
 // Should probably just look up textures by their id's instead of their filename...
 static Texture_t *GetTextureFromListByName(const char *name)
 {
@@ -173,15 +195,17 @@ static Texture_t *GetTextureFromListByName(const char *name)
 Texture_t *LoadTexture(Texture_t *texture, const char *name)
 {
     texture = GetTextureFromListByName(name);
-    GLuint tex;
     glGenTextures(1, &texture->id);
     glBindTexture(GL_TEXTURE_2D, texture->id);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, texture->wrap_s);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, texture->wrap_t);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, texture->filter_min);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, texture->filter_max);
+
     glTexImage2D(GL_TEXTURE_2D, 0, texture->internal_format, texture->width, texture->height, 0, texture->image_format, GL_UNSIGNED_BYTE, texture->image);
-    glGenSamplers(1, &texture->sampler);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
     return texture;
 }
 
@@ -189,7 +213,6 @@ void Sprites_BindTexture(Texture_t *texture, int texture_unit)
 {
     glActiveTexture(GL_TEXTURE0 + texture_unit);
     glBindTexture(GL_TEXTURE_2D, texture->id);
-    glBindSampler(texture_unit, texture->sampler);
 }
 
 static void Sprite_LoadTextureIntoList(const char *name)
@@ -207,7 +230,7 @@ static void Sprite_LoadTextureIntoList(const char *name)
         ERROR("%u: %s\n", error, lodepng_error_text(error));
     }
     
-    LIST_PUSH(ListTexture, texture_list, Texture_New(name, image, GL_RGBA, GL_RGBA, GL_CLAMP, GL_CLAMP, GL_LINEAR, GL_LINEAR,  width, height));
+    LIST_PUSH(ListTexture, texture_list, Texture_New(name, image, GL_RGBA, GL_RGBA, GL_CLAMP_TO_BORDER, GL_CLAMP_TO_BORDER, GL_NEAREST, GL_NEAREST,  width, height));
 }
 
 void Sprite_MakeTextureAtlas(void)

@@ -57,7 +57,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>false</SDLCheck>
-      <AdditionalIncludeDirectories>...\..\inc;...\..\lib\glew-2.1.0\include;...\..\lib\glfw-3.2.1\include\GLFW;...\..\lib\zlib\include;...\..\lib\SDL2-2.0.3\include;...\..\lib\openal-soft-1.17.1-bin\include;...\..\lib\libpng-1.6.20;...\..\lib\libvorbis-1.3.5\include;...\..\lib\libogg-1.3.2\include;G:\PokeMysteryDun\pmd_fix\lib\Simple OpenGL Image Library\src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>...\..\inc;...\..\lib\glew-2.1.0\include;...\..\lib\glfw-3.2.1\include\GLFW;...\..\lib\zlib\include;...\..\lib\SDL2-2.0.3\include;...\..\lib\openal-soft-1.17.1-bin\include;...\..\lib\libpng-1.6.20;...\..\lib\libvorbis-1.3.5\include;...\..\lib\libogg-1.3.2\include;...\..\lib\lode_png\include\lode_png</AdditionalIncludeDirectories>
       <CompileAs>CompileAsC</CompileAs>
     </ClCompile>
     <Link>
@@ -65,8 +65,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>...\..\lib\glew-2.1.0\lib\Release\Win32;...\..\lib\glfw-3.2.1\lib-vc2013;...\..\lib\zlib\lib;...\..\lib\SDL2-2.0.3\lib\x86;...\..\lib\openal-soft-1.17.1-bin\libs\Win32;...\..\lib\libpng-1.6.20\projects\vstudio\Release;...\..\lib\libogg-1.3.2\lib\x86;...\..\lib\libvorbis-1.3.5\lib\x86;G:\PokeMysteryDun\pmd_fix\lib\Simple OpenGL Image Library\projects\VC9\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3.lib;glew32.lib;glew32s.lib;opengl32.lib;zdll.lib;OpenAL32.lib;SDL2.lib;SDL2main.lib;libpng16.lib;libvorbis.lib;libogg.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>...\..\lib\glew-2.1.0\lib\Release\Win32;...\..\lib\glfw-3.2.1\lib-vc2013;...\..\lib\zlib\lib;...\..\lib\SDL2-2.0.3\lib\x86;...\..\lib\openal-soft-1.17.1-bin\libs\Win32;...\..\lib\libpng-1.6.20\projects\vstudio\Release;...\..\lib\libogg-1.3.2\lib\x86;...\..\lib\libvorbis-1.3.5\lib\x86;...\..\lib\lode_png\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3.lib;glew32.lib;glew32s.lib;opengl32.lib;zdll.lib;OpenAL32.lib;SDL2.lib;SDL2main.lib;libpng16.lib;libvorbis.lib;libogg.lib;LodePng.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
   </ItemDefinitionGroup>
@@ -80,17 +80,18 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>false</SDLCheck>
-      <AdditionalIncludeDirectories>...\..\inc;...\..\lib\glew-2.1.0\include;...\..\lib\glfw-3.2.1\include\GLFW;...\..\lib\zlib\include;...\..\lib\SDL2-2.0.3\include;...\..\lib\openal-soft-1.17.1-bin\include;...\..\lib\libpng-1.6.20;...\..\lib\libvorbis-1.3.5\include;...\..\lib\libogg-1.3.2\include;G:\PokeMysteryDun\pmd_fix\lib\Simple OpenGL Image Library\src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>...\..\inc;...\..\lib\glew-2.1.0\include;...\..\lib\glfw-3.2.1\include\GLFW;...\..\lib\zlib\include;...\..\lib\SDL2-2.0.3\include;...\..\lib\openal-soft-1.17.1-bin\include;...\..\lib\libpng-1.6.20;...\..\lib\libvorbis-1.3.5\include;...\..\lib\libogg-1.3.2\include;...\..\lib\lode_png\include\lode_png</AdditionalIncludeDirectories>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <CompileAs>CompileAsC</CompileAs>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>...\..\lib\glew-2.1.0\lib\Release\Win32;...\..\lib\glfw-3.2.1\lib-vc2013;...\..\lib\zlib\lib;...\..\lib\SDL2-2.0.3\lib\x86;...\..\lib\openal-soft-1.17.1-bin\libs\Win32;...\..\lib\libpng-1.6.20\projects\vstudio\Release;...\..\lib\libogg-1.3.2\lib\x86;...\..\lib\libvorbis-1.3.5\lib\x86;G:\PokeMysteryDun\pmd_fix\lib\Simple OpenGL Image Library\projects\VC9\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3.lib;glew32.lib;glew32s.lib;opengl32.lib;zdll.lib;OpenAL32.lib;SDL2.lib;SDL2main.lib;libpng16.lib;libvorbis.lib;libogg.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>...\..\lib\glew-2.1.0\lib\Release\Win32;...\..\lib\glfw-3.2.1\lib-vc2013;...\..\lib\zlib\lib;...\..\lib\SDL2-2.0.3\lib\x86;...\..\lib\openal-soft-1.17.1-bin\libs\Win32;...\..\lib\libpng-1.6.20\projects\vstudio\Release;...\..\lib\libogg-1.3.2\lib\x86;...\..\lib\libvorbis-1.3.5\lib\x86;...\..\lib\lode_png\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3.lib;glew32.lib;glew32s.lib;opengl32.lib;zdll.lib;OpenAL32.lib;SDL2.lib;SDL2main.lib;libpng16.lib;libvorbis.lib;libogg.lib;LodePng.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
   </ItemDefinitionGroup>
@@ -100,7 +101,6 @@
     <ClCompile Include="src\common\dynamic_array.c" />
     <ClCompile Include="src\common\file_io.c" />
     <ClCompile Include="src\common\list_generic.c" />
-    <ClCompile Include="src\common\lodepng.c" />
     <ClCompile Include="src\common\mem_pool.c" />
     <ClCompile Include="src\common\rand_num.c" />
     <ClCompile Include="src\common\stack.c" />

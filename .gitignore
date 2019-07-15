@@ -1,4 +1,7 @@
 # User-specific files
+Debug/
+Release/
+lib/glfw-3.2.1/docs/
 *.suo
 *.user
 *.sln.docstates
@@ -12,6 +15,5 @@
 *.js
 *.sdf
 *.exe
-*.png
 *.bmp
 *.db

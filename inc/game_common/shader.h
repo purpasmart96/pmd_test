@@ -27,10 +27,11 @@ typedef struct Shader_s
     GLuint program;
     GLuint vertex_shader;
     GLuint frag_shader;
-    GLint  vbo_[5];
-    GLint  vao_[2];
+    GLint  vbo_;
+    GLint  vao_;
+    GLint  quad_vao[4];
     mat4  *projection_matrix;
-    mat4  *model_matrix;
+    mat4   model_matrix;
     struct ListInt *vbo;
     struct ListInt *vao;
     struct ListInt *textures;
@@ -38,6 +39,7 @@ typedef struct Shader_s
 } Shader_t;
 
 Shader_t *Shader_New(bool init);
+void Shader_LoadShaders(Shader_t * self);
 void Shader_Init(Shader_t *self);
 void Shader_Update(Shader_t *self);
 void Shader_ShutDown(Shader_t *self);

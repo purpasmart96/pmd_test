@@ -92,6 +92,7 @@ static void Player_Move(Player_t *self)
 void Player_Update(Player_t *self)
 {
     //GLfloat velocity = 1; // PLAYER_VELOCITY * dt;
+    glfwPollEvents();
     Player_Move(self);
 
     /*

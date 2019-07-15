@@ -141,9 +141,6 @@
     <ClCompile Include="src\game_common\sprites.c">
       <Filter>Source Files\game_common</Filter>
     </ClCompile>
-    <ClCompile Include="src\common\lodepng.c">
-      <Filter>Source Files\common</Filter>
-    </ClCompile>
     <ClCompile Include="src\game_common\tile.c">
       <Filter>Source Files\game_common</Filter>
     </ClCompile>
