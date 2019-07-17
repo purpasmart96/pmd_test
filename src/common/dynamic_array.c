@@ -18,7 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#include "common\dynamic_array.h"
+#include "common/dynamic_array.h"
 
 DynamicArray *dynamic_array_new(size_t capacity)
 {

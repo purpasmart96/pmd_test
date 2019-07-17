@@ -19,7 +19,7 @@
 // THE SOFTWARE.
 
 #include "util.h"
-#include "game_common/Pokemon.h"
+#include "game_common/pokemon.h"
 #include "game_common/health.h"
 
 

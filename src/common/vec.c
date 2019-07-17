@@ -42,12 +42,22 @@ static float inverse_sqrt(const float x)
     return x * u.x * (1.5f - xhalf * u.x * u.x); // Newton step, repeating increases accuracy 
 }
 
+// Support for GCC
+#if defined(__GNUC__)
+inline double sqrt14(double x) __attribute__((always_inline));
+inline double sqrt14(double x)
+{
+    __asm__ ("fsqrt" : "+t" (x));
+    return x;
+}
+#elif defined(_MSC_VER)
 double __declspec (naked) __fastcall sqrt14(double n)
 {
     _asm fld qword ptr[esp + 4]
     _asm fsqrt
     _asm ret 8
 }
+#endif
 
 float lerp(float a, float b, float t)
 {

@@ -23,6 +23,7 @@
 #define _DUNGEON_STATE_H_
 
 #include "util.h"
+#include "game_common/game.h"
 
 typedef enum
 {

@@ -18,11 +18,13 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#include "common\stack_error.h"
-#include "common\stack_generic.h"
+#include <string.h>
+
+#include "common/stack_error.h"
+#include "common/stack_generic.h"
 
 #if defined(STACK_T)
-#include "common\template.h"
+#include "common/template.h"
 
 STACK_T *TEMPLATE(stack_new, STACK_T)(size_t capacity)
 {

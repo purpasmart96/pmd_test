@@ -19,7 +19,7 @@
 // THE SOFTWARE.
 
 #include "util.h"
-#include <glfw3.h>
+#include <GLFW/glfw3.h>
 
 #include "game_common/pokemon.h"
 #include "game_common/input.h"

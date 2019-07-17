@@ -22,6 +22,10 @@ else()
     # MSVC, On by default (if available)
 endif()
 
+# Choose a proper threading library
+set(THREADS_PREFER_PTHREAD_FLAG ON)
+find_package(Threads REQUIRED)
+
 # Just amalgamated all the C files in the SOURCES variable.
 # May change in a future, but if it works...
 set(SOURCES
@@ -83,8 +87,8 @@ set(SOURCES
 
 # Requires: OpenAL
 find_package(OpenAL REQUIRED)
-#find_package(SOIL REQUIRED) # !!
-
+find_package(GLEW REQUIRED)
+find_package(GLFW REQUIRED)
 
 # And wrap everything on the main executable.
 add_executable( ${CMAKE_PROJECT_NAME} ${SOURCES} )
@@ -93,12 +97,16 @@ include_directories(
     ${PROJECT_SOURCE_DIR}/inc
     
     ${OpenAL_INCLUDE_DIRS}
-#    ${SOIL_INCLUDE_DIRS}
+    ${GLEW_INCLUDE_DIRS}
+    ${GLFW_INCLUDE_DIRS}
 )
+message(STATUS ${GLFW_INCLUDE_DIR})
 
 target_link_libraries(
     ${CMAKE_PROJECT_NAME}
     
     ${OpenAL_LIBRARIES}
-#    ${SOIL_LIBRARIES}
+    ${GLEW_LIBRARIES}
+    ${GLFW_LIBRARIES}
+    Threads::Threads
 )

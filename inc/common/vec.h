@@ -227,7 +227,7 @@ vec4  vec4_mul(vec4, vec4);
 float vec4_dot(vec4 v, vec4 u);
 vec4  vec4_cross(vec4 v, vec4 u);
 vec4  vec4_abs(vec4 v);
-vec4  vec4_scale(vec4 a, int lambda);
+vec4  vec4_scale(vec4 a, float lambda);
 vec4  vec4_scale_xyz(vec4 a, float x, float y, float z);
 vec4  vec4_scale_xyzw(vec4 a, float x, float y, float z, float w);
 vec4  vec4_normalize(vec4 a);

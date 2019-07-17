@@ -21,6 +21,8 @@
 #ifndef _BERRIES_H_
 #define _BERRIES_H_
 
+#include "game_common/pokemon.h"
+
 typedef struct PokemonParty PokemonParty;
 typedef struct Pokemon_s Pokemon_t;
 

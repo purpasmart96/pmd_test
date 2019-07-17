@@ -25,6 +25,8 @@
 #include "util.h"
 #include "common/vec.h"
 
+#include "game_common/pokemon.h"
+
 #define NO_ITEMS 0
 #define MAX_ITEMS 48
 #define NEXT_SLOT i + 1
@@ -1341,6 +1343,13 @@ typedef enum ItemLocation
     LocationGround,
 } ItemLocation;
 
+typedef struct Bag
+{
+    struct Item *items;
+    u32 size;
+    u32 capacity;
+} Bag;
+
 typedef struct Item
 {
     Items type;
@@ -1352,13 +1361,6 @@ typedef struct Item
     void(*Reserved2)();
     ivec2 position;
 } Item;
-
-typedef struct Bag
-{
-    struct Item *items;
-    u32 size;
-    u32 capacity;
-} Bag;
 
 Bag *Bag_New(bool init);
 void Bag_Init(Bag *self);

@@ -1,5 +1,5 @@
 # PMD Engine Coded in C #
-This is simply a PMD clone engine coded in C.
+This is simply a PMD clone engine coded in C. Working on a Linux port.
 
 ## Dependencies ##
 This project requires CMake to be built. Also, requires the following libraries to be installed:

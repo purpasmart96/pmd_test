@@ -21,7 +21,7 @@
 #include "util.h"
 
 #include <GL/glew.h>
-#include <glfw3.h>
+#include <GLFW/glfw3.h>
 //#include <SOIL.h>
 
 #include "common/vec.h"
@@ -236,7 +236,7 @@ void ShaderRenderer_DrawSprite(Shader_t *self, Texture_t *texture, vec2 position
 {
     Shader_Use(self);
 
-    mat4 model = mat4_translate(model, position.x, position.y, 0.0f, 0.0f);
+    mat4 model = mat4_translate(model, position.x, position.y, 0.0f);
 
     model = mat4_translate(model, 0.5f * size.x, 0.5f * size.y, 0.0f);
     model = mat4_rotate(model, rotate, 0.0f, 0.0f, 1.0f);
