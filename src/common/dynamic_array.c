@@ -22,10 +22,10 @@
 
 DynamicArray *dynamic_array_new(size_t capacity)
 {
-    DynamicArray *dynamic_array = malloc(sizeof(*dynamic_array));
-    dynamic_array->capacity = capacity;
-    dynamic_array->data = malloc(sizeof(TYPE) * dynamic_array->capacity);
-    dynamic_array->size = 0;
+    DynamicArray *dynamic_array =   (DynamicArray*) malloc(sizeof(*dynamic_array));
+    dynamic_array->capacity =       capacity;
+    dynamic_array->data =           (TYPE*) malloc(sizeof(TYPE) * dynamic_array->capacity);
+    dynamic_array->size =           0;
 
     dynamic_array->resize = &dynamic_array_resize;
     dynamic_array->empty  = &dynamic_array_empty;
@@ -39,7 +39,7 @@ DynamicArray *dynamic_array_new(size_t capacity)
 TYPE *dynamic_array_resize(DynamicArray *dynamic_array, size_t capacity)
 {
     dynamic_array->capacity = capacity;
-    TYPE *temp = realloc(dynamic_array->data, sizeof(TYPE) * dynamic_array->capacity);
+    TYPE *temp = (TYPE*)realloc(dynamic_array->data, sizeof(TYPE) * dynamic_array->capacity);
 
     if (!temp)
     {
@@ -82,7 +82,7 @@ TYPE *dynamic_array_add(DynamicArray *dynamic_array, TYPE element)
 
 TYPE *dynamic_array_remove_element(DynamicArray *dynamic_array, int index)
 {
-    TYPE *temp = malloc((dynamic_array->size - 1) * sizeof(TYPE)); // allocate an array with a size 1 less than the current one
+    TYPE *temp = (TYPE*)malloc((dynamic_array->size - 1) * sizeof(TYPE)); // allocate an array with a size 1 less than the current one
 
     if (index != 0)
         memcpy(temp, dynamic_array->data, (index - 1) * sizeof(TYPE)); // copy everything BEFORE the index

@@ -36,7 +36,7 @@ static void error_callback(int error, const char *description)
 
 Screen_t *Screen_New(bool init)
 {
-    Screen_t *screen = malloc(sizeof(*screen));
+    Screen_t *screen = (Screen_t*) malloc(sizeof(*screen));
     if (init)
     {
         Screen_Init(screen);

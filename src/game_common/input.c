@@ -25,7 +25,7 @@
 
 Input_t *Input_New(bool init)
 {
-    Input_t *input = malloc(sizeof(*input));
+    Input_t *input = (Input_t*) malloc(sizeof(*input));
 
     if (!input)
     {

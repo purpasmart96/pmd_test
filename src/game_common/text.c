@@ -43,7 +43,7 @@ static int line_size[] =
 
 TextObject_t *TextObject()
 {
-    TextObject_t *text_object = malloc(sizeof(*text_object));
+    TextObject_t *text_object = (TextObject_t*) malloc(sizeof(*text_object));
     text_object->text = "place_holder";
     text_object->x = 0.0f;
     text_object->y = 0.0f;
@@ -52,7 +52,7 @@ TextObject_t *TextObject()
 
 TextObject_t TextObject_(char *txt, float xcoord, float ycoord)
 {
-    TextObject_t *text_object = malloc(sizeof(*text_object));
+    TextObject_t *text_object = (TextObject_t*) malloc(sizeof(*text_object));
     text_object->text = txt;
     text_object->x = xcoord;
     text_object->y = ycoord;
@@ -63,7 +63,7 @@ TextObject_t TextObject_(char *txt, float xcoord, float ycoord)
 
 TextManager_t TextManager_New()
 {
-    TextManager_t *t = malloc(sizeof(*t));
+    TextManager_t *t = (TextManager_t*) malloc(sizeof(*t));
 
     // init as 0 as default
     t->texturenr = 0;
@@ -137,10 +137,10 @@ void PrepareDrawInfo(TextManager_t *self)
     // Create the arrays we need with the correct size.
 
     // These can fail...
-    self->vecs = realloc(self->vecs, sizeof(float) * char_count * 12);
-    self->colors = realloc(self->colors, sizeof(float) * char_count * 16);
-    self->uvs = realloc(self->uvs, sizeof(float) * char_count * 8);
-    self->indices = realloc(self->indices, sizeof(s16) * char_count * 6);
+    self->vecs = (float*) realloc(self->vecs, sizeof(float) * char_count * 12);
+    self->colors = (float*) realloc(self->colors, sizeof(float) * char_count * 16);
+    self->uvs = (float*) realloc(self->uvs, sizeof(float) * char_count * 8);
+    self->indices = (s16*) realloc(self->indices, sizeof(s16) * char_count * 6);
 
 }
 

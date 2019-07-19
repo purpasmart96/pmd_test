@@ -21,6 +21,7 @@
 #ifndef _SOUND_CORE_H_
 #define _SOUND_CORE_H_
 
+#include <pthread.h>
 #include "audio_core/al_common.h"
 
 typedef struct Stack Stack;
@@ -55,8 +56,11 @@ typedef struct SoundCore
     ALuint buffers[MAX_BUFFERS];
     bool seprate_thread;
     float master_volume;
+#if defined(__GNUC__)
+    pthread_t thread_handle;
+#elif defined(_MSC_VER)
     HANDLE thread_handle;
-
+#endif
 } SoundCore;
 
 typedef struct SoundInfo

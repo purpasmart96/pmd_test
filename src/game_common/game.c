@@ -194,7 +194,7 @@ static void key_callback(GLFWwindow *window, int key, int scancode, int action, 
 
 Game_t *Game_New(bool init)
 {
-    Game_t *game = malloc(sizeof(*game));
+    Game_t *game = (Game_t*) malloc(sizeof(*game));
 
     if (!game)
     {

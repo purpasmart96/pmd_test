@@ -25,7 +25,7 @@
 
 NODE_T *TEMPLATE(node_new, NODE_T)(T data)
 {
-    NODE_T *node = malloc(sizeof(*node));
+    NODE_T *node = (NODE_T*) malloc(sizeof(*node));
     node->next = NULL;
     node->prev = NULL;
     node->data = data;

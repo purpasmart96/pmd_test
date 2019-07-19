@@ -52,7 +52,7 @@ typedef struct DynamicArray_s
     size_t  size;
     size_t  capacity;
 
-    TYPE (*resize)(struct DynamicArray_s *, size_t);
+    TYPE* (*resize)(struct DynamicArray_s *, size_t);
     bool (*empty)(struct DynamicArray_s *);
     bool (*full)(struct DynamicArray_s *);
     TYPE (*remove)(struct DynamicArray_s *, int);

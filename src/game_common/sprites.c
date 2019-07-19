@@ -87,7 +87,7 @@ typedef struct Coords_s
 
 Sprites_t *Sprites_New(bool init)
 {
-    Sprites_t *sprites = malloc(sizeof(*sprites));
+    Sprites_t *sprites = (Sprites_t*) malloc(sizeof(*sprites));
 
     if (!sprites)
     {
@@ -140,10 +140,10 @@ void Sprites_Init(Sprites_t *self)
 }
 
 
-Texture_t *Texture_New(const char *name, u8 *image,GLuint internal_format, GLuint image_format, GLuint wrap_s, GLuint wrap_t, GLuint filter_min,
+Texture_t *Texture_New(char *name, u8 *image,GLuint internal_format, GLuint image_format, GLuint wrap_s, GLuint wrap_t, GLuint filter_min,
                        GLuint filter_max, u32 width, u32 height)
 {
-    Texture_t *texture = malloc(sizeof(*texture));
+    Texture_t *texture = (Texture_t*) malloc(sizeof(*texture));
     texture->name = name;
     texture->image = image;
     texture->internal_format = internal_format;

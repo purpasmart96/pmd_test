@@ -26,7 +26,7 @@
 
 NODE_T *TEMPLATE(node_new, NODE_T)(T data)
 {
-    NODE_T *node = malloc(sizeof(*node));
+    NODE_T *node = (NODE_T*) malloc(sizeof(*node));
     node->next = NULL;
     node->prev = NULL;
     node->data = data;
@@ -35,7 +35,7 @@ NODE_T *TEMPLATE(node_new, NODE_T)(T data)
 
 LIST_T *TEMPLATE(list_new, LIST_T)()
 {
-    LIST_T *list = malloc(sizeof(*list));
+    LIST_T *list = (LIST_T*) malloc(sizeof(*list));
     list->first = NULL;
     list->last  = NULL;
     list->count = 0;
@@ -92,7 +92,7 @@ void TEMPLATE(list_clear, LIST_T)(LIST_T *list)
 {
     _LIST_FOREACH(list, first, next, cur)
     {
-        memset(&cur->data, NULL, sizeof(T));
+        memset(&cur->data, 0, sizeof(T));
     }
 }
 
@@ -257,7 +257,7 @@ T TEMPLATE(list_at, LIST_T)(LIST_T *list, int index)
 
 T *TEMPLATE(list_to_array, LIST_T)(LIST_T *list)
 {
-    T *ret_array = malloc(sizeof(T) * list->count);
+    T *ret_array = (T*) malloc(sizeof(T) * list->count);
 
     int i = 0;
 

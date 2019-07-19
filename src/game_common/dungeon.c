@@ -60,7 +60,7 @@ void Dungeon_Init(PokemonParty *party)
     dungeon->floor_counter = 0;
 
     // Generate floor seeds in advance
-    dungeon->floor_seeds = malloc(sizeof(int) * dungeon->total_floors);
+    dungeon->floor_seeds = (int*) malloc(sizeof(int) * dungeon->total_floors);
     for (int i = 0; i < dungeon->total_floors; i++)
     {
         dungeon->floor_seeds[i] = rand();
@@ -385,16 +385,16 @@ int AddTerrain(Floor* floor, int tile_terrain, int ax, int ay, int bx, int by)
 
 Floor *GenerateFloor(int seed)
 {
-    Floor *floor = calloc(1, sizeof(*floor));
+    Floor *floor = (Floor*) calloc(1, sizeof(*floor));
     floor->width = floor_w;
     floor->height = floor_h;
     //srand(seed);
 
     // Fill floor with unused tiles
-    floor->tiles = malloc(sizeof(int) * floor_w);
+    floor->tiles = (int**) malloc(sizeof(int*) * floor_w);
     for (int x = 0; x < floor_w; x++)
     {
-        floor->tiles[x] = malloc(sizeof(int) * floor_h);
+        floor->tiles[x] = (int*) malloc(sizeof(int) * floor_h);
         for (int y = 0; y < floor_h; y++)
         {
             SetTile(floor, x, y, tileUnused);

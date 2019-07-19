@@ -22,7 +22,7 @@
 #ifndef _UTIL_H_
 #define _UTIL_H_
 
-#ifdef _WIN32
+#if defined(_MSC_VER)
 #include <direct.h>
 #include <io.h>
 #include <Windows.h>

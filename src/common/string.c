@@ -23,16 +23,16 @@
 
 String_t *string_new(const char *string)
 {
-    String_t *str = malloc(sizeof(*str));
+    String_t *str = (String_t*) malloc(sizeof(*str));
     str->length = strlen(string);
-    str->data = malloc(sizeof(char*) * str->length);
+    str->data = (char*) malloc(sizeof(char) * str->length);
     return str;
 }
 
 void string_resize(String_t *string, size_t capacity)
 {
     string->length = capacity;
-    char *temp = realloc(string->data, sizeof(char *) * string->length);
+    char *temp = (char*) realloc(string->data, sizeof(char) * string->length);
 
     if (!temp)
     {

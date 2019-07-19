@@ -18,7 +18,7 @@
 #ifndef _LIST_NODE_H_
 #define _LIST_NODE_H_
 
-#include "util.h"
+#include "../util.h"
 
 typedef struct ListNode
 {

@@ -29,20 +29,20 @@ static Ability ability_table[] =
 {
     { NoAbility,   "",              ""                                                   },
     { Stench,      "Stench",        "The stench may cause the target to flinch."         },
-    { Drizzle,     "Drizzle",       "The Pokémon makes it rain if it appears in battle." },
-    { SpeedBoost,  "Speed Boost",   "The Pokémon’s Speed stat is gradually boosted."     },
-    { BattleArmor, "Battle Armor",  "The Pokémon is protected against critical hits."    },
-    { Sturdy,      "Sturdy",        "The Pokémon is protected against 1-hit KO attacks." },
+    { Drizzle,     "Drizzle",       "The Pokï¿½mon makes it rain if it appears in battle." },
+    { SpeedBoost,  "Speed Boost",   "The Pokï¿½monï¿½s Speed stat is gradually boosted."     },
+    { BattleArmor, "Battle Armor",  "The Pokï¿½mon is protected against critical hits."    },
+    { Sturdy,      "Sturdy",        "The Pokï¿½mon is protected against 1-hit KO attacks." },
     { Damp,        "Damp",          "Prevents combatants from self destructing."         },
-    { Limber,      "Limber",        "The Pokémon is protected from paralysis."           },
-    { SandVeil,    "Sand Veil",     "Boosts the Pokémon’s evasion in a sandstorm."       },
-    { Static,      "Static",        "Contact with the Pokémon may cause paralysis."      },
+    { Limber,      "Limber",        "The Pokï¿½mon is protected from paralysis."           },
+    { SandVeil,    "Sand Veil",     "Boosts the Pokï¿½monï¿½s evasion in a sandstorm."       },
+    { Static,      "Static",        "Contact with the Pokï¿½mon may cause paralysis."      },
 
 };
 
 Pokemon_t *Pokemon_New(const char *name, Species species, Type primary_type, Type sub_type, AbilityTypes ability, Sex sex, int level, int max_hp)
 {
-    Pokemon_t *pokemon = calloc(1, sizeof(*pokemon));
+    Pokemon_t *pokemon = (Pokemon_t*) calloc(1, sizeof(*pokemon));
 
     SetPokemonName(pokemon, name);
     pokemon->species = species;
@@ -58,14 +58,14 @@ Pokemon_t *Pokemon_New(const char *name, Species species, Type primary_type, Typ
 
 PokemonParty *PokemonParty_New(int capacity)
 {
-    PokemonParty *party = calloc(1, sizeof(*party));
+    PokemonParty *party = (PokemonParty*) calloc(1, sizeof(*party));
     party->capacity = capacity;
-    party->members = malloc(party->capacity * sizeof(*party->members));
+    party->members = (Pokemon_t**) malloc(party->capacity * sizeof(*party->members));
     party->size = 0;
 
     for (int i = 0; i < party->capacity; i++)
     {
-        party->members[i] = malloc(sizeof(*party->members[i]));
+        party->members[i] = (Pokemon_t*) malloc(sizeof(*party->members[i]));
     }
 
     return party;

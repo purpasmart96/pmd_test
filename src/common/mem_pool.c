@@ -64,10 +64,10 @@ bool AllocMem(MemPool *self, const size_t mem_size)
 {
     size_t best_mem_block_size = CalculateBestMemoryBlockSize(self, mem_size);
     // allocate from Operating System
-    u8 *mem_block = malloc(best_mem_block_size);
+    u8 *mem_block = (u8*) malloc(best_mem_block_size);
     u32 needed_chunks = CalculateNeededChunks(self, mem_size);
     // allocate Chunk-Array to Manage the Memory
-    MemChunk *new_chunks = malloc(sizeof(*new_chunks) * needed_chunks);
+    MemChunk *new_chunks = (MemChunk*) malloc(sizeof(*new_chunks) * needed_chunks);
     assert(((mem_block) && (new_chunks)) && "Error : System ran out of Memory");
 
     return LinkChunksToData(self, new_chunks, needed_chunks, mem_block);

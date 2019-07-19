@@ -969,7 +969,7 @@ mat4 mat4_ortho3(mat4 mtx, float left, float right, float bottom, float top, flo
     return mtx;
 }
 
-mat4	*mat4_perspective(float angle, float ratio, float znear, float zfar)
+mat4	*mat4_perspective(mat4* inputmat4, float angle, float ratio, float znear, float zfar)
 {
     mat4	ret = mat4_init();
     float	t = tanf(angle / 2.0f);
@@ -991,7 +991,8 @@ mat4	*mat4_perspective(float angle, float ratio, float znear, float zfar)
     ret.m[14] = -2.0f * zfar * znear / (zfar - znear);
     ret.m[15] = 0.f;
 
-    return &ret;
+    (*inputmat4) = ret;
+    return inputmat4;
 }
 
 

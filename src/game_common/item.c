@@ -2080,7 +2080,7 @@ static struct ItemTable
 
 Bag *Bag_New(bool init)
 {
-    Bag *bag = malloc(sizeof(*bag));
+    Bag *bag = (Bag*) malloc(sizeof(*bag));
 
     if (!bag)
     {
@@ -2097,7 +2097,7 @@ Bag *Bag_New(bool init)
 void Bag_Init(Bag *self)
 {
     self->capacity = MAX_ITEMS;
-    self->items = malloc(sizeof(*self->items) * self->capacity);
+    self->items = (Item*) malloc(sizeof(*self->items) * self->capacity);
     ClearBag(self);
 }
 

@@ -48,7 +48,7 @@ struct VertexData
 
 Shader_t *Shader_New(bool init)
 {
-    Shader_t *shader = malloc(sizeof(*shader));
+    Shader_t *shader = (Shader_t*) malloc(sizeof(*shader));
 
     if (!shader)
     {
@@ -77,7 +77,7 @@ static const char *OpenFileFromPath(const char *path)
     fseek(file, 0, SEEK_SET);
 
     // Get source
-    char *source = malloc(length + 1);
+    char *source = (char*) malloc(length + 1);
     if (source == NULL)
     {
         ERROR("Couldn't allocate enough space for the shader!\n");
@@ -103,7 +103,7 @@ static GLuint LoadShader(const char *filename, GLenum shader_type)
     {
         rewind(file);
 
-        glsl_source = malloc(file_size + 1);
+        glsl_source = (char*) malloc(file_size + 1);
         if (glsl_source != NULL)
         {
             if (file_size == fread(glsl_source, sizeof(char), file_size, file))
@@ -332,7 +332,7 @@ void Shader_Init(Shader_t *self)
     GLint uniform_sampler  = glGetUniformLocation(self->program, "tex_sampler");
 
     // setup and copy
-    struct VertexData *vertex_data = malloc(sizeof(struct VertexData));
+    struct VertexData *vertex_data = (struct VertexData*) malloc(sizeof(struct VertexData));
 
     memcpy(vertex_data->quad, quad, sizeof(GLfloat) * 12);
     memcpy(vertex_data->quad_color, quad_color, sizeof(GLfloat) * 12);
@@ -424,7 +424,7 @@ void Shader_Use(Shader_t *self)
 
 void Shader_SetProjectionMatrix(Shader_t *self, float fov, float aspect_ratio, float znear, float zfar)
 {
-    self->projection_matrix = mat4_perspective(fov, aspect_ratio, znear, zfar);
+    mat4_perspective(self->projection_matrix, fov, aspect_ratio, znear, zfar);
     //mat4 matrix = mat4_perspective(fov, aspect_ratio, znear, zfar);
     //memcpy(&self->projection_matrix, &matrix, sizeof(mat4));
 }

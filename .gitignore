@@ -1,9 +1,10 @@
 # User-specific files
+.vscode/
 Debug/
 Release/
-lib/glfw-3.2.1/docs/
 build/
-lib/
+third-party/*/lib/
+third-party/*/bin/
 *.suo
 *.user
 *.sln.docstates

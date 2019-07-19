@@ -65,7 +65,7 @@ static SDL_Rect Tile_GetBox(Tile *self)
 
 Tile *Tile_New(int x, int y, int tile_type)
 {
-    Tile *tile = malloc(sizeof(*tile));
+    Tile *tile = (Tile*) malloc(sizeof(*tile));
 
     tile->box.x = x;
     tile->box.y = y;

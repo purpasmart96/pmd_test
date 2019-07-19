@@ -20,11 +20,15 @@
 
 #include "audio_core/sound_core.h"
 #include "audio_core/al_common.h"
-
+#if defined(__GNUC__)
+#include <pthread.h>
+#elif defined(_MSC_VER)
+#include <ProcessThreadsAPI.h>
+#endif
 
 ALState *ALState_New(int buffer_count, bool seprate_thread, bool init_sources)
 {
-    ALState *al = malloc(sizeof(*al));
+    ALState *al = (ALState*) malloc(sizeof(*al));
 
     if (!al)
     {
@@ -49,6 +53,21 @@ void ALState_SetSource(ALState *self)
     alGenSources(self->buffer_count, &self->source);
 }
 
+#if defined(__GNUC__)
+void* ALState_UpdateThread(void* uncasted_self)
+{
+    ALState* self = (ALState*) uncasted_self;
+    while (true)
+    {
+        alGetSourcei(self->source, AL_SOURCE_STATE, &self->source_state);
+        if (self->source_state != AL_PLAYING)
+        {
+            alSourcePlay(self->source);
+        }
+    }
+    return 0;
+}
+#elif defined(_MSC_VER)
 DWORD WINAPI ALState_UpdateThread(ALState *self,  __in LPVOID lpParameter)
 {
     while (true)
@@ -60,8 +79,8 @@ DWORD WINAPI ALState_UpdateThread(ALState *self,  __in LPVOID lpParameter)
         }
     }
     return 0;
-
 }
+#endif
 
 static void list_audio_devices(const ALCchar *devices)
 {
@@ -80,50 +99,53 @@ static void list_audio_devices(const ALCchar *devices)
     DEBUG("----------\n");
 }
 
-
 void ALState_Init(ALState *self, int buffer_count, bool seprate_thread, bool init_sources)
 {
-    //alGetError();
-    //self->buffer_count = buffer_count;
-    //self->device = alcOpenDevice(NULL);
+#if 0
+    alGetError();
+    self->buffer_count = buffer_count;
+    self->device = alcOpenDevice(NULL);
 
-    //if (!self->device)
-    //{
-    //    ERROR("OpenAL Device Failed To Open!\n");
-    //    return;
-    //}
+    if (!self->device)
+    {
+        ERROR("OpenAL Device Failed To Open!\n");
+        return;
+    }
 
-    //self->context = alcCreateContext(self->device, NULL);
+    self->context = alcCreateContext(self->device, NULL);
 
-    //if (!alcMakeContextCurrent(self->context))
-    //{
-    //    ERROR("OpenAL Context Error: %d\n", alGetError());
-    //    return;
-    //}
+    if (!alcMakeContextCurrent(self->context))
+    {
+        ERROR("OpenAL Context Error: %d\n", alGetError());
+        return;
+    }
 
-    ////CreateThread(NULL, 0, althread, NULL, 0, NULL);
-    //alListener3f(AL_POSITION, 0, 0, 0);
-    //alListener3f(AL_VELOCITY, 0, 0, 0);
-    //alListener3f(AL_ORIENTATION, 0, 0, -1);
+    //CreateThread(NULL, 0, althread, NULL, 0, NULL);
+    alListener3f(AL_POSITION, 0, 0, 0);
+    alListener3f(AL_VELOCITY, 0, 0, 0);
+    alListener3f(AL_ORIENTATION, 0, 0, -1);
 
-    ////alGenSources(self->buffer_count, &self->source);
-    //alGenSources((ALuint)1, &self->source);
+    //alGenSources(self->buffer_count, &self->source);
+    alGenSources((ALuint)1, &self->source);
 
-    //alSourcef(self->source, AL_PITCH, 1);
-    //alSourcef(self->source, AL_GAIN, 1);
-    //alSource3f(self->source, AL_POSITION, 0, 0, 0);
-    //alSource3f(self->source, AL_VELOCITY, 0, 0, 0);
-    //alSourcei(self->source, AL_LOOPING, AL_FALSE);
+    alSourcef(self->source, AL_PITCH, 1);
+    alSourcef(self->source, AL_GAIN, 1);
+    alSource3f(self->source, AL_POSITION, 0, 0, 0);
+    alSource3f(self->source, AL_VELOCITY, 0, 0, 0);
+    alSourcei(self->source, AL_LOOPING, AL_FALSE);
 
-    //// Create the buffers
-    ////alGenBuffers(self->buffer_count, &self->buffers);
-    //alGenBuffers((ALuint)1, &self->buffers);
+    // Create the buffers
+    //alGenBuffers(self->buffer_count, &self->buffers);
+    alGenBuffers((ALuint)1, &self->buffers);
 
-    //if (seprate_thread)
-    //{
-    //    CreateThread(NULL, 0, ALState_UpdateThread, NULL, 0, NULL);
-    //}
-
+    if (seprate_thread)
+    {
+        #if defined(__GNUC__)
+        #elif defined(_MSC_VER)
+        #endif
+        CreateThread(NULL, 0, ALState_UpdateThread, NULL, 0, NULL);
+    }
+#endif
 }
 
 static ALenum to_al_format(int channels, int samples)

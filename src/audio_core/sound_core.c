@@ -28,9 +28,13 @@
 #include <ogg/os_types.h>
 #include <ogg/ogg.h>
 
-
-#include <io.h>
+#include <stdlib.h>
 #include <fcntl.h>
+
+#if defined(_MSC_VER)
+#include <io.h>
+#endif
+#include <pthread.h>
 
 static ALuint current_source = 0;
 static ALuint next_source = 1;
@@ -49,7 +53,7 @@ static ALuint DecrementSource()
 
 SoundCore *SoundCore_New(bool seprate_thread, bool init_sources)
 {
-    SoundCore *sound_core = malloc(sizeof(*sound_core));
+    SoundCore *sound_core = (SoundCore*) malloc(sizeof(*sound_core));
 
     if (!sound_core)
     {
@@ -83,7 +87,11 @@ void SoundCore_Delete(SoundCore *self)
     alDeleteBuffers(MAX_BUFFERS, self->buffers);
     alcDestroyContext(self->context);
     alcCloseDevice(self->device);
+#if defined(__GNUC__)
+    pthread_join(self->thread_handle, NULL);
+#elif defined(_MSC_VER)
     WaitForSingleObject(self->thread_handle, INFINITE);
+#endif
     free(self);
 }
 
@@ -91,9 +99,10 @@ void SoundCore_SetSource(SoundCore *self)
 {
 	//alGenSources(self->buffer_count, &self->source);
 }
-
-DWORD WINAPI SoundCore_UpdateThread(SoundCore *self,  __in LPVOID lpParameter)
+#if defined(__GNUC__)
+void* SoundCore_UpdateThread(void* uncasted_self)
 {
+    SoundCore* self = (SoundCore*) uncasted_self;
     while (true)
     {
         alGetSourcei(self->sources[current_source].source, AL_SOURCE_STATE, self->sources[current_source].source_state);
@@ -105,6 +114,21 @@ DWORD WINAPI SoundCore_UpdateThread(SoundCore *self,  __in LPVOID lpParameter)
     return 0;
 
 }
+#elif defined(_MSC_VER)
+DWORD WINAPI SoundCore_UpdateThread(SoundCore *self,  __in LPVOID lpParameter)
+{
+    while (true)
+    {
+        alGetSourcei(self->sources[current_source].source, AL_SOURCE_STATE, self->sources[current_source].source_state);
+        if (self->sources[current_source].source_state != AL_PLAYING)__in LPVOID
+        {
+            alSourcePlay(self->sources[IncrementSource()].source);
+        }
+    }
+    return 0;
+
+}
+#endif
 
 void SoundCore_Init(SoundCore *self)
 {
@@ -114,7 +138,11 @@ void SoundCore_Init(SoundCore *self)
 
     if (self->seprate_thread)
     {
+#if defined(__GNUC__)
+        pthread_create(&(self->thread_handle), NULL, SoundCore_UpdateThread, (void*) self);
+#elif defined(_MSC_VER)
         self->thread_handle = CreateThread(NULL, 0, SoundCore_UpdateThread, NULL, 0, NULL);
+#endif
     }
 
 }
@@ -147,7 +175,7 @@ float SoundCore_GetMasterVolume(SoundCore *self)
 
 SoundInfo *SoundInfo_New(int freqency, int channels, int bits_per_channel, Stack *buffer, int size)
 {
-    SoundInfo *sound_info = malloc(sizeof(*sound_info));
+    SoundInfo *sound_info = (SoundInfo*) malloc(sizeof(*sound_info));
 
     if (!sound_info)
     {
@@ -158,13 +186,13 @@ SoundInfo *SoundInfo_New(int freqency, int channels, int bits_per_channel, Stack
     sound_info->freqency = freqency;
     sound_info->channels = channels;
     sound_info->bits_per_channel = bits_per_channel;
-    sound_info->buffer_data = malloc(buffer->size * 4096 * 2);
+    sound_info->buffer_data = (char*) malloc(buffer->size * 4096 * 2);
 
     for (int i = 0; i < buffer->size; i++)
     {
         for (int j = 0; j < 4096; j++)
         {
-            sound_info->buffer_data[j] = buffer->data[i];
+            sound_info->buffer_data[j] = (char*) buffer->data[i];
         }
 
     }
@@ -178,7 +206,7 @@ SoundInfo *SoundInfo_New(int freqency, int channels, int bits_per_channel, Stack
 static char *concat(const char *s1, const char *s2)
 {
     size_t size = strlen(s1) + strlen(s2) + 1;
-    char *result = malloc(size);//+1 for the null-terminator
+    char *result = (char*) malloc(size);//+1 for the null-terminator
                                                        //in real code you would check for errors in malloc here
     strlcpy(result, s1, size);
     strlcat(result, s2, size);
@@ -448,7 +476,7 @@ SoundInfo *ogg_decode(const char *file_name)
                                         ERROR("Clipping in frame %ld\n", (long)(vdsp.sequence));
                                     }
 
-                                    //char *out_buffer = malloc(bout);
+                                    //char *out_buffer = (char*) malloc(bout);
                                     //memcpy(out_buffer, convbuffer, 2 * vi.channels);
 
                                     stack_push(bgm_stack, convbuffer);

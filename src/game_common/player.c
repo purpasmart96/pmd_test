@@ -27,7 +27,7 @@
 
 Player_t *Player_New(bool init)
 {
-    Player_t *player = malloc(sizeof(*player));
+    Player_t *player = (Player_t*) malloc(sizeof(*player));
 
     if (!player)
     {
