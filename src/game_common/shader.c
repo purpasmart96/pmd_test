@@ -461,7 +461,7 @@ void Shader_SetVector4f(Shader_t *self, const GLchar *name, const vec4 *vector)
 
 void Shader_SetMatrix3(Shader_t *self, const GLchar *name, const mat3 *matrix)
 {
-    glUniformMatrix3fv(glGetUniformLocation(self->program, name), 1, GL_FALSE, matrix->m);
+    glUniformMatrix3fv(glGetUniformLocation(self->program, name), 1, GL_FALSE, matrix->m->v);
 }
 
 void Shader_SetMatrix4(Shader_t *self, const GLchar *name, const mat4 *matrix)

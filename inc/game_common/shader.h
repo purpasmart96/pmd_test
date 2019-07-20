@@ -22,14 +22,20 @@
 #ifndef _SHADER_MANAGER_H_
 #define _SHADER_MANAGER_H_
 
+#include <GL/gl.h>
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
+
+#include "common/vec.h"
+
 typedef struct Shader_s
 {
     GLuint program;
     GLuint vertex_shader;
     GLuint frag_shader;
-    GLint  vbo_;
-    GLint  vao_;
-    GLint  quad_vao[4];
+    GLuint vbo_;
+    GLuint vao_;
+    GLuint quad_vao;
     mat4  *projection_matrix;
     mat4   model_matrix;
     struct ListInt *vbo;

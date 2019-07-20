@@ -99,13 +99,18 @@ void SoundCore_SetSource(SoundCore *self)
 {
 	//alGenSources(self->buffer_count, &self->source);
 }
+
 #if defined(__GNUC__)
 void* SoundCore_UpdateThread(void* uncasted_self)
 {
     SoundCore* self = (SoundCore*) uncasted_self;
     while (true)
     {
-        alGetSourcei(self->sources[current_source].source, AL_SOURCE_STATE, self->sources[current_source].source_state);
+        alGetSourcei(
+            self->sources[current_source].source,
+            AL_SOURCE_STATE,
+            &self->sources[current_source].source_state);
+
         if (self->sources[current_source].source_state != AL_PLAYING)
         {
             alSourcePlay(self->sources[IncrementSource()].source);
@@ -133,7 +138,7 @@ DWORD WINAPI SoundCore_UpdateThread(SoundCore *self,  __in LPVOID lpParameter)
 void SoundCore_Init(SoundCore *self)
 {
     alGenBuffers(MAX_BUFFERS, self->buffers);
-    alGenSources(MAX_SOURCES, self->sources);
+    //alGenSources(MAX_SOURCES, self->sources);
 
 
     if (self->seprate_thread)
@@ -192,7 +197,7 @@ SoundInfo *SoundInfo_New(int freqency, int channels, int bits_per_channel, Stack
     {
         for (int j = 0; j < 4096; j++)
         {
-            sound_info->buffer_data[j] = (char*) buffer->data[i];
+            //sound_info->buffer_data[j] = buffer->data[i];
         }
 
     }

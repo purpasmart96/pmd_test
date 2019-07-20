@@ -129,8 +129,6 @@ void Sprites_Init(Sprites_t *self)
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 
-
-
     //int scale_x = 1920 / VIRTUAL_WIDTH;
     //int scale_y = 1080 / VIRTUAL_HEIGHT;
     //mat4 sprite_matrix = { 0 };
@@ -222,15 +220,17 @@ static void Sprite_LoadTextureIntoList(const char *name)
     u32 width, height;
 
     char path[64] = {'\0' };
+    char name_ch[256] = {'\0'};
     strlcat(path, dir, sizeof(path));
     strlcat(path, name, sizeof(path));
+    strcpy(name_ch, name);
     error = lodepng_decode32_file(&image, &width, &height, path);
     if (error)
     {
         ERROR("%u: %s\n", error, lodepng_error_text(error));
     }
     
-    LIST_PUSH(ListTexture, texture_list, Texture_New(name, image, GL_RGBA, GL_RGBA, GL_CLAMP_TO_BORDER, GL_CLAMP_TO_BORDER, GL_NEAREST, GL_NEAREST,  width, height));
+    LIST_PUSH(ListTexture, texture_list, Texture_New(name_ch, image, GL_RGBA, GL_RGBA, GL_CLAMP_TO_BORDER, GL_CLAMP_TO_BORDER, GL_NEAREST, GL_NEAREST,  width, height));
 }
 
 void Sprite_MakeTextureAtlas(void)
