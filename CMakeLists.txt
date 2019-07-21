@@ -210,5 +210,5 @@ target_link_libraries(
 
     m
     Threads::Threads
-    ${LIBRARY_OUTPUT_PATH}/liblodepng.a
+    lodepng::lodepng
 )

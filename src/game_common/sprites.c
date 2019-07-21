@@ -139,11 +139,15 @@ void Sprites_Init(Sprites_t *self)
 }
 
 
-Texture_t *Texture_New(char *name, u8 *image,GLuint internal_format, GLuint image_format, GLuint wrap_s, GLuint wrap_t, GLuint filter_min,
+Texture_t *Texture_New(const char *name, u8 *image,GLuint internal_format, GLuint image_format, GLuint wrap_s, GLuint wrap_t, GLuint filter_min,
                        GLuint filter_max, u32 width, u32 height)
 {
+    // MEM LEAK WARNING: Just inserted a memory leak source on the strdup here.
+    // Should the Texture_t type have a cleanup function, "name" and "image" must
+    // be taken care of.
+
     Texture_t *texture = (Texture_t*) malloc(sizeof(*texture));
-    texture->name = name;
+    texture->name = strdup(name);
     texture->image = image;
     texture->internal_format = internal_format;
     texture->image_format = image_format;
@@ -189,6 +193,9 @@ static Texture_t *GetTextureFromListByName(const char *name)
             return temp;
         }
     }
+
+    fprintf(stderr, "No texture with the name \"%s\" found!", name);
+    return NULL;
 }
 
 Texture_t *LoadTexture(Texture_t *texture, const char *name)
@@ -220,18 +227,17 @@ static void Sprite_LoadTextureIntoList(const char *name)
     u8 *image;
     u32 width, height;
 
-    char path[64] = {'\0' };
-    char name_ch[256] = {'\0'};
+    char path[256] = {'\0' };
+
     strlcat(path, dir, sizeof(path));
     strlcat(path, name, sizeof(path));
-    strcpy(name_ch, name);
     error = lodepng_decode32_file(&image, &width, &height, path);
     if (error)
     {
         ERROR("%u: %s\n", error, lodepng_error_text(error));
     }
     
-    LIST_PUSH(ListTexture, texture_list, Texture_New(name_ch, image, GL_RGBA, GL_RGBA, GL_CLAMP_TO_BORDER, GL_CLAMP_TO_BORDER, GL_NEAREST, GL_NEAREST,  width, height));
+    LIST_PUSH(ListTexture, texture_list, Texture_New(name, image, GL_RGBA, GL_RGBA, GL_CLAMP_TO_BORDER, GL_CLAMP_TO_BORDER, GL_NEAREST, GL_NEAREST,  width, height));
 }
 
 void Sprite_MakeTextureAtlas(void)

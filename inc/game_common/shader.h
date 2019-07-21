@@ -36,7 +36,7 @@ typedef struct Shader_s
     GLuint vbo_;
     GLuint vao_;
     GLuint quad_vao;
-    mat4  *projection_matrix;
+    mat4  projection_matrix;
     mat4   model_matrix;
     struct ListInt *vbo;
     struct ListInt *vao;
@@ -54,7 +54,7 @@ void Shader_Use(Shader_t *self);
 
 void Shader_SetProjectionMatrix(Shader_t * self, float fov, float aspect_ratio, float znear, float zfar);
 
-mat4 *Shader_GetProjectionMatrix(Shader_t * self);
+mat4 Shader_GetProjectionMatrix(Shader_t * self);
 
 void Shader_SetFloat(Shader_t *self, const GLchar *name, GLfloat value);
 void Shader_SetInteger(Shader_t *self, const GLchar *name, GLint value);

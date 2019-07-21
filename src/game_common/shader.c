@@ -424,12 +424,12 @@ void Shader_Use(Shader_t *self)
 
 void Shader_SetProjectionMatrix(Shader_t *self, float fov, float aspect_ratio, float znear, float zfar)
 {
-    mat4_perspective(self->projection_matrix, fov, aspect_ratio, znear, zfar);
+    self->projection_matrix = mat4_perspective(fov, aspect_ratio, znear, zfar);
     //mat4 matrix = mat4_perspective(fov, aspect_ratio, znear, zfar);
     //memcpy(&self->projection_matrix, &matrix, sizeof(mat4));
 }
 
-mat4 *Shader_GetProjectionMatrix(Shader_t *self)
+mat4 Shader_GetProjectionMatrix(Shader_t *self)
 {
     return self->projection_matrix;
 }
