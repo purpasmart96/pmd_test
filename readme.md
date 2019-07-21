@@ -10,10 +10,17 @@ You need to install a compiler of your choice that supports C++11 and CMake; and
 * GLEW
 * GLFW
 * SDL2
+* libVorbis
+* libOGG
 
 Then, to compile it, you may follow the standard CMake build procedure: make a `build` directory, run `cmake ..` and then `make` on it. If no errors, the executable should be in that folder.
 
 You can assist yourself with an IDE with CMake support such as VSCodium (with the proper extensions), QT Creator or Microsoft Visual Studio to assist and debug the program.
+
+This project also includes a modified version of `lodepng` so it's included on the CMake build chain and able to be linked from C without problems.
+
+## What does this program do at the moment? ##
+It shows an image and generates an ASCII dungeon on console.
 
 ## Changes in comparison to the original Purpasmart repository ##
 * Removed the Visual Studio project files and used CMake instead.
@@ -23,8 +30,10 @@ You can assist yourself with an IDE with CMake support such as VSCodium (with th
 * Adapted the Fast Sqrt method for it to use GCC Extended Assembly on non-MSVC build systems.
 * Include pointer casting in all memory allocation methods (malloc and realloc).
 * Minor modification in functions so conflicts with pointer-integer assignment don't give warnings.
+* A couple of things had to be fixed in a very cumbersome way. In particular, some variables such as Texture_t's `name` had to be strdup'd so they don't crash. A cleanup for that struct is necessary.
 
 ## Projected changes ##
-* Naturally, to work on Linux/GCC (and Windows/MinGW if possible).
-* Add an automated data package-making script
+* Test on a MinGW Windows environment.
+* Add an automated data package-making script.
+* Add a CMake deployment command for Windows builds so the DLLs get copied together with the compiled program.
 * Un-hardcode some settings.
