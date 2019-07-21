@@ -42,7 +42,7 @@ void Dungeon_Init(PokemonParty *party)
     //Dungeon_SetUpDefualtStatus(party);
     //23434555
     seed = time(NULL);
-    Dungeon *dungeon = calloc(1, sizeof(*dungeon));
+    Dungeon *dungeon = (Dungeon*) calloc(1, sizeof(*dungeon));
     dungeon->name = "TestDungeon";
     srand(seed);
     dungeon->seed = seed;

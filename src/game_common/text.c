@@ -123,8 +123,9 @@ void PrepareDrawInfo(TextManager_t *self)
 
     // Get the total amount of characters
     int char_count = 0;
-    foreach (TextObject_t *txt, self->txt_collection->data)
+    for (size_t i = 0; i < self->txt_collection->size; i++)
     {
+        TextObject_t* txt = (TextObject_t*) (self->txt_collection->data[i]);
         if (txt != NULL)
         {
             if (!(txt->text == NULL))
@@ -152,7 +153,7 @@ void PrepareDraw(TextManager_t *self)
     for (size_t i = 0; self->txt_collection->size; i++)
     {
         int index = i;
-        TextObject_t *txt = self->txt_collection->data[++index]; // Get the next slot
+        TextObject_t *txt = (TextObject_t*) self->txt_collection->data[++index]; // Get the next slot
         if (txt != NULL)
         {
             if (!(txt->text == NULL))

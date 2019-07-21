@@ -5,6 +5,8 @@ Release/
 build/
 third-party/*/lib/
 third-party/*/bin/
+lib/
+bin/
 *.suo
 *.user
 *.sln.docstates
@@ -20,3 +22,5 @@ third-party/*/bin/
 *.exe
 *.bmp
 *.db
+*.a
+*.dll

@@ -1,10 +1,34 @@
+# Copyright 2019 VirusRushTheater
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# \to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE.
+
+if (POLICY CMP0048)
+    cmake_policy(SET CMP0048 NEW)
+endif (POLICY CMP0048)
+
+project( pmd-engine VERSION 0.1 )
 
 # Disable in-source builds to prevent source tree corruption.
 if(" ${CMAKE_SOURCE_DIR}" STREQUAL " ${CMAKE_BINARY_DIR}")
     message(FATAL_ERROR "FATAL: In-source builds are not allowed. Please create a separate directory for build files.")
 endif()
 
-project( pmd-engine )
 cmake_minimum_required( VERSION 3.6 )
 
 set(CMAKE_BINARY_DIR ${CMAKE_CURRENT_SOURCE_DIR}/bin)
@@ -14,6 +38,7 @@ set(LIBRARY_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/lib)
 # Add all the CMake modules you find in the cmake-modules folder.
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake-modules/")
 
+# Add support for C++11.
 if( COMPILER_SUPPORTS_CXX11 )
     if( CMAKE_COMPILER_IS_GNUCXX )
         set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11" )
@@ -148,9 +173,12 @@ set(SOURCES
 )
 
 find_package(OpenAL REQUIRED)
+find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
 find_package(GLFW REQUIRED)
 find_package(SDL2 REQUIRED)
+find_package(LibOgg REQUIRED)
+find_package(LibVorbis REQUIRED)
 
 # And wrap everything on the main executable.
 add_executable( ${CMAKE_PROJECT_NAME} ${SOURCES} )
@@ -160,20 +188,27 @@ include_directories(
 
     ${lodepng_SOURCE_DIR}
     
-    ${OpenAL_INCLUDE_DIRS}
+    ${OPENAL_INCLUDE_DIR}
+    ${OPENGL_INCLUDE_DIRS}
     ${GLEW_INCLUDE_DIRS}
     ${GLFW_INCLUDE_DIRS}
     ${SDL2_INCLUDE_DIRS}
+    ${LIBOGG_INCLUDE_DIRS}
+    ${LIBVORBIS_INCLUDE_DIRS}
 )
 
 target_link_libraries(
     ${CMAKE_PROJECT_NAME}
-
-    ${lodepng_LIBRARIES}
     
-    ${OpenAL_LIBRARIES}
+    ${OPENAL_LIBRARY}
+    ${OPENGL_LIBRARIES}
     ${GLEW_LIBRARIES}
     ${GLFW_LIBRARIES}
     ${SDL2_LIBRARIES}
+    ${LIBOGG_LIBRARIES}
+    ${LIBVORBIS_LIBRARIES}
+
+    m
     Threads::Threads
+    ${LIBRARY_OUTPUT_PATH}/liblodepng.a
 )

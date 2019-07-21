@@ -82,7 +82,7 @@ typedef struct
 
 typedef struct
 {
-    int name;
+    const char* name;
     int seed;
     int difficulty;
     int *floor_seeds;

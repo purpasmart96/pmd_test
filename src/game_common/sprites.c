@@ -22,6 +22,7 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <lodepng.h>
+
 #include "common/vec.h"
 #include "common/strlcat.h"
 

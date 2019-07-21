@@ -161,7 +161,7 @@ typedef struct Texture_s
     char *name;
     u8 *image;
     int sampler;
-    int id;
+    u32 id;
     int internal_format; // Format of texture object
     int image_format; // Format of loaded image
     int wrap_s; // Wrapping mode on S axis
