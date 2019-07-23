@@ -101,7 +101,6 @@
     <ClCompile Include="src\common\dynamic_array.c" />
     <ClCompile Include="src\common\file_io.c" />
     <ClCompile Include="src\common\list_generic.c" />
-    <ClCompile Include="src\common\mem_pool.c" />
     <ClCompile Include="src\common\rand_num.c" />
     <ClCompile Include="src\common\stack.c" />
     <ClCompile Include="src\common\stack_generic.c" />
@@ -155,7 +154,6 @@
     <ClInclude Include="inc\common\file_io.h" />
     <ClInclude Include="inc\common\list_generic.h" />
     <ClInclude Include="inc\common\list_types.h" />
-    <ClInclude Include="inc\common\mem_pool.h" />
     <ClInclude Include="inc\common\rand_num.h" />
     <ClInclude Include="inc\common\stack.h" />
     <ClInclude Include="inc\common\stack_error.h" />

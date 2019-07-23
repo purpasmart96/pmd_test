@@ -123,9 +123,6 @@
     <ClCompile Include="src\common\rand_num.c">
       <Filter>Source Files\common</Filter>
     </ClCompile>
-    <ClCompile Include="src\common\mem_pool.c">
-      <Filter>Source Files\common</Filter>
-    </ClCompile>
     <ClCompile Include="src\common\list_generic.c">
       <Filter>Source Files\common</Filter>
     </ClCompile>
@@ -264,9 +261,6 @@
       <Filter>Header Files\common</Filter>
     </ClInclude>
     <ClInclude Include="inc\common\strlcpy.h">
-      <Filter>Header Files\common</Filter>
-    </ClInclude>
-    <ClInclude Include="inc\common\mem_pool.h">
       <Filter>Header Files\common</Filter>
     </ClInclude>
     <ClInclude Include="inc\common\rand_num.h">
