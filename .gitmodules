@@ -1,0 +1,3 @@
+[submodule "third-party/lodepng"]
+	path = third-party/lodepng
+	url = https://github.com/VirusRushTheater/lodepng
