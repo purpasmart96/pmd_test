@@ -55,6 +55,8 @@ endif()
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
 
+# Build Lodepng with C linkage.
+set(LODEPNG_BUILD_C_LIBRARY True CACHE BOOL "Building with C linkage" FORCE)
 add_subdirectory(third-party/lodepng)
 
 # Just amalgamated all the C files in the SOURCES variable.
@@ -210,5 +212,5 @@ target_link_libraries(
 
     m
     Threads::Threads
-    lodepng::lodepng
+    lodepng
 )
