@@ -129,7 +129,7 @@ typedef union vec2
 
 } vec2;
 
-typedef union ivec2_u
+typedef union ivec2
 {
     int v[2];
 
