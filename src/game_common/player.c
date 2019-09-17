@@ -45,7 +45,7 @@ Player_t *Player_New(bool init)
 
 void Player_Init(Player_t *self)
 {
-    self->leader = Pokemon_New("Flygon", Flygon, Dragon, Ground, Levitate, Female, 25, 255);
+    self->leader = Pokemon_New("Flygon", Flygon, Dragon, Ground, Levitate, Female, 25, 255, true);
     self->leader->current_hp = 100;
     self->leader->attack = 72;
     self->leader->defense = 66;
@@ -62,34 +62,49 @@ void Player_Init(Player_t *self)
 static void MoveLeft(Player_t *self)
 {
     TileState tile = GetTileInFront(GetDungeonObject(), self->leader->position.x, self->leader->position.y, West);
-    //if (IsTilePassable(GetDungeonObject()->floor, self->leader->position.x, self->leader->position.y))
-    if (tile.tile > tileWall && self->leader->position.x > 0)
+    if (IsTilePassableByType(GetDungeonObject()->floor, tile.tile))
+    {
+        SetPlayerPreviousPos(self->leader->position.x, self->leader->position.y);
         self->leader->position.x--;
-
+        SetPlayerTile(GetDungeonObject(), self->leader->position.x, self->leader->position.y);
+    }
     DEBUG("Player position X %d\n", self->leader->position.x);
 }
 
 static void MoveRight(Player_t *self)
 {
     TileState tile = GetTileInFront(GetDungeonObject(), self->leader->position.x, self->leader->position.y, East);
-    if (tile.tile > tileWall)
+    if (IsTilePassableByType(GetDungeonObject()->floor, tile.tile))
+    {
+        SetPlayerPreviousPos(self->leader->position.x, self->leader->position.y);
         self->leader->position.x++;
+        SetPlayerTile(GetDungeonObject(), self->leader->position.x, self->leader->position.y);
+    }
     DEBUG("Player position X %d\n", self->leader->position.x);
 }
 
 static void MoveDown(Player_t *self)
 {
     TileState tile = GetTileInFront(GetDungeonObject(), self->leader->position.x, self->leader->position.y, South);
-    if (tile.tile > tileWall && self->leader->position.y > 0)
-        self->leader->position.y--;
+    if (IsTilePassableByType(GetDungeonObject()->floor, tile.tile))
+    {
+        SetPlayerPreviousPos(self->leader->position.x, self->leader->position.y);
+        self->leader->position.y++;
+        SetPlayerTile(GetDungeonObject(), self->leader->position.x, self->leader->position.y);
+    }
     DEBUG("Player position Y %d\n", self->leader->position.y);
 }
 
 static void MoveUp(Player_t *self)
 {
     TileState tile = GetTileInFront(GetDungeonObject(), self->leader->position.x, self->leader->position.y, North);
-    if (tile.tile > tileWall)
-        self->leader->position.y++;
+    if (IsTilePassableByType(GetDungeonObject()->floor, tile.tile))
+    {
+        SetPlayerPreviousPos(self->leader->position.x, self->leader->position.y);
+        self->leader->position.y--;
+        SetPlayerTile(GetDungeonObject(), self->leader->position.x, self->leader->position.y);
+    }
+
     DEBUG("Player position Y %d\n", self->leader->position.y);
 }
 

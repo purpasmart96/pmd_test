@@ -40,7 +40,7 @@ static Ability ability_table[] =
 
 };
 
-Pokemon_t *Pokemon_New(const char *name, Species species, Type primary_type, Type sub_type, AbilityTypes ability, Sex sex, int level, int max_hp)
+Pokemon_t *Pokemon_New(const char *name, Species species, Type primary_type, Type sub_type, AbilityTypes ability, Sex sex, int level, int max_hp, bool team_leader)
 {
     Pokemon_t *pokemon = calloc(1, sizeof(*pokemon));
 
@@ -51,7 +51,16 @@ Pokemon_t *Pokemon_New(const char *name, Species species, Type primary_type, Typ
     SetPokemonAbility(pokemon, ability);
     pokemon->sex = sex;
     pokemon->level = level;
-    pokemon->position = make_ivec2(0, 0);
+    pokemon->team_leader = team_leader;
+
+    if (team_leader)
+    {
+        pokemon->position = GetPlayerSpawnPoint(GetDungeonObject());
+    }
+    else 
+    {
+        pokemon->position = make_ivec2(0, 0);
+    }
 
     return pokemon;
 }
@@ -88,7 +97,6 @@ void AddPartyMember(PokemonParty *party, Pokemon_t *member)
 
 Ability GetAbilityFromTable(AbilityTypes ability_name)
 {
-    //for (int i = 0; i < ARRAY_SIZE(ability_table); i++)
     return ability_table[ability_name];
 }
 

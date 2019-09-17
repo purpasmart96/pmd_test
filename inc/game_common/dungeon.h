@@ -24,6 +24,8 @@
 
 #include "util.h"
 
+#include "common/vec.h"
+
 typedef enum
 {
     tileUnused = 0,
@@ -34,6 +36,7 @@ typedef enum
     tileStairs,
     tileLava,
     tileItem,
+    tilePlayer,
 } Tile;
 
 typedef enum WeatherState
@@ -78,6 +81,7 @@ typedef struct
     TileState **tiles;
     int width;
     int height;
+    ivec2 player_spawn_point;
     int start_x;
     int start_y;
     int end_x;
@@ -103,7 +107,9 @@ typedef struct Dungeon
 
 Floor *GenerateFloor(int seed, int num_items);
 void PrintFloor(Floor *floor);
+void PrintFloorFixed(Floor * floor);
 int IsTilePassable(Floor * floor, int x, int y);
+int IsTilePassableByType(Floor * floor, Tile tile);
 void Dungeon_Init(struct PokemonParty *party);
 
 void Dungeon_ShutDown();
@@ -116,6 +122,12 @@ TileState GetTileInFront(Dungeon * dungeon, const int x, const int y, Direction 
 int GetItemFromTile(Dungeon *dungeon, int x, int y);
 void RemoveItemFromTile(Dungeon *dungeon, int x, int y);
 void SetItemToTile(Dungeon *dungeon, int x, int y, int item);
+
+void SetPlayerPreviousPos(int x, int y);
+
+void SetPlayerTile(Dungeon * dungeon, int x, int y);
+
+ivec2 GetPlayerSpawnPoint(Dungeon *dungeon);
 
 void Dungeon_SetUpDefualtStatus(struct PokemonParty *party);
 void Dungeon_SetStatusAfterStairs(struct PokemonParty *party);

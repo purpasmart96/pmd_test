@@ -198,7 +198,7 @@ static void key_callback(GLFWwindow *window, int key, int scancode, int action, 
         //RemoveItemFromBag_(game->bag, "JoySeed");
         //DisplayBag(game->bag);
     }
-    else if (key = GLFW_KEY_Y && action == GLFW_PRESS)
+    else if (key == GLFW_KEY_Y && action == GLFW_PRESS)
     {
         DisplayBag(game->bag);
     }
@@ -226,12 +226,13 @@ void Game_Init(Game_t *self)
     self->running = true;
     Sprite_MakeTextureAtlas();
     self->screen  = Screen_New(true);
+    Dungeon_Init(NULL);
     self->player  = Player_New(true);
     
     self->bag     = Bag_New(true);
     self->audio_state = ALState_New(512, false, true);
 
-    Dungeon_Init(NULL);
+    //Dungeon_Init(NULL);
     
 
     //self->party   = PokemonParty_New(4);

@@ -252,6 +252,7 @@ typedef struct Pokemon_s
     struct PokemonDungeonStatus *status;
     ivec2 position;
     Direction direction;
+    bool team_leader;
 } Pokemon_t;
 
 typedef struct PokemonParty
@@ -264,7 +265,7 @@ typedef struct PokemonParty
 PokemonParty *PokemonParty_New(int capacity);
 void PokemonParty_Destroy(PokemonParty *party);
 
-Pokemon_t *Pokemon_New(const char *name, Species species, Type primary_type, Type sub_type, AbilityTypes ability, Sex sex, int level, int max_hp);
+Pokemon_t *Pokemon_New(const char *name, Species species, Type primary_type, Type sub_type, AbilityTypes ability, Sex sex, int level, int max_hp, bool team_leader);
 
 void AddPartyMember(PokemonParty *party, Pokemon_t *member);
 Ability GetAbilityFromTable(AbilityTypes ability_name);
