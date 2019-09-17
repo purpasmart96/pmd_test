@@ -71,6 +71,16 @@ PokemonParty *PokemonParty_New(int capacity)
     return party;
 }
 
+void PokemonParty_Destroy(PokemonParty *party)
+{
+    for (int i = 0; i < party->capacity; i++)
+    {
+        free(party->members[i]);
+    }
+
+    free(party);
+}
+
 void AddPartyMember(PokemonParty *party, Pokemon_t *member)
 {
     party->members[party->size++] = member;
@@ -107,9 +117,11 @@ char *GetPokemonName(Pokemon_t *pokemon)
     return pokemon->name;
 }
 
-Pokemon_t *GetCurrentLeader()
+Pokemon_t *GetCurrentLeader(PokemonParty *party)
 {
-    //return &team_mates[CURRENT_LEADER];
+    const int current_leader = 0;
+
+    return party->members[current_leader];
 }
 
 

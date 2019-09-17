@@ -19,7 +19,7 @@
 // THE SOFTWARE.
 
 #include "util.h"
-#include "game_common/Pokemon.h"
+#include "game_common/pokemon.h"
 #include "game_common/health.h"
 
 
@@ -27,12 +27,16 @@ void AddHealth(Pokemon_t *team_member, int amount)
 {
     if (team_member->current_hp == team_member->max_hp)
     {
-        printf("%s's HP is already Full!\n", team_member->name);
+        DEBUG("%s's HP is already Full!\n", team_member->name);
     }
     else
     {
+        DEBUG("%s Gained %d HP!\n", team_member->name, amount);
         team_member->current_hp += amount;
-        CLAMP(team_member->current_hp, HP_MIN, team_member->max_hp);
+
+        team_member->current_hp = MIN(team_member->current_hp, team_member->max_hp);
+        //CLAMP(team_member->current_hp, HP_MIN, team_member->max_hp);
+        DEBUG("%s's current HP is %d HP!\n", team_member->name, team_member->current_hp);
     }
 }
 
@@ -41,7 +45,7 @@ void DecreaseHealth(Pokemon_t *defender, int amount)
     if (defender->current_hp != HP_ZERO)
     {
         defender->current_hp -= amount;
-        printf("%s Took %d Damage!\n", defender->name, amount);
+        DEBUG("%s Took %d Damage!\n", defender->name, amount);
     }
     else
     {
@@ -51,12 +55,9 @@ void DecreaseHealth(Pokemon_t *defender, int amount)
     if (defender->current_hp < HP_MIN)
     {
         defender->current_hp = HP_ZERO;
-        printf("%s Fainted!\n", defender->name);
+        DEBUG("%s Fainted!\n", defender->name);
     }
-    else
-    {
-        return;
-    }
+
 }
 
 void SetStatusAttribute(Pokemon_t *defender, int amount)

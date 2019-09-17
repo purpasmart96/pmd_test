@@ -211,9 +211,9 @@ static const char *item_to_string[] =
 static struct ItemTable
 {
     Items type;
-    void(*Throw)(struct Bag *, struct PokemonParty *, struct Pokemon_s *, ItemLocation);
-    void(*Use)(struct Bag *, struct PokemonParty *, struct Pokemon_s *, ItemLocation);
-    void(*Drop)(struct Bag *, struct PokemonParty *, struct Pokemon_s *, ItemLocation);
+    void(*Throw)(struct Bag *, struct PokemonParty *, struct Pokemon_s *, ItemLocation, Items item);
+    void(*Use)(struct Bag *, struct PokemonParty *, struct Pokemon_s *, ItemLocation, Items item);
+    void(*Drop)(struct Bag *, struct PokemonParty *, struct Pokemon_s *, ItemLocation, Items item);
     void(*Reserved0)();
     void(*Reserved1)();
     void(*Reserved2)();
@@ -2298,7 +2298,7 @@ void RemoveItemFromBag(Bag *self, Item item)
 }
 
 // String version
-void RemoveItemFromBag_(struct Bag *self, const char *item_name)
+bool RemoveItemFromBag_(struct Bag *self, const char *item_name)
 {
     if (!IsBagEmpty(self))
     {
@@ -2307,40 +2307,84 @@ void RemoveItemFromBag_(struct Bag *self, const char *item_name)
             if (item_to_string[self->items[i].type] == item_name) // Find the slot that has the item were looking for
             {
                 RemoveBagIndex(self, i);
-                return;
+                return true;
             }
         }
     }
     else
     {
         printf("Bag is empty!\n");
-        return;
+        return false;
     }
+
+    ERROR("Couldn't find %s!\n", item_name);
+    return false;
 }
 
-void RemoveItemFromPokemon(struct Pokemon_s *poke)
+bool RemoveItemFromPokemon(struct Pokemon_s *poke)
 {
-    Pokemon_AssignItem(poke, "None");
-}
-
-void RemoveItemFromGround(DungeonState *dungeon)
-{
-    //poke->held_item = None;
-}
-
-void RemoveItem(struct Bag *bag, struct Pokemon_s *poke, ItemLocation location, const char *item_name)
-{
-    if (location == LocationBag)
+    if (poke->held_item != None)
     {
-        RemoveItemFromBag_(bag, item_name);
-    }
-    else if (location != LocationGround)
-    {
-        RemoveItemFromPokemon(poke);
+        Pokemon_AssignItem(poke, "None");
+        return true;
     }
     else
     {
-        printf("RemoveItemFromGround Not Implemented!");
+        printf("No item is currently on the pokemon!\n");
+        return false;
+    }
+}
+
+
+void AddItemToBagFromGround(struct Bag *bag, struct Pokemon_s *poke, Dungeon *dungeon)
+{
+    int item = GetItemFromTile(dungeon, poke->position.x, poke->position.y);
+
+    if (!item)
+        return;
+
+    if (!IsBagFull(bag))
+    {
+        AddItemToBagByType(bag, item);
+        RemoveItemFromTile(dungeon, poke->position.x, poke->position.y);
+    }
+    else
+    {
+        //printf("Can't add %s to the bag\n", item_name);
+        printf("Bag is currently full!\n");
+    }
+    
+}
+
+bool RemoveItemFromGround(Dungeon *dungeon, struct Pokemon_s *poke)
+{
+    int item = GetItemFromTile(dungeon, poke->position.x, poke->position.y);
+
+    if (item != None)
+    {
+        RemoveItemFromTile(dungeon, poke->position.x, poke->position.y);
+        return true;
+    }
+    else
+    {
+        printf("No item is currently underneath the pokemon!\n");
+        return false;
+    }
+}
+
+bool RemoveItem(struct Bag *bag, struct Pokemon_s *poke, ItemLocation location, const char *item_name)
+{
+    switch (location)
+    {
+        case LocationBag:
+            return RemoveItemFromBag_(bag, item_name);
+        case LocationPokemonLeader:
+            return RemoveItemFromPokemon(bag, item_name);
+        case LocationGround:
+            return RemoveItemFromGround(GetDungeonObject(), poke);
+        default:
+            printf("Couldn't find item %s!\n", item_name);
+            return false;
     }
 }
 
@@ -2497,9 +2541,10 @@ void UseItem(struct Bag *bag, PokemonParty *party, struct Pokemon_s *user, const
 {
     for (int i = 0; i < ARRAY_SIZE(item_table); i++)
     {
-        if (item_to_string[item_table[i].type] == item_name)
+        Items enum_item = item_table[i].type;
+        if (item_to_string[enum_item] == item_name)
         {
-            item_table[i].Use(bag, party, user, location);
+            item_table[i].Use(bag, party, user, location, enum_item);
         }
     }
 }

@@ -62,93 +62,9 @@ void Input_Init(Input_t *self)
     self->mods = 0;
 }
 
-bool Input_IsAPressed(Input_t *self)
-{
-    if (self->current_key == GLFW_KEY_A)
-    {
-        return true;
-    }
-    
-    return false;
-}
-
-bool Input_IsDPressed(Input_t *self)
-{
-    if (self->current_key == GLFW_KEY_D)
-    {
-        return true;
-    }
-    
-    return false;
-}
-
-bool Input_IsSPressed(Input_t *self)
-{
-    if (self->current_key == GLFW_KEY_S)
-    {
-        return true;
-    }
-    
-    return false;
-}
-
-bool Input_IsWPressed(Input_t *self)
-{
-    if (self->current_key == GLFW_KEY_W)
-    {
-        return true;
-    }
-    
-    return false;
-}
-
-
 void Input_Update(Input_t *self)
 {
-    //GLfloat velocity = 1; // PLAYER_VELOCITY * dt;
 
-    //MovePlayer(self);
-
-    /*
-    if (self->action == GLFW_PRESS || self->action == GLFW_REPEAT)
-    {
-     if (self->keys[GLFW_KEY_A])
-     {
-      DEBUG("Key A Pressed\n");
-      //if (Player->position.x <= self->screen->window->w - player->Size.x)
-      //Player->position.x += velocity;
-      //self->keys[GLFW_KEY_A] = false;
-     }
-     else if (self->keys[GLFW_KEY_D])
-     {
-      DEBUG("Key D Pressed\n");
-      //if (Player->position.x <= self->screen->window->w - player->Size.x)
-      //Player->position.x += velocity;
-      //self->keys[GLFW_KEY_D] = false;
-     }
-     else if (self->keys[GLFW_KEY_S])
-     {
-      DEBUG("Key S Pressed\n");
-      //if (Player->position.x <= self->screen->window->w - player->Size.x)
-      //Player->position.x += velocity;
-      //self->keys[GLFW_KEY_S] = false;
-     }
-     else if (self->keys[GLFW_KEY_W])
-     {
-      DEBUG("Key W Pressed\n");
-      //if (player->position.x >= 0)
-      //player->position.x -= velocity;
-      //self->keys[GLFW_KEY_W] = false;
-     }
-     else
-     {
-      ERROR("Unhandled Key Event 0X%X\n", self->current_key);
-     }
-    }
-    */
-    
-
-    //glfwWaitEvents();
 }
 
 void Input_ShutDown(Input_t *self)

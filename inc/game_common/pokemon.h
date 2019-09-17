@@ -219,6 +219,14 @@ typedef struct Ability
     char *description;
 } Ability;
 
+typedef enum 
+{
+    North,
+    East,
+    South,
+    West
+} Direction;
+
 union ivec2;
 
 typedef struct Pokemon_s
@@ -241,8 +249,9 @@ typedef struct Pokemon_s
 
     struct Item *held_item;
     struct MoveSet *moves;
-    struct DungeonStatus *status;
+    struct PokemonDungeonStatus *status;
     ivec2 position;
+    Direction direction;
 } Pokemon_t;
 
 typedef struct PokemonParty
@@ -253,6 +262,7 @@ typedef struct PokemonParty
 } PokemonParty;
 
 PokemonParty *PokemonParty_New(int capacity);
+void PokemonParty_Destroy(PokemonParty *party);
 
 Pokemon_t *Pokemon_New(const char *name, Species species, Type primary_type, Type sub_type, AbilityTypes ability, Sex sex, int level, int max_hp);
 
@@ -262,6 +272,6 @@ void SetPokemonName(Pokemon_t *pokemon, const char *name);
 char *GetPokemonName(Pokemon_t *pokemon);
 void SetPokemonAbility(Pokemon_t *pokemon, AbilityTypes ability_name);
 AbilityTypes GetPokemonAbility(Pokemon_t *team_member);
-Pokemon_t *GetCurrentLeader();
+Pokemon_t *GetCurrentLeader(PokemonParty *party);
 
 #endif

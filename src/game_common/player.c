@@ -24,6 +24,7 @@
 #include "game_common/pokemon.h"
 #include "game_common/input.h"
 #include "game_common/player.h"
+#include "game_common/dungeon.h"
 
 Player_t *Player_New(bool init)
 {
@@ -45,47 +46,79 @@ Player_t *Player_New(bool init)
 void Player_Init(Player_t *self)
 {
     self->leader = Pokemon_New("Flygon", Flygon, Dragon, Ground, Levitate, Female, 25, 255);
+    self->leader->current_hp = 100;
+    self->leader->attack = 72;
+    self->leader->defense = 66;
+    struct DungeonStatus *d = NULL;
+
+    d = calloc(1, 16);
+
+    self->leader->status = d;
+    //self->leader-> = 100;
     self->input = Input_New(true);
+}
+
+
+static void MoveLeft(Player_t *self)
+{
+    TileState tile = GetTileInFront(GetDungeonObject(), self->leader->position.x, self->leader->position.y, West);
+    //if (IsTilePassable(GetDungeonObject()->floor, self->leader->position.x, self->leader->position.y))
+    if (tile.tile > tileWall && self->leader->position.x > 0)
+        self->leader->position.x--;
+
+    DEBUG("Player position X %d\n", self->leader->position.x);
+}
+
+static void MoveRight(Player_t *self)
+{
+    TileState tile = GetTileInFront(GetDungeonObject(), self->leader->position.x, self->leader->position.y, East);
+    if (tile.tile > tileWall)
+        self->leader->position.x++;
+    DEBUG("Player position X %d\n", self->leader->position.x);
+}
+
+static void MoveDown(Player_t *self)
+{
+    TileState tile = GetTileInFront(GetDungeonObject(), self->leader->position.x, self->leader->position.y, South);
+    if (tile.tile > tileWall && self->leader->position.y > 0)
+        self->leader->position.y--;
+    DEBUG("Player position Y %d\n", self->leader->position.y);
+}
+
+static void MoveUp(Player_t *self)
+{
+    TileState tile = GetTileInFront(GetDungeonObject(), self->leader->position.x, self->leader->position.y, North);
+    if (tile.tile > tileWall)
+        self->leader->position.y++;
+    DEBUG("Player position Y %d\n", self->leader->position.y);
+}
+
+static void HandleButtunPress(Player_t *self)
+{
+    switch (self->input->current_key)
+    {
+        case GLFW_KEY_A:
+            MoveLeft(self);
+            break;
+        case GLFW_KEY_D:
+            MoveRight(self);
+            break;
+        case GLFW_KEY_S:
+            MoveDown(self);
+            break;
+        case GLFW_KEY_W:
+            MoveUp(self);
+            break;
+        default:
+        break;
+    }
 }
 
 static void Player_Move(Player_t *self)
 {
     if (self->input->action == GLFW_PRESS || self->input->action == GLFW_REPEAT)
     {
-        if (Input_IsAPressed(self->input))
-        {
-            //if (Player->position.x <= self->screen->window->w - player->Size.x)
-            //Player->position.x += velocity;
-            if (self->leader->position.x > 0)
-                self->leader->position.x--;
-            DEBUG("Player position X %d\n", self->leader->position.x);
-        }
-        if (Input_IsDPressed(self->input))
-        {
-            self->leader->position.x++;
-            DEBUG("Player position X %d\n", self->leader->position.x);
-            //if (Player->position.x <= self->screen->window->w - player->Size.x)
-            //Player->position.x += velocity;
-            //self->keys[GLFW_KEY_D] = false;
-        }
-        if (Input_IsSPressed(self->input))
-        {
-            if (self->leader->position.y > 0)
-                self->leader->position.y--;
-
-            DEBUG("Player position Y %d\n", self->leader->position.y);
-            //if (Player->position.x <= self->screen->window->w - player->Size.x)
-            //Player->position.x += velocity;
-            //self->keys[GLFW_KEY_S] = false;
-        }
-        if (Input_IsWPressed(self->input))
-        {
-            self->leader->position.y++;
-            DEBUG("Player position Y %d\n", self->leader->position.y);
-            //if (player->position.x >= 0)
-            //player->position.x -= velocity;
-            //self->keys[GLFW_KEY_W] = false;
-        }
+        HandleButtunPress(self);
     }
 }
 
@@ -140,5 +173,7 @@ void Player_Update(Player_t *self)
 void Player_ShutDown(Player_t *self)
 {
     Input_ShutDown(self->input);
+    free(self->leader->status);
+    free(self->leader);
     free(self);
 }

@@ -745,8 +745,8 @@ typedef struct MoveSet
 Move GetMoveFromTable(MoveNames the_move);
 bool IsMovesEmpty(MoveSet *moves);
 bool IsMovesFull(MoveSet *moves);
-void CalculateDamage(MoveNames the_move, struct Pokemon_s *attacker, struct Pokemon_s *defender);
+void CalculateDamage(MoveNames the_move, struct Pokemon_s *attacker, struct Pokemon_s *defender, bool team_member);
+//void CalculateDamage(MoveNames the_move, Pokemon_t * attacker, Pokemon_t * defender, bool team_member);
 char *GetMoveNameFromEnum(Move move);
 
 #endif
-

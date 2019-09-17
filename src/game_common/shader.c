@@ -357,7 +357,7 @@ void Shader_Init(Shader_t *self)
     glEnableVertexAttribArray(1);
     glEnableVertexAttribArray(2);
 
-    my_texture = LoadTexture(my_texture, "test.png");
+    my_texture = LoadTexture(my_texture, "test2.png");
     //glUniform1i(glGetUniformLocation(self->program, "tex_sampler"), 0);
     
     Shader_Use(self);

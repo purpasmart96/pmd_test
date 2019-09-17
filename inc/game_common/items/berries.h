@@ -24,6 +24,10 @@
 typedef struct PokemonParty PokemonParty;
 typedef struct Pokemon_s Pokemon_t;
 
+void BerryUse(Bag *bag, PokemonParty *party, Pokemon_t *user, ItemLocation location, Items item);
+void BerryThrow(Bag *bag, PokemonParty *party, Pokemon_t *user, ItemLocation location, Items item);
+void BerryDrop(Bag *bag, PokemonParty *party, Pokemon_t *user, ItemLocation location, Items item);
+
 void OranBerryUse(Bag *bag, PokemonParty *party, Pokemon_t *user, ItemLocation location);
 void OranBerryThrow(Bag *bag, PokemonParty *party, Pokemon_t *user, ItemLocation location);
 void OranBerryDrop(Bag *bag, PokemonParty *party, Pokemon_t *user, ItemLocation location);

@@ -33,6 +33,7 @@ typedef enum
     tileHall,
     tileStairs,
     tileLava,
+    tileItem,
 } Tile;
 
 typedef enum WeatherState
@@ -48,7 +49,7 @@ typedef enum WeatherState
 } WeatherState;
 
 
-typedef struct DungeonStatus
+typedef struct PokemonDungeonStatus
 {
     bool leader;
     u8 attack_multiplier;
@@ -65,11 +66,16 @@ typedef struct DungeonStatus
     bool paralysis;
     bool sleeping;
     bool posioned;
-} DungeonStatus;
+} PokemonDungeonStatus;
+
+typedef struct {
+    int item;
+    Tile tile;
+} TileState;
 
 typedef struct 
 {
-    int **tiles;
+    TileState **tiles;
     int width;
     int height;
     int start_x;
@@ -79,7 +85,7 @@ typedef struct
     //SDL_Surface* surface;
 } Floor;
 
-typedef struct
+typedef struct Dungeon
 {
     int name;
     int seed;
@@ -87,28 +93,33 @@ typedef struct
     int *floor_seeds;
     int total_floors;
     int floor_counter;
-    Floor *floor;
-
-} Dungeon;
-
-typedef struct
-{
-    struct Item **items;
     int num_items;
     int num_enemies;
     int num_traps;
-    int floor_level;
+    int current_floor_level;
     WeatherState current_weather;
-} DungeonState;
+    Floor *floor;
+} Dungeon;
 
-
-Floor *GenerateFloor(int seed);
+Floor *GenerateFloor(int seed, int num_items);
 void PrintFloor(Floor *floor);
+int IsTilePassable(Floor * floor, int x, int y);
 void Dungeon_Init(struct PokemonParty *party);
+
+void Dungeon_ShutDown();
+
+Dungeon *GetDungeonObject(void);
+
+typedef enum Direction Direction;
+TileState GetTileInFront(Dungeon * dungeon, const int x, const int y, Direction direction);
+
+int GetItemFromTile(Dungeon *dungeon, int x, int y);
+void RemoveItemFromTile(Dungeon *dungeon, int x, int y);
+void SetItemToTile(Dungeon *dungeon, int x, int y, int item);
 
 void Dungeon_SetUpDefualtStatus(struct PokemonParty *party);
 void Dungeon_SetStatusAfterStairs(struct PokemonParty *party);
 
-void Dungeon_NextFloorLevel(DungeonState *self, struct PokemonParty *party);
+void Dungeon_NextFloorLevel(Dungeon *self, struct PokemonParty *party);
 
 #endif

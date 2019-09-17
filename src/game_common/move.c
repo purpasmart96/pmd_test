@@ -27,6 +27,7 @@
 
 #include "common/rand_num.h"
 
+
 typedef struct Pokemon_s Pokemon_t;
 
 static const Move move_table[] =
@@ -34,7 +35,7 @@ static const Move move_table[] =
     { "",             "", NoMove,       0,          0,                   0,        0,        0,  0,  0,         0,             0               },
     { "Pound",        "", Pound,        FrontEnemy, CAN_NOT_CUT_CORNERS, Normal,   Physical, 27, 27, PowerFour, HitRatioSeven, NoStatusEffects },
     { "KarateChop",   "", KarateChop,   FrontEnemy, CAN_NOT_CUT_CORNERS, Fighting, Physical, 18, 18, PowerFive, HitRatioSeven, HighCritRate    },
-    { "DoubleSlap",   "", DoubleSlap,   FrontEnemy, CAN_NOT_CUT_CORNERS, Normal,   Physical, 10, 10, PowerTwo,  HitRatioTwo, 0 },
+    { "DoubleSlap",   "", DoubleSlap,   FrontEnemy, CAN_NOT_CUT_CORNERS, Normal,   Physical, 10, 10, PowerTwo,  HitRatioTwo,   0               },
     { "CometPunch",   "", CometPunch,   FrontEnemy, CAN_NOT_CUT_CORNERS, Normal,   Physical,  0,  0,  0,  0 },
     { "MegaPunch",    "", MegaPunch,    FrontEnemy, CAN_NOT_CUT_CORNERS, Normal,   Physical,  0,  0,  0,  0 },
     { "PayDay",       "", PayDay,       FrontEnemy, CAN_NOT_CUT_CORNERS, Dark,     Physical,  0,  0,  0,  0 },
@@ -85,7 +86,7 @@ static const Move move_table[] =
     { "Ember",        "", Ember, 0, 0, 0, 0, 0, 0, 0 },
     { "Flamethrower", "", Flamethrower, TenTiles, CAN_CUT_CORNERS, Fire, Special, 0, 0, 0 },
     { "Mist",         "", Mist, 0, 0, 0, 0, 0, 0, 0 },
-    { "WaterGun",     "", WaterGun, 0, 0, 0, 0, 0, 0, 0 },
+    { "WaterGun",     "", WaterGun, TwoTilesInRange, CAN_CUT_CORNERS, Water, Special, 0, 0, 0  },
     { "HydroPump",    "", HydroPump, 0, 0, 0, 0, 0, 0, 0 },
     { "Surf",         "", Surf, 0, 0, 0, 0, 0, 0, 0 },
     { "IceBeam",      "", IceBeam, 0, 0, 0, 0, 0, 0, 0 },
@@ -663,15 +664,14 @@ static const MoveEffectiveness move_effectiveness_combos[4][4] =
     { NotVeryEffective, NormalEffective,  SuperEffective,   SuperEffective   },
 };
 
-
 bool IsMovesEmpty(MoveSet *moves)
 {
-	return moves->size == 0;
+    return moves->size == 0;
 }
 
 bool IsMovesFull(MoveSet *moves)
 {
-	return moves->size == MAX_MOVES;
+    return moves->size == MAX_MOVES;
 }
 
 Move GetMoveFromTable(MoveNames the_move)
@@ -689,6 +689,7 @@ void SetMoveToPokemon(Pokemon_t *pokemon, MoveNames the_move)
     }
     else
     {
+        printf("Moveset full!\n");
     }
 
 }
@@ -707,56 +708,91 @@ void CalculateAccuracy()
 {
 }
 
+bool CalculateCriticalHit()
+{
+    return false;
+}
 
-void CalculateDamage(MoveNames the_move, Pokemon_t *attacker, Pokemon_t *defender)
+// TODO
+static MoveEffectiveness GetTypeAffinity(Type move_type, Type target_type)
+{
+    return NormalEffective;
+}
+
+static double pmd_log(double x)
+{
+    return CLAMP(log(x), 1.0, 4095.0);
+}
+
+static double GetE(double attack, double defense, double level)
+{
+     return (50.0 * pmd_log(((attack - defense) / 8.0 + level + 50.0) * 10.0));
+}
+
+static double GetFinalRawDamage(Move move, double attack, double defense, double e, double damage_reduction_modifier)
+{
+    // const_frac (39168.0 / 65536.0);
+    double const_frac = 0.597656250;
+    return ((attack + move.power) * const_frac - (defense / 2.0) + e - 311.0) / damage_reduction_modifier;
+}
+
+// Damage formula
+// DAMAGE = ((A + P) * (39168 / 65536) - (D / 2) + (50 * ln(((A - D) / 8 + L + 50) * 10)) - 311) / Y
+
+void CalculateDamage(MoveNames the_move, struct Pokemon_s *attacker, struct Pokemon_s *defender, bool team_member)
 {
     Move move = GetMoveFromTable(the_move);
 
-    double N = 0;
-    double A = 0;
-    double D = 0;
+    double damage_reduction_modifier = 1.0;
+    double level = (double)attacker->level;
+    double attack = 0;
+    double defense = 0;
     double E = 0;
-    int damage = 0;
+    double damage = 0;
+    bool critical_hit = false;
+
+    if (!team_member)
+    {
+        damage_reduction_modifier = 340.0 / 256.0;
+    }
 
     if (move.mode == Physical)
     {
-        N = 340 / 256;
-        A = 75; //attacker->sp_attack;
-        D = defender->defense;
-        E = (log((((A - D) / 8) + attacker->level + 50) * 10) * 50) - 311;
-
-        if (move.type == attacker->primary_type || attacker->sub_type)
-        {
-            E *= 1.5f;
-        }
-
-        damage = (((A + move.power) * 39168 / 65536) - (D / 2) + E) / N;
-        printf("E = %d\n", E);
+        attack = (double)attacker->attack;
+        defense = (double)defender->defense;
     }
     else
     {
-        N = 340 / 256;
-        A = 75; //attacker->attack;
-        D = defender->sp_defense;
-        E = (log((((A - D) / 8) + attacker->level + 50) * 10) * 50) - 311;
-
-        if (move.type == attacker->primary_type || attacker->sub_type)
-        {
-            E *= 1.5;
-        }
-
-        damage = (((A + move.power) * 39168 / 65536) - (D / 2) + E) / N;
+        attack = (double)attacker->sp_attack;
+        defense = (double)defender->sp_defense;
     }
 
-    damage *= E;
-    u32 n = rand_interval(0, 16383);
-    printf("n = %d\n", n);
-    int rng_multiplier = (57344 + n) / 65536;
-    printf("rng_multiplier = %d\n", rng_multiplier);
-    int final_multiplier = round(rng_multiplier);
-    damage *= final_multiplier;
+    E = GetE(attack, defense, level);
+    damage = GetFinalRawDamage(move, attack, defense, E, damage_reduction_modifier);
+    DEBUG("E = %f\n", E);
 
-    DecreaseHealth(defender, damage);
+    CLAMP(damage, 1.0, 999.0);
+
+    if (move.type == attacker->primary_type || attacker->sub_type)
+    {
+        damage *= 1.5;
+    }
+
+    if (critical_hit)
+    {
+        damage *= 1.5;
+    }
+
+    //damage *= E;
+    double n = (double)rand_interval(0, 16383);
+    DEBUG("n = %f\n", n);
+    double rng_multiplier = (57344.0 + n) / 65536.0;
+    DEBUG("rng_multiplier = %f\n", rng_multiplier);
+    damage *= rng_multiplier;
+    int final_damage = (int)round(damage);
+    DEBUG("final damage = %d\n", final_damage);
+
+    DecreaseHealth(defender, final_damage);
 }
 
 

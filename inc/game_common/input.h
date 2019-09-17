@@ -41,10 +41,6 @@ Input_t *Input_New(bool init);
 void Input_Init(Input_t *self);
 void Input_Update(Input_t *self);
 void Input_ShutDown(Input_t *self);
-bool Input_IsAPressed(Input_t *self);
-bool Input_IsDPressed(Input_t *self);
-bool Input_IsSPressed(Input_t *self);
-bool Input_IsWPressed(Input_t *self);
 
 
 #endif

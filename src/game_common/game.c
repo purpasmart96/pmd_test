@@ -29,6 +29,7 @@
 #include "audio_core/sound_core.h"
 
 #include "game_common/dungeon.h"
+#include "game_common/move.h"
 #include "game_common/pokemon.h"
 #include "game_common/display.h"
 //#include "game_common/shader.h"
@@ -126,7 +127,7 @@ static void key_callback(GLFWwindow *window, int key, int scancode, int action, 
 
         for (int i = 0; i < MAX_ITEMS; i++)
         {
-            u32 item = rand_interval(0, 30);
+            u32 item = rand_interval(67, 69);
             AddItemToBagByType(game->bag, item);
         }
         printf("Current bag size is %d\n", game->bag->size);
@@ -183,12 +184,24 @@ static void key_callback(GLFWwindow *window, int key, int scancode, int action, 
         DisplayBag(game->bag);
         printf("Current bag size is %d\n", game->bag->size);
     }
-    //else if (key == GLFW_KEY_D && action == GLFW_PRESS)
-    //{
-    //    printf("Removing JoySeed\n");
-    //    RemoveItemFromBag_(game->bag, "JoySeed");
-    //    DisplayBag(game->bag);
-    //}
+    else if (key == GLFW_KEY_T && action == GLFW_PRESS)
+    {
+        CalculateDamage(KarateChop, game->player->leader, game->player->leader, true);
+        UseItemFromBag(game->bag, game->party, game->player->leader, "OranBerry");
+        //CalculateDamage(KarateChop, game->player->leader, game->player->leader, false);
+        //CalculateDamage(KarateChop, &team_mates[CURRENT_LEADER], &enemies[0]);
+        ///CalculateDamage(KarateChop, &team_mates[CURRENT_LEADER], &enemies[0]);
+        //CalculateDamage(KarateChop, &team_mates[CURRENT_LEADER], &enemies[0]);
+        //CalculateDamage(KarateChop, &team_mates[CURRENT_LEADER], &enemies[0]);
+        //CalculateDamage(KarateChop, &team_mates[CURRENT_LEADER], &enemies[0]);
+        //printf("Removing JoySeed\n");
+        //RemoveItemFromBag_(game->bag, "JoySeed");
+        //DisplayBag(game->bag);
+    }
+    else if (key = GLFW_KEY_Y && action == GLFW_PRESS)
+    {
+        DisplayBag(game->bag);
+    }
     
 }
 
@@ -245,6 +258,7 @@ void Game_Update(Game_t *self)
 
 void Game_ShutDown(Game_t *self)
 {
+    Dungeon_ShutDown();
     Bag_ShutDown(self->bag);
     Player_ShutDown(self->player);
     Screen_Shutdown(self->screen);

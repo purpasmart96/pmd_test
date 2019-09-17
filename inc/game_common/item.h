@@ -1344,9 +1344,9 @@ typedef enum ItemLocation
 typedef struct Item
 {
     Items type;
-    void(*Throw)(struct Bag *, struct PokemonParty *, struct Pokemon_s *, ItemLocation);
-    void(*Use)(struct Bag *, struct PokemonParty *, struct Pokemon_s *, ItemLocation);
-    void(*Drop)(struct Bag *, struct PokemonParty *, struct Pokemon_s *, ItemLocation);
+    void(*Throw)(struct Bag *, struct PokemonParty *, struct Pokemon_s *, ItemLocation, Items item);
+    void(*Use)(struct Bag *, struct PokemonParty *, struct Pokemon_s *, ItemLocation, Items item);
+    void(*Drop)(struct Bag *, struct PokemonParty *, struct Pokemon_s *, ItemLocation, Items item);
     void(*Reserved0)();
     void(*Reserved1)();
     void(*Reserved2)();
@@ -1359,6 +1359,8 @@ typedef struct Bag
     u32 size;
     u32 capacity;
 } Bag;
+
+typedef struct Dungeon Dungeon;
 
 Bag *Bag_New(bool init);
 void Bag_Init(Bag *self);
@@ -1380,11 +1382,13 @@ void AddItemToBag(struct Bag *self, struct Item item);
 void AddItemToBag_(Bag *self, const char *item_name);
 void RemoveItemFromBag(Bag *self, struct Item item);
 // String version
-void RemoveItemFromBag_(struct Bag *self, const char *item_name);
+bool RemoveItemFromBag_(struct Bag *self, const char *item_name);
 void RemoveItemFromTeamMemberToBag(struct Bag *self, struct Pokemon_s *team_member, struct Item item);
 
 void RemoveItemFromTeamMemberToBag_(struct Bag *self, struct Pokemon_s *team_member, const char *item_name);
-void RemoveItem(struct Bag *bag, struct Pokemon_s *poke, enum ItemLocation location, const char *item_name);
+void AddItemToBagFromGround(Bag * bag, struct Pokemon_s *poke, Dungeon *dungeon);
+bool RemoveItemFromGround(Dungeon *dungeon, struct Pokemon_s *poke);
+bool RemoveItem(struct Bag *bag, struct Pokemon_s *poke, enum ItemLocation location, const char *item_name);
 
 void Pokemon_AssignItem(struct Pokemon_s *dst_poke, const char *item_name);
 void Bag_AssignItem(struct Bag *bag, int index, const char *item_name);

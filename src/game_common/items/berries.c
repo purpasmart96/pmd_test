@@ -25,11 +25,91 @@
 
 #include "game_common/items/berries.h"
 
+void BerryUse(Bag *bag, PokemonParty *party, Pokemon_t *user, ItemLocation location, Items item)
+{
+    switch (item)
+    {
+        case OranBerry:
+            OranBerryUse(bag, party, user, location);
+            break;
+        case SitrusBerry:
+            SitrusBerryUse(bag, party, user, location);
+            break;
+        case RawstBerry:
+            break;
+        case PechaBerry:
+            break;
+        case CheriBerry:
+            break;
+        case ChestoBerry:
+            break;
+        case OrenBerry:
+            break;
+        default:
+            DEBUG("Item %d is not a berry!\n", item);
+            break;
+    }
+}
+
+void BerryThrow(Bag *bag, PokemonParty *party, Pokemon_t *user, ItemLocation location, Items item)
+{
+    switch (item)
+    {
+        case OranBerry:
+            OranBerryThrow(bag, party, user, location);
+            break;
+        case SitrusBerry:
+            SitrusBerryThrow(bag, party, user, location);
+            break;
+        case RawstBerry:
+            break;
+        case PechaBerry:
+            break;
+        case CheriBerry:
+            break;
+        case ChestoBerry:
+            break;
+        case OrenBerry:
+            break;
+        default:
+            DEBUG("Item %d is not a berry!\n", item);
+            break;
+    }
+}
+
+void BerryDrop(Bag *bag, PokemonParty *party, Pokemon_t *user, ItemLocation location, Items item) 
+{
+    switch (item)
+    {
+        case OranBerry:
+            OranBerryDrop(bag, party, user, location);
+            break;
+        case SitrusBerry:
+            SitrusBerryDrop(bag, party, user, location);
+            break;
+        case RawstBerry:
+            break;
+        case PechaBerry:
+            break;
+        case CheriBerry:
+            break;
+        case ChestoBerry:
+            break;
+        case OrenBerry:
+            break;
+        default:
+            DEBUG("Item %d is not a berry!\n", item);
+            break;
+    }
+}
+
 void OranBerryUse(Bag *bag, PokemonParty *party, Pokemon_t *user, ItemLocation location)
 {
-    RemoveItem(bag, user, location, "OranBerry");
-    AddHealth(user, ORAN_BERRY_HEALTH_HEAL);
-    AdjustBellySize(user, BERRY_HUNGER_REDUCE);
+    if (RemoveItem(bag, user, location, "OranBerry"))
+    {
+        AddHealth(user, ORAN_BERRY_HEALTH_HEAL);
+        AdjustBellySize(user, BERRY_HUNGER_REDUCE);
+    }
 }
 
 void OranBerryThrow(Bag *bag, PokemonParty *party, Pokemon_t *user, ItemLocation location)

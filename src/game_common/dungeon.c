@@ -34,24 +34,32 @@ static int floor_h;
 static int min_room_dimension;
 static int max_room_dimension;
 static int total_corridor_length;
+static int min_num_items;
+static int max_num_items;
 
 static u32 seed;
+
+static Dungeon *dungeon;
 
 void Dungeon_Init(PokemonParty *party)
 {
     //Dungeon_SetUpDefualtStatus(party);
     //23434555
     seed = time(NULL);
-    Dungeon *dungeon = calloc(1, sizeof(*dungeon));
+    dungeon = calloc(1, sizeof(*dungeon));
+    char *name = "TestDungeon";
+    //strlcpy(dungeon->name, name, sizeof(name));
     dungeon->name = "TestDungeon";
     srand(seed);
     dungeon->seed = seed;
     //srand(seed);
 
     // Calculate difficulty variables
+    min_num_items = 5;
+    max_num_items = 30;
     dungeon->difficulty = 5;
-    floor_w = 80;
-    floor_h = 40;
+    floor_w = 80; // x
+    floor_h = 40; // y
     min_room_dimension = 5;
     max_room_dimension = 16;
     total_corridor_length = floor_w * floor_h / 10;
@@ -66,14 +74,66 @@ void Dungeon_Init(PokemonParty *party)
         dungeon->floor_seeds[i] = rand();
     }
 
-    dungeon->floor = GenerateFloor(seed);
+    int num_items = rand_interval(min_num_items, max_num_items);
+    dungeon->floor = GenerateFloor(seed, num_items);
 
     PrintFloor(dungeon->floor);
 
+}
+
+void Dungeon_ShutDown()
+{
     free(dungeon->floor->tiles);
     free(dungeon->floor);
     free(dungeon);
+}
 
+Dungeon *GetDungeonObject(void)
+{
+    return dungeon;
+}
+
+TileState GetTileInFront(Dungeon *dungeon, const int x, const int y, Direction direction)
+{
+    int temp_x = x;
+    int temp_y = y;
+
+    switch (direction)
+    {
+        case North:
+            temp_y++;
+            break;
+        case East:
+            temp_x++;
+            break;
+        case South:
+            temp_y--;
+            break;
+        case West:
+            temp_x--;
+            break;
+
+        default:
+            break;
+    }
+
+    return dungeon->floor->tiles[temp_x][temp_y];
+}
+
+int GetItemFromTile(Dungeon *dungeon, int x, int y)
+{
+    return dungeon->floor->tiles[x][y].item;
+}
+
+void RemoveItemFromTile(Dungeon *dungeon, int x, int y)
+{
+    dungeon->floor->tiles[x][y].item = None;
+    dungeon->floor->tiles[x][y].tile = tileFloor;
+}
+
+void SetItemToTile(Dungeon *dungeon, int x, int y, int item)
+{
+    dungeon->floor->tiles[x][y].item = item;
 }
 
 static int GetTile(Floor *floor, int x, int y)
@@ -82,7 +142,7 @@ static int GetTile(Floor *floor, int x, int y)
     {
         return tileEnd;
     }
-    return floor->tiles[x][y];
+    return floor->tiles[x][y].tile;
 }
 
 /**
@@ -95,11 +155,11 @@ static int GetTileBoundaryAsWall(Floor *floor, int x, int y)
     {
         return tileWall;
     }
-    if (floor->tiles[x][y] == tileEnd)
+    if (floor->tiles[x][y].tile == tileEnd)
     {
         return tileWall;
     }
-    return floor->tiles[x][y];
+    return floor->tiles[x][y].tile;
 }
 
 static int SetTile(Floor *floor, int x, int y, int tile)
@@ -108,7 +168,7 @@ static int SetTile(Floor *floor, int x, int y, int tile)
     {
         return 0;
     }
-    floor->tiles[x][y] = tile;
+    floor->tiles[x][y].tile = tile;
     return 1;
 }
 
@@ -123,6 +183,7 @@ void PrintFloor(Floor *floor)
         ".",
         "X",
         "n",
+        "*"
     };
 
     for (int y = 0; y < floor->height; y++)
@@ -195,18 +256,21 @@ int IsTilePassable(Floor *floor, int x, int y)
     {
         return 0;
     }
+
     switch (GetTile(floor, x, y))
     {
-    case tileFloor:
-        return 1;
-    case tileHall:
-        return 1;
-    case tileStairs:
-        return 1;
-    case tileLava:
-        return 1;
-    default:
-        return 0;
+        case tileFloor:
+            return 1;
+        case tileHall:
+            return 1;
+        case tileStairs:
+            return 1;
+        case tileLava:
+            return 1;
+        case tileItem:
+            return 1;
+        default:
+            return 0;
     }
 }
 
@@ -307,7 +371,7 @@ int AddRoom(Floor* floor, int x, int y, int w, int h)
 
 // Terrain
 
-int AddTerrain(Floor* floor, int tile_terrain, int ax, int ay, int bx, int by)
+int AddTerrain(Floor *floor, int tile_terrain, int ax, int ay, int bx, int by)
 {
     if (ax == bx && ay == by)
     {
@@ -325,7 +389,7 @@ int AddTerrain(Floor* floor, int tile_terrain, int ax, int ay, int bx, int by)
             {
                 SetTile(floor, ax, ay, tile_terrain);
             }
-            ax += ax < mid ? +1 : -1;
+            ax += ax < mid ? + 1 : -1;
         }
         while (bx != mid)
         {
@@ -333,7 +397,7 @@ int AddTerrain(Floor* floor, int tile_terrain, int ax, int ay, int bx, int by)
             {
                 SetTile(floor, bx, by, tile_terrain);
             }
-            bx += bx < mid ? +1 : -1;
+            bx += bx < mid ? + 1 : -1;
         }
         while (ay != by)
         {
@@ -341,7 +405,7 @@ int AddTerrain(Floor* floor, int tile_terrain, int ax, int ay, int bx, int by)
             {
                 SetTile(floor, ax, ay, tile_terrain);
             }
-            ay += ay < by ? +1 : -1;
+            ay += ay < by ? + 1 : -1;
         }
         if (GetTile(floor, ax, ay) == tileUnused)
         {
@@ -365,7 +429,7 @@ int AddTerrain(Floor* floor, int tile_terrain, int ax, int ay, int bx, int by)
             {
                 SetTile(floor, bx, by, tile_terrain);
             }
-            by += by < mid ? +1 : -1;
+            by += by < mid ? + 1 : -1;
         }
         while (ax != bx)
         {
@@ -373,7 +437,7 @@ int AddTerrain(Floor* floor, int tile_terrain, int ax, int ay, int bx, int by)
             {
                 SetTile(floor, ax, ay, tile_terrain);
             }
-            ax += ax < bx ? +1 : -1;
+            ax += ax < bx ? + 1 : -1;
         }
         if (GetTile(floor, ax, ay) == tileUnused)
         {
@@ -383,7 +447,36 @@ int AddTerrain(Floor* floor, int tile_terrain, int ax, int ay, int bx, int by)
     return 1;
 }
 
-Floor *GenerateFloor(int seed)
+static void MakeItems(Floor *floor, int num_items)
+{
+    int tries = 0;
+    int maxTries = 1000;
+
+    int current_num_items = 0;
+
+    for (; tries != maxTries; ++tries)
+    {
+        // Exit when num_items is reached
+        if (current_num_items > num_items - 1)
+            return;
+
+        int x = rand_interval(1, floor->width - 2);
+        int y = rand_interval(1, floor->height - 2);
+
+        if (GetTile(floor, x, y) == tileFloor)
+        {
+            // Random types of items from 60 to 70
+            Items item = rand_interval(60, 70);
+
+            floor->tiles[x][y].item = item;
+            floor->tiles[x][y].tile = tileItem;
+
+            current_num_items++;
+        }
+    }
+}
+
+Floor *GenerateFloor(int seed, int num_items)
 {
     Floor *floor = calloc(1, sizeof(*floor));
     floor->width = floor_w;
@@ -391,10 +484,10 @@ Floor *GenerateFloor(int seed)
     //srand(seed);
 
     // Fill floor with unused tiles
-    floor->tiles = malloc(sizeof(int) * floor_w);
+    floor->tiles = malloc(sizeof(TileState) * floor_w);
     for (int x = 0; x < floor_w; x++)
     {
-        floor->tiles[x] = malloc(sizeof(int) * floor_h);
+        floor->tiles[x] = malloc(sizeof(TileState) * floor_h);
         for (int y = 0; y < floor_h; y++)
         {
             SetTile(floor, x, y, tileUnused);
@@ -502,6 +595,9 @@ Floor *GenerateFloor(int seed)
         }
     }
 
+    //AddItemsToTiles(floor);
+
+    MakeItems(floor, num_items);
     // Add graphics
     //AddFloorSurface(floor);
 
@@ -548,9 +644,9 @@ void Dungeon_SetStatusAfterStairs(PokemonParty *party)
     }
 }
 
-void Dungeon_NextFloorLevel(DungeonState *self, PokemonParty *party)
+void Dungeon_NextFloorLevel(Dungeon *self, PokemonParty *party)
 {
     Dungeon_SetStatusAfterStairs(party);
-    self->floor_level++;
+    self->current_floor_level++;
     self->current_weather = WeatherClear;
 }
