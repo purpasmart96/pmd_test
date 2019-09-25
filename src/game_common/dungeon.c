@@ -41,22 +41,18 @@ static int previous_tile_type_before_player;
 static int previous_pos_x;
 static int previous_pos_y;
 
-static u32 seed;
 
 static Dungeon *dungeon;
 
 void Dungeon_Init(PokemonParty *party)
 {
-    //Dungeon_SetUpDefualtStatus(party);
-    //23434555
-    seed = time(NULL);
+    u32 seed = time(NULL);
     dungeon = calloc(1, sizeof(*dungeon));
     char *name = "TestDungeon";
     //strlcpy(dungeon->name, name, sizeof(name));
     dungeon->name = "TestDungeon";
     srand(seed);
     dungeon->seed = seed;
-    //srand(seed);
 
     // Calculate difficulty variables
     min_num_items = 5;
@@ -83,13 +79,19 @@ void Dungeon_Init(PokemonParty *party)
     int num_items = rand_interval(min_num_items, max_num_items);
     dungeon->floor = GenerateFloor(seed, num_items);
 
-    PrintFloor(dungeon->floor);
+    PrintFloorFixed(dungeon->floor);
 
 }
 
 void Dungeon_ShutDown()
 {
+    for (int x = 0; x < floor_w; x++)
+    {
+        free(dungeon->floor->tiles[x]);
+    }
+
     free(dungeon->floor->tiles);
+    free(dungeon->floor_seeds);
     free(dungeon->floor);
     free(dungeon);
 }
@@ -107,13 +109,13 @@ TileState GetTileInFront(Dungeon *dungeon, const int x, const int y, Direction d
     switch (direction)
     {
         case North:
-            temp_y--;
+            temp_y++;
             break;
         case East:
             temp_x++;
             break;
         case South:
-            temp_y++;
+            temp_y--;
             break;
         case West:
             temp_x--;
@@ -167,7 +169,7 @@ void SetPlayerTile(Dungeon *dungeon, int x, int y)
 
     SetNewPreviousTile(dungeon->floor, x, y);
     SetTile(dungeon->floor, x, y, tilePlayer);
-    PrintFloor(dungeon->floor);
+    PrintFloorFixed(dungeon->floor);
 }
 
 ivec2 GetPlayerSpawnPoint(Dungeon *dungeon)
@@ -261,9 +263,10 @@ void PrintFloorFixed(Floor *floor)
         "%"
     };
 
+
     for (int y = floor->height; y > 0; y--)
     {
-        for (int x = floor->width; x > 0; x--)
+        for (int x = 0; x < floor->width; x++)
         {
             int tile = GetTile(floor, x, y);
             char *tile_char = strings[tile];
@@ -593,12 +596,11 @@ static void MakeSpawnPointForPlayer(Floor *floor)
     }
 }
 
-Floor *GenerateFloor(int seed, int num_items)
+Floor *GenerateFloor(int num_items)
 {
     Floor *floor = calloc(1, sizeof(*floor));
     floor->width = floor_w;
     floor->height = floor_h;
-    //srand(seed);
 
     // Fill floor with unused tiles
     floor->tiles = malloc(sizeof(TileState) * floor_w);
@@ -712,8 +714,6 @@ Floor *GenerateFloor(int seed, int num_items)
         }
     }
 
-    //AddItemsToTiles(floor);
-
     MakeItems(floor, num_items);
     MakeSpawnPointForPlayer(floor);
     // Add graphics
@@ -729,18 +729,7 @@ void Dungeon_SetUpDefualtStatus(PokemonParty *party)
 {
     for (int i = 0; i < party->size; i++)
     {
-        party->members[i]->status->attack_multiplier = 1;
-        party->members[i]->status->sp_attack_multiplier = 1;
-        party->members[i]->status->defense_multiplier = 1;
-        party->members[i]->status->sp_defense_multiplier = 1;
-        party->members[i]->status->speed_multiplier = 1;
-        party->members[i]->status->current_belly = DEFUALT_BELLY_SIZE;
-        party->members[i]->status->max_belly = DEFUALT_BELLY_SIZE;
-        party->members[i]->status->burned = false;
-        party->members[i]->status->confused = false;
-        party->members[i]->status->paralysis = false;
-        party->members[i]->status->posioned = false;
-        party->members[i]->status->sleeping = false;
+        Pokemon_StatusReset(party->members[i], true);
     }
 }
 
@@ -749,16 +738,7 @@ void Dungeon_SetStatusAfterStairs(PokemonParty *party)
 {
     for (int i = 0; i < party->size; i++)
     {
-        party->members[i]->status->attack_multiplier = 1;
-        party->members[i]->status->sp_attack_multiplier = 1;
-        party->members[i]->status->defense_multiplier = 1;
-        party->members[i]->status->sp_defense_multiplier = 1;
-        party->members[i]->status->speed_multiplier = 1;
-        party->members[i]->status->burned = false;
-        party->members[i]->status->confused = false;
-        party->members[i]->status->paralysis = false;
-        party->members[i]->status->posioned = false;
-        party->members[i]->status->sleeping = false;
+        Pokemon_StatusReset(party->members[i], false);
     }
 }
 

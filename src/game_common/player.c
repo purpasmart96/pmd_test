@@ -45,66 +45,60 @@ Player_t *Player_New(bool init)
 
 void Player_Init(Player_t *self)
 {
-    self->leader = Pokemon_New("Flygon", Flygon, Dragon, Ground, Levitate, Female, 25, 255, true);
+    self->leader = Pokemon_New("Flygon", Flygon, Dragon, Ground, Levitate, Female, 45, 255, true);
     self->leader->current_hp = 100;
     self->leader->attack = 72;
     self->leader->defense = 66;
-    struct DungeonStatus *d = NULL;
 
-    d = calloc(1, 16);
 
-    self->leader->status = d;
-    //self->leader-> = 100;
     self->input = Input_New(true);
 }
 
-
-static void MoveLeft(Player_t *self)
+static void MovePlayerXAxis(Player_t *self, Direction direction, int position_delta)
 {
-    TileState tile = GetTileInFront(GetDungeonObject(), self->leader->position.x, self->leader->position.y, West);
+    TileState tile = GetTileInFront(GetDungeonObject(), self->leader->position.x, self->leader->position.y, direction);
     if (IsTilePassableByType(GetDungeonObject()->floor, tile.tile))
     {
         SetPlayerPreviousPos(self->leader->position.x, self->leader->position.y);
-        self->leader->position.x--;
+        self->leader->position.x += position_delta;
+        
         SetPlayerTile(GetDungeonObject(), self->leader->position.x, self->leader->position.y);
     }
+}
+
+static MovePlayerYAxis(Player_t *self, Direction direction, int position_delta)
+{
+    TileState tile = GetTileInFront(GetDungeonObject(), self->leader->position.x, self->leader->position.y, direction);
+    if (IsTilePassableByType(GetDungeonObject()->floor, tile.tile))
+    {
+        SetPlayerPreviousPos(self->leader->position.x, self->leader->position.y);
+        self->leader->position.y += position_delta;
+        
+        SetPlayerTile(GetDungeonObject(), self->leader->position.x, self->leader->position.y);
+    }
+}
+
+static void MoveLeft(Player_t *self)
+{
+    MovePlayerXAxis(self, West, -1);
     DEBUG("Player position X %d\n", self->leader->position.x);
 }
 
 static void MoveRight(Player_t *self)
 {
-    TileState tile = GetTileInFront(GetDungeonObject(), self->leader->position.x, self->leader->position.y, East);
-    if (IsTilePassableByType(GetDungeonObject()->floor, tile.tile))
-    {
-        SetPlayerPreviousPos(self->leader->position.x, self->leader->position.y);
-        self->leader->position.x++;
-        SetPlayerTile(GetDungeonObject(), self->leader->position.x, self->leader->position.y);
-    }
+    MovePlayerXAxis(self, East, 1);
     DEBUG("Player position X %d\n", self->leader->position.x);
 }
 
 static void MoveDown(Player_t *self)
 {
-    TileState tile = GetTileInFront(GetDungeonObject(), self->leader->position.x, self->leader->position.y, South);
-    if (IsTilePassableByType(GetDungeonObject()->floor, tile.tile))
-    {
-        SetPlayerPreviousPos(self->leader->position.x, self->leader->position.y);
-        self->leader->position.y++;
-        SetPlayerTile(GetDungeonObject(), self->leader->position.x, self->leader->position.y);
-    }
+    MovePlayerYAxis(self, South, -1);
     DEBUG("Player position Y %d\n", self->leader->position.y);
 }
 
 static void MoveUp(Player_t *self)
 {
-    TileState tile = GetTileInFront(GetDungeonObject(), self->leader->position.x, self->leader->position.y, North);
-    if (IsTilePassableByType(GetDungeonObject()->floor, tile.tile))
-    {
-        SetPlayerPreviousPos(self->leader->position.x, self->leader->position.y);
-        self->leader->position.y--;
-        SetPlayerTile(GetDungeonObject(), self->leader->position.x, self->leader->position.y);
-    }
-
+    MovePlayerYAxis(self, North, 1);
     DEBUG("Player position Y %d\n", self->leader->position.y);
 }
 
@@ -112,20 +106,20 @@ static void HandleButtunPress(Player_t *self)
 {
     switch (self->input->current_key)
     {
-        case GLFW_KEY_A:
-            MoveLeft(self);
-            break;
-        case GLFW_KEY_D:
-            MoveRight(self);
-            break;
         case GLFW_KEY_S:
             MoveDown(self);
+            break;
+        case GLFW_KEY_A:
+            MoveLeft(self);
             break;
         case GLFW_KEY_W:
             MoveUp(self);
             break;
+        case GLFW_KEY_D:
+            MoveRight(self);
+            break;
         default:
-        break;
+            break;
     }
 }
 
@@ -139,48 +133,8 @@ static void Player_Move(Player_t *self)
 
 void Player_Update(Player_t *self)
 {
-    //GLfloat velocity = 1; // PLAYER_VELOCITY * dt;
     glfwPollEvents();
     Player_Move(self);
-
-    /*
-    if (self->action == GLFW_PRESS || self->action == GLFW_REPEAT)
-    {
-    if (self->keys[GLFW_KEY_A])
-    {
-    DEBUG("Key A Pressed\n");
-    //if (Player->position.x <= self->screen->window->w - player->Size.x)
-    //Player->position.x += velocity;
-    //self->keys[GLFW_KEY_A] = false;
-    }
-    else if (self->keys[GLFW_KEY_D])
-    {
-    DEBUG("Key D Pressed\n");
-    //if (Player->position.x <= self->screen->window->w - player->Size.x)
-    //Player->position.x += velocity;
-    //self->keys[GLFW_KEY_D] = false;
-    }
-    else if (self->keys[GLFW_KEY_S])
-    {
-    DEBUG("Key S Pressed\n");
-    //if (Player->position.x <= self->screen->window->w - player->Size.x)
-    //Player->position.x += velocity;
-    //self->keys[GLFW_KEY_S] = false;
-    }
-        else if (self->keys[GLFW_KEY_W])
-        {
-            DEBUG("Key W Pressed\n");
-            //if (player->position.x >= 0)
-            //player->position.x -= velocity;
-            //self->keys[GLFW_KEY_W] = false;
-        }
-        else
-        {
-            ERROR("Unhandled Key Event 0X%X\n", self->current_key);
-        }
-    }
-
-    */
 
     //glfwWaitEvents();
 }

@@ -708,8 +708,37 @@ void CalculateAccuracy()
 {
 }
 
-bool CalculateCriticalHit()
+static bool CalculateCriticalHit(Move move, struct Pokemon_s *attacker, struct Pokemon_s *defender)
 {
+    int critical_hit_rate = 12;
+    int critical_hit_chance = rand_interval(0, 99);
+
+    if (!defender)
+        return false;
+
+    if (defender->ability == BattleArmor || ShellArmor)
+    {
+        return false;
+    }
+
+    if (move.status_effects == HighCritRate)
+    {
+        critical_hit_rate = 50;
+    }
+
+    if (attacker->sex == Male || GenderUnkown)
+    {
+        critical_hit_rate /= 2;
+    }
+
+    //if (attacker->held_item->type == ScopeLens)
+    //{
+    //    critical_hit_rate += 15;
+    //}
+
+    if (critical_hit_chance < critical_hit_rate)
+        return true;
+
     return false;
 }
 
@@ -749,7 +778,7 @@ void CalculateDamage(MoveNames the_move, struct Pokemon_s *attacker, struct Poke
     double defense = 0;
     double E = 0;
     double damage = 0;
-    bool critical_hit = false;
+    bool critical_hit = CalculateCriticalHit(move, attacker, defender);
 
     if (!team_member)
     {
@@ -771,7 +800,7 @@ void CalculateDamage(MoveNames the_move, struct Pokemon_s *attacker, struct Poke
     damage = GetFinalRawDamage(move, attack, defense, E, damage_reduction_modifier);
     DEBUG("E = %f\n", E);
 
-    CLAMP(damage, 1.0, 999.0);
+    damage = CLAMP(damage, 1.0, 999.0);
 
     if (move.type == attacker->primary_type || attacker->sub_type)
     {
@@ -780,6 +809,7 @@ void CalculateDamage(MoveNames the_move, struct Pokemon_s *attacker, struct Poke
 
     if (critical_hit)
     {
+        DEBUG("Critical hit!\n");
         damage *= 1.5;
     }
 

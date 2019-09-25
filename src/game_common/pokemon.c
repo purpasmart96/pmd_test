@@ -25,20 +25,56 @@
 #include "game_common/dungeon.h"
 #include "game_common/pokemon.h"
 
-static Ability ability_table[] =
-{
-    { NoAbility,   "",              ""                                                   },
-    { Stench,      "Stench",        "The stench may cause the target to flinch."         },
-    { Drizzle,     "Drizzle",       "The Pokémon makes it rain if it appears in battle." },
-    { SpeedBoost,  "Speed Boost",   "The Pokémon’s Speed stat is gradually boosted."     },
-    { BattleArmor, "Battle Armor",  "The Pokémon is protected against critical hits."    },
-    { Sturdy,      "Sturdy",        "The Pokémon is protected against 1-hit KO attacks." },
-    { Damp,        "Damp",          "Prevents combatants from self destructing."         },
-    { Limber,      "Limber",        "The Pokémon is protected from paralysis."           },
-    { SandVeil,    "Sand Veil",     "Boosts the Pokémon’s evasion in a sandstorm."       },
-    { Static,      "Static",        "Contact with the Pokémon may cause paralysis."      },
+//static Ability ability_table[] =
+//{
+//    { NoAbility,   "",              ""                                                   },
+//    { Stench,      "Stench",        "The stench may cause the target to flinch."         },
+//    { Drizzle,     "Drizzle",       "The Pokémon makes it rain if it appears in battle." },
+//    { SpeedBoost,  "Speed Boost",   "The Pokémon’s Speed stat is gradually boosted."     },
+//    { BattleArmor, "Battle Armor",  "The Pokémon is protected against critical hits."    },
+//    { Sturdy,      "Sturdy",        "The Pokémon is protected against 1-hit KO attacks." },
+//    { Damp,        "Damp",          "Prevents combatants from self destructing."         },
+//    { Limber,      "Limber",        "The Pokémon is protected from paralysis."           },
+//    { SandVeil,    "Sand Veil",     "Boosts the Pokémon’s evasion in a sandstorm."       },
+//    { Static,      "Static",        "Contact with the Pokémon may cause paralysis."      },
+//};
 
-};
+static void PokemonStatusInit(Pokemon_t *pokemon)
+{
+    pokemon->status = malloc(sizeof(*pokemon->status));
+    pokemon->status->attack_multiplier = 1;
+    pokemon->status->sp_attack_multiplier = 1;
+    pokemon->status->defense_multiplier = 1;
+    pokemon->status->sp_defense_multiplier = 1;
+    pokemon->status->speed_multiplier = 1;
+    pokemon->status->current_belly = 100;
+    pokemon->status->max_belly = 100;
+    pokemon->status->burned = false;
+    pokemon->status->confused = false;
+    pokemon->status->paralysis = false;
+    pokemon->status->posioned = false;
+    pokemon->status->sleeping = false;
+}
+
+void Pokemon_StatusReset(Pokemon_t *pokemon, bool first_floor)
+{
+    if (first_floor)
+    {
+        pokemon->status->current_belly = 100;
+        pokemon->status->max_belly = 100;
+    }
+
+    pokemon->status->attack_multiplier = 1;
+    pokemon->status->sp_attack_multiplier = 1;
+    pokemon->status->defense_multiplier = 1;
+    pokemon->status->sp_defense_multiplier = 1;
+    pokemon->status->speed_multiplier = 1;
+    pokemon->status->burned = false;
+    pokemon->status->confused = false;
+    pokemon->status->paralysis = false;
+    pokemon->status->posioned = false;
+    pokemon->status->sleeping = false;
+}
 
 Pokemon_t *Pokemon_New(const char *name, Species species, Type primary_type, Type sub_type, AbilityTypes ability, Sex sex, int level, int max_hp, bool team_leader)
 {
@@ -51,6 +87,8 @@ Pokemon_t *Pokemon_New(const char *name, Species species, Type primary_type, Typ
     SetPokemonAbility(pokemon, ability);
     pokemon->sex = sex;
     pokemon->level = level;
+    pokemon->max_hp = 255;
+    PokemonStatusInit(pokemon);
     pokemon->team_leader = team_leader;
 
     if (team_leader)
@@ -67,26 +105,18 @@ Pokemon_t *Pokemon_New(const char *name, Species species, Type primary_type, Typ
 
 PokemonParty *PokemonParty_New(int capacity)
 {
-    PokemonParty *party = calloc(1, sizeof(*party));
+    PokemonParty *party = malloc(sizeof(*party));
     party->capacity = capacity;
-    party->members = malloc(party->capacity * sizeof(*party->members));
-    party->size = 0;
+    party->members = malloc(sizeof(Pokemon_t) * party->capacity);
 
-    for (int i = 0; i < party->capacity; i++)
-    {
-        party->members[i] = malloc(sizeof(*party->members[i]));
-    }
+    party->size = 0;
 
     return party;
 }
 
 void PokemonParty_Destroy(PokemonParty *party)
 {
-    for (int i = 0; i < party->capacity; i++)
-    {
-        free(party->members[i]);
-    }
-
+    free(party->members);
     free(party);
 }
 
@@ -95,23 +125,19 @@ void AddPartyMember(PokemonParty *party, Pokemon_t *member)
     party->members[party->size++] = member;
 }
 
-Ability GetAbilityFromTable(AbilityTypes ability_name)
-{
-    return ability_table[ability_name];
-}
 
 void SetPokemonAbility(Pokemon_t *pokemon, AbilityTypes ability_name)
 {
     //memcpy(&pokemon->ability, &ability_table[ability_name], sizeof(Ability)); ///GetAbilityFromTable(ability_name);
-    pokemon->ability.ability_enum = ability_name;
-    pokemon->ability.name = ability_table[ability_name].name;
-    pokemon->ability.description = ability_table[ability_name].description;
+    pokemon->ability = ability_name;
+    //pokemon->ability.name = ability_table[ability_name].name;
+    //pokemon->ability.description = ability_table[ability_name].description;
 
 }
 
 AbilityTypes GetPokemonAbility(Pokemon_t *team_member)
 {
-    return team_member->ability.ability_enum;
+    return team_member->ability;
 }
 
 void SetPokemonName(Pokemon_t *pokemon, const char *name)

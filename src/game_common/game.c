@@ -58,50 +58,15 @@ static void key_callback(GLFWwindow *window, int key, int scancode, int action, 
 {
     Game_t *game = glfwGetWindowUserPointer(window);
 
-    //game->player->input->keys[key] = true;
     game->player->input->current_key = key;
     game->player->input->scan_code = scancode;
     game->player->input->action = action;
     game->player->input->mods = mods;
 
     Player_Update(game->player);
-
-    
-
-    //if (action == GLFW_PRESS)
-    //{
-     //game->input->keys[key] = action;
-     //game->input->current_key = key;
-    //}
-
-     //if (key != 0 && action == GLFW_PRESS)
-     //{
-     //	game->input->keys[key] = action;
-     //	game->input->current_key = key;
-     //}
-
-
-     //int new_state = action;
-     //if (new_state == GLFW_RELEASE && prev_state == GLFW_PRESS)
-     //{
-     //	DEBUG("%s Key pressed\n", glfwGetKeyName(key, scancode));
-     //}
-     //prev_state = new_state;
-
-     //int new_state = action;
-     //if (action == GLFW_REPEAT || action == GLFW_PRESS)
-     //{
-     //	DEBUG("%s Key pressed\n", glfwGetKeyName(key, scancode));
-     //}
-     //prev_state = new_state;
-    
-
     
     if (key == GLFW_KEY_E && action == GLFW_PRESS)
     {
-        //glfwGetKeyName(key, scancode);
-        //printf("You pressed %s\n", );
-        //printf("You pressed E\n");
         //SoundInfo *si = ogg_decode("D:/PokeMysteryDun/pmd_fix/data/sound/bgm/Aegis Cave.ogg");
         //AL_State_LoadBuffer(game->audio_state);
         //while (true)
@@ -115,15 +80,6 @@ static void key_callback(GLFWwindow *window, int key, int scancode, int action, 
         //DEBUG("Done playing \n");
     //}
 
-     //dungeon_main();
-     //screen_Init();
-     //struct Bag *PlayerBag = NULL; //calloc(1, sizeof(&PlayerBag));//CreateBag(MAX_ITEMS);
-     //ClearBag(&PlayerBag);
-     //printf("Press Esc in the other window to Continue!\n");
-     //GiveItemToTeamMember(&PlayerBag, &team_mates[CURRENT_LEADER], ReviverSeed);
-     //printf("Item on player is %s\n", GetItemNameFromId(team_mates[CURRENT_LEADER].held_item));
-     //RemoveItemFromTeamMember(&PlayerBag, &team_mates[CURRENT_LEADER], ReviverSeed);
-     //printf("Item on player now is %s\n", GetItemNameFromId(team_mates[CURRENT_LEADER].held_item));
 
         for (int i = 0; i < MAX_ITEMS; i++)
         {
@@ -131,46 +87,6 @@ static void key_callback(GLFWwindow *window, int key, int scancode, int action, 
             AddItemToBagByType(game->bag, item);
         }
         printf("Current bag size is %d\n", game->bag->size);
-
-        //GiveItemToTeamMember(game->bag, &team_mates[CURRENT_LEADER], PowerBand);
-        //RemoveItemFromTeamMemberToBag(game->bag, &team_mates[CURRENT_LEADER], PowerBand);
-        //RemoveItemFromBag_(game->bag, "PowerBand");
-        //RemoveItemFromBag_(game->bag, "ReviverSeed");
-        //RemoveItemFromBag_(game->bag, "ReviverSeed");
-        //RemoveItemFromBag_(game->bag, "OranBerry");
-        //RemoveItemFromBag_(game->bag, "OranBerry");
-        //RemoveItemFromBag_(game->bag, "OranBerry");
-        //RemoveItemFromBag_(game->bag, "OranBerry");
-        //printf("Current bag size is %d\n", game->bag->size);
-        //SetUpDefualtStatus();
-        //AddItemToBag_(game->bag, "Apple");
-        //UseItemFromBag(game->bag, &team_mates[CURRENT_LEADER], Apple);
-        //AddItemToBag_(game->bag, "Apple");
-        //AddItemToBag_(game->bag, "Apple");
-        //AddItemToBag_(game->bag, "Apple");
-        //AddItemToBag_(game->bag, "Apple");
-        //AddItemToBag_(game->bag, "Apple");
-        //RemoveItemFromBag_(game->bag, "JoySeed");
-        //RemoveItemFromBag_(game->bag, "JoySeed");
-        //printf("Current bag size is %d\n", game->bag->size);
-
-        //UseItemFromBag(&PlayerBag, &team_mates[CURRENT_LEADER], "OranBerry");
-        //printf("Leaders belly is %d\n", team_mates[CURRENT_LEADER].status.current_belly);
-        //memset(&enemies, 0, sizeof(enemies));
-        //enemies[0].name = "TestPoke";
-        //enemies[0].defense = 44;
-        //enemies[0].max_hp = 100;
-        //enemies[0].current_hp = 100;
-        //SetPokemonName(GetCurrentLeader(), "TestName");
-        //team_mates[CURRENT_LEADER].GetPokemonName = GetPokemonName;
-        //team_mates[CURRENT_LEADER].GetPokemonName(&team_mates[CURRENT_LEADER]);
-        //CalculateDamage(KarateChop, &team_mates[CURRENT_LEADER], &enemies[0]);
-        //CalculateDamage(KarateChop, &team_mates[CURRENT_LEADER], &enemies[0]);
-        ///CalculateDamage(KarateChop, &team_mates[CURRENT_LEADER], &enemies[0]);
-        //CalculateDamage(KarateChop, &team_mates[CURRENT_LEADER], &enemies[0]);
-        //CalculateDamage(KarateChop, &team_mates[CURRENT_LEADER], &enemies[0]);
-        //CalculateDamage(KarateChop, &team_mates[CURRENT_LEADER], &enemies[0]);
-
 
         DisplayBag(game->bag);
     }
@@ -189,12 +105,7 @@ static void key_callback(GLFWwindow *window, int key, int scancode, int action, 
         CalculateDamage(KarateChop, game->player->leader, game->player->leader, true);
         UseItemFromBag(game->bag, game->party, game->player->leader, "OranBerry");
         //CalculateDamage(KarateChop, game->player->leader, game->player->leader, false);
-        //CalculateDamage(KarateChop, &team_mates[CURRENT_LEADER], &enemies[0]);
-        ///CalculateDamage(KarateChop, &team_mates[CURRENT_LEADER], &enemies[0]);
-        //CalculateDamage(KarateChop, &team_mates[CURRENT_LEADER], &enemies[0]);
-        //CalculateDamage(KarateChop, &team_mates[CURRENT_LEADER], &enemies[0]);
-        //CalculateDamage(KarateChop, &team_mates[CURRENT_LEADER], &enemies[0]);
-        //printf("Removing JoySeed\n");
+
         //RemoveItemFromBag_(game->bag, "JoySeed");
         //DisplayBag(game->bag);
     }
@@ -224,22 +135,16 @@ Game_t *Game_New(bool init)
 void Game_Init(Game_t *self)
 {
     self->running = true;
-    Sprite_MakeTextureAtlas();
+    Sprite_LoadAllTextures();
     self->screen  = Screen_New(true);
     Dungeon_Init(NULL);
     self->player  = Player_New(true);
+    self->party = PokemonParty_New(4);
+    AddPartyMember(self->party, self->player->leader);
     
     self->bag     = Bag_New(true);
     self->audio_state = ALState_New(512, false, true);
 
-    //Dungeon_Init(NULL);
-    
-
-    //self->party   = PokemonParty_New(4);
-
-    //Pokemon *leader = Pokemon_New("TestName", Bulbasaur, Grass, Poison, Overgrow, Female, 5, 20);
-
-    //AddPartyMember(self->party, leader);
 
     glfwSetWindowUserPointer(self->screen->window, self);
     glfwSetKeyCallback(self->screen->window, key_callback);
@@ -261,8 +166,9 @@ void Game_ShutDown(Game_t *self)
 {
     Dungeon_ShutDown();
     Bag_ShutDown(self->bag);
+    PokemonParty_Destroy(self->party);
     Player_ShutDown(self->player);
-    Screen_Shutdown(self->screen);
+    Screen_ShutDown(self->screen);
 
     free(self);
 }

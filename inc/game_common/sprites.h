@@ -35,7 +35,7 @@ Texture_t *LoadTexture(Texture_t *texture, const char *name);
 
 void Sprites_BindTexture(Texture_t *texture, int texture_unit);
 
-void Sprite_MakeTextureAtlas(void);
+void Sprite_LoadAllTextures(void);
 //void SpriteRenderer_DrawSprite(Sprites_t *self, Texture_t *texture, vec2 position, vec2 size, GLfloat rotate, vec3 color);
 void Sprites_Init(Sprites_t *self);
 

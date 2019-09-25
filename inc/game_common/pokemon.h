@@ -29,7 +29,7 @@ typedef enum Sex
 {
     Male,
     Female,
-    GenderLess,
+    GenderUnkown,
 } Sex;
 
 
@@ -215,8 +215,8 @@ typedef enum Species
 typedef struct Ability
 {
     AbilityTypes ability_enum;
-    char *name;
-    char *description;
+    //char *name;
+    //char *description;
 } Ability;
 
 typedef enum 
@@ -227,6 +227,24 @@ typedef enum
     West
 } Direction;
 
+typedef struct Status_s
+{
+    u8 attack_multiplier;
+    u8 sp_attack_multiplier;
+    u8 defense_multiplier;
+    u8 sp_defense_multiplier;
+    u8 speed_multiplier;
+
+    u16 current_belly;
+    u16 max_belly;
+
+    bool confused;
+    bool burned;
+    bool paralysis;
+    bool sleeping;
+    bool posioned;
+} Status_t;
+
 union ivec2;
 
 typedef struct Pokemon_s
@@ -235,7 +253,7 @@ typedef struct Pokemon_s
     Species species;
     Type primary_type;
     Type sub_type;
-    Ability ability;
+    AbilityTypes ability;
     Sex sex;
     u64 exp;
     int level;
@@ -247,9 +265,9 @@ typedef struct Pokemon_s
     u8 sp_defense;
     u8 speed;
 
-    struct Item *held_item;
+    enum Items held_item;
     struct MoveSet *moves;
-    struct PokemonDungeonStatus *status;
+    Status_t *status;
     ivec2 position;
     Direction direction;
     bool team_leader;
@@ -265,10 +283,12 @@ typedef struct PokemonParty
 PokemonParty *PokemonParty_New(int capacity);
 void PokemonParty_Destroy(PokemonParty *party);
 
+void Pokemon_StatusReset(Pokemon_t * pokemon, bool first_floor);
+
 Pokemon_t *Pokemon_New(const char *name, Species species, Type primary_type, Type sub_type, AbilityTypes ability, Sex sex, int level, int max_hp, bool team_leader);
 
 void AddPartyMember(PokemonParty *party, Pokemon_t *member);
-Ability GetAbilityFromTable(AbilityTypes ability_name);
+
 void SetPokemonName(Pokemon_t *pokemon, const char *name);
 char *GetPokemonName(Pokemon_t *pokemon);
 void SetPokemonAbility(Pokemon_t *pokemon, AbilityTypes ability_name);

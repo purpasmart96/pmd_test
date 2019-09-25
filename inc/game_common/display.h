@@ -32,6 +32,6 @@ typedef struct Screen_s
 Screen_t *Screen_New(bool init);
 void Screen_Init(Screen_t *self);
 void Screen_Update(Screen_t *self);
-void Screen_Shutdown(Screen_t *self);
+void Screen_ShutDown(Screen_t *self);
 
 #endif

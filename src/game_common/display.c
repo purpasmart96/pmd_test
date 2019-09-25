@@ -53,7 +53,7 @@ void Screen_Init(Screen_t *self)
         // Just shut it down
         // Doesn't release evrything though...
         ERROR("GLFW could not initialize!\n");
-        Screen_Shutdown(self);
+        Screen_ShutDown(self);
         return;
     }
     else
@@ -103,7 +103,7 @@ void Screen_Update(Screen_t *self)
     glfwSwapInterval(self->vsync);
 }
 
-void Screen_Shutdown(Screen_t *self)
+void Screen_ShutDown(Screen_t *self)
 {
     Shader_ShutDown(self->shader);
     glfwDestroyWindow(self->window);

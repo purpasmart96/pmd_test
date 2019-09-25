@@ -51,26 +51,6 @@ typedef enum WeatherState
     WeatherSand,
 } WeatherState;
 
-
-typedef struct PokemonDungeonStatus
-{
-    bool leader;
-    u8 attack_multiplier;
-    u8 sp_attack_multiplier;
-    u8 defense_multiplier;
-    u8 sp_defense_multiplier;
-    u8 speed_multiplier;
-
-    u16 current_belly;
-    u16 max_belly;
-
-    bool confused;
-    bool burned;
-    bool paralysis;
-    bool sleeping;
-    bool posioned;
-} PokemonDungeonStatus;
-
 typedef struct {
     int item;
     Tile tile;
@@ -105,7 +85,7 @@ typedef struct Dungeon
     Floor *floor;
 } Dungeon;
 
-Floor *GenerateFloor(int seed, int num_items);
+Floor *GenerateFloor(int num_items);
 void PrintFloor(Floor *floor);
 void PrintFloorFixed(Floor * floor);
 int IsTilePassable(Floor * floor, int x, int y);

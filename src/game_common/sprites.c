@@ -52,13 +52,6 @@ static const char *background_sprites[] =
 
 static int current_texture = 0;
 
-typedef struct Coords_s
-{
-    int x;
-    int y;
-    int w;
-    int h;
-} Coords_t;
 
 //void SpriteRenderer_DrawSprite(Sprites_t *self, Texture_t *texture, vec2 position, vec2 size, GLfloat rotate, vec3 color)
 //{
@@ -221,7 +214,7 @@ static void Sprite_LoadTextureIntoList(const char *name)
     u8 *image;
     u32 width, height;
 
-    char path[64] = {'\0' };
+    char path[256] = {'\0' };
     strlcat(path, dir, sizeof(path));
     strlcat(path, name, sizeof(path));
     error = lodepng_decode32_file(&image, &width, &height, path);
@@ -233,7 +226,7 @@ static void Sprite_LoadTextureIntoList(const char *name)
     LIST_PUSH(ListTexture, texture_list, Texture_New(name, image, GL_RGBA, GL_RGBA, GL_CLAMP_TO_BORDER, GL_CLAMP_TO_BORDER, GL_NEAREST, GL_NEAREST,  width, height));
 }
 
-void Sprite_MakeTextureAtlas(void)
+void Sprite_LoadAllTextures(void)
 {
     texture_list = LIST_NEW(ListTexture);
 
@@ -243,68 +236,3 @@ void Sprite_MakeTextureAtlas(void)
     }
     DEBUG("Finished loading textures into list\n");
 }
-
-/*
-bool CheckCollision(Coords_t a, Coords_t b)
-{
-    // The sides of the rectangles
-    int left_a, left_b;
-    int right_a, right_b;
-    int top_a, top_b;
-    int bottom_a, bottom_b;
-
-    // Calculate the sides of rect A
-    left_a = a.x;
-    right_a = a.x + a.w;
-    top_a = a.y;
-    bottom_a = a.y + a.h;
-
-    // Calculate the sides of rect B
-    left_b = b.x;
-    right_b = b.x + b.w;
-    top_b = b.y;
-    bottom_b = b.y + b.h;
-
-    // If any of the sides from A are outside of B
-    if (bottom_a <= top_b)
-    {
-        return false;
-    }
-    else if (top_a >= bottom_b)
-    {
-        return false;
-    }
-    else if (right_a <= left_b)
-    {
-        return false;
-    }
-    else if (left_a >= right_b)
-    {
-        return false;
-    }
-
-    // If none of the sides from A are outside B
-    return true;
-}
-*/
-
-/*
-bool TouchesWall(SDL_Rect box, Tile *tiles[])
-{
-    // Go through the tiles
-    for (int i = 0; i < TOTAL_TILES; ++i)
-    {
-        // If the tile is a wall type tile
-        if ((tiles[i]->type >= TILE_CENTER) && (tiles[i]->type <= TILE_TOPLEFT))
-        {
-            // If the collision box touches the wall tile
-            if (CheckCollision(box, tiles[i]->box))
-            {
-                return true;
-            }
-        }
-    }
-    // If no wall tiles were touched
-    return false;
-}
-*/

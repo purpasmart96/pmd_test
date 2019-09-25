@@ -2325,7 +2325,7 @@ bool RemoveItemFromPokemon(struct Pokemon_s *poke)
 {
     if (poke->held_item != None)
     {
-        Pokemon_AssignItem(poke, "None");
+        poke->held_item = None;
         return true;
     }
     else
@@ -2393,18 +2393,19 @@ bool RemoveItem(struct Bag *bag, struct Pokemon_s *poke, ItemLocation location, 
 // that's on the team member back in the bag
 void GiveItemToTeamMember(struct Bag *self, struct Pokemon_s *team_member, Item item)
 {
-    if (team_member->held_item->type == None)
+    if (team_member->held_item == None)
     {
         printf("Gave the %s to the Team Member\n", item_to_string[item.type]);
-        team_member->held_item = &item;
+        team_member->held_item = item.type;
         return;
     }
     else if (!IsBagFull(self))
     {
-        printf("Put the %s in the bag\n", item_to_string[team_member->held_item->type]);
-        AddItemToBag(self, *team_member->held_item);
+        printf("Put the %s in the bag\n", item_to_string[team_member->held_item]);
+        //AddItemToBag(self, *team_member->held_item);
+        AddItemToBagByType(self, team_member->held_item);
         printf("Gave the %s to %s\n", item_to_string[item.type], team_member->name);
-        team_member->held_item = &item;
+        team_member->held_item = item.type;
         return;
     }
     else
@@ -2422,7 +2423,7 @@ void GiveItemToTeamMember(struct Bag *self, struct Pokemon_s *team_member, Item 
 // that's on the team member back in the bag
 void GiveItemToTeamMember_(struct Bag *self, struct Pokemon_s *team_member, const char *item_name)
 {
-    if (team_member->held_item->type == None)
+    if (team_member->held_item == None)
     {
         printf("Gave the %s to the Team Member\n", item_name);
         Pokemon_AssignItem(team_member, item_name);
@@ -2430,8 +2431,9 @@ void GiveItemToTeamMember_(struct Bag *self, struct Pokemon_s *team_member, cons
     }
     else if (!IsBagFull(self))
     {
-        printf("Put the %s in the bag\n", item_to_string[team_member->held_item->type]);
-        AddItemToBag(self, *team_member->held_item);
+        printf("Put the %s in the bag\n", item_to_string[team_member->held_item]);
+        //AddItemToBag(self, *team_member->held_item);
+        AddItemToBagByType(self, team_member->held_item);
         printf("Gave the %s to %s\n", item_name, team_member->name);
         Pokemon_AssignItem(team_member, item_name);
         return;
@@ -2448,7 +2450,7 @@ void GiveItemToTeamMember_(struct Bag *self, struct Pokemon_s *team_member, cons
 // Removes the item from the team member and puts it in the bag
 void RemoveItemFromTeamMemberToBag(struct Bag *self, struct Pokemon_s *team_member, Item item)
 {
-    if (team_member->held_item->type != None)
+    if (team_member->held_item != None)
     {
         if (!IsBagFull(self))
         {
@@ -2474,7 +2476,7 @@ void RemoveItemFromTeamMemberToBag(struct Bag *self, struct Pokemon_s *team_memb
 // Removes the item from the team member and puts it in the bag
 void RemoveItemFromTeamMemberToBag_(struct Bag *self, struct Pokemon_s *team_member, const char *item_name)
 {
-    if (team_member->held_item->type != None)
+    if (team_member->held_item != None)
     {
         if (!IsBagFull(self))
         {
@@ -2502,10 +2504,11 @@ void Pokemon_AssignItem(struct Pokemon_s *dst_poke, const char *item_name)
     {
         if (item_to_string[item_table[i].type] == item_name)
         {
-            dst_poke->held_item->type  = item_table[i].type;
-            dst_poke->held_item->Throw = item_table[i].Throw;
-            dst_poke->held_item->Use   = item_table[i].Use;
-            dst_poke->held_item->Drop  = item_table[i].Drop;
+            dst_poke->held_item = item_table[i].type;
+            //dst_poke->held_item->type  = item_table[i].type;
+            //dst_poke->held_item->Throw = item_table[i].Throw;
+            //dst_poke->held_item->Use   = item_table[i].Use;
+            //dst_poke->held_item->Drop  = item_table[i].Drop;
         }
     }
 }
