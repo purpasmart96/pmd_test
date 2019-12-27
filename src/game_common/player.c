@@ -50,13 +50,12 @@ void Player_Init(Player_t *self)
     self->leader->attack = 72;
     self->leader->defense = 66;
 
-
     self->input = Input_New(true);
 }
 
 static void MovePlayerXAxis(Player_t *self, Direction direction, int position_delta)
 {
-    TileState tile = GetTileInFront(GetDungeonObject(), self->leader->position.x, self->leader->position.y, direction);
+    TileState tile = GetTileInFront(GetDungeonObject(), self->leader->position, direction);
     if (IsTilePassableByType(GetDungeonObject()->floor, tile.tile))
     {
         SetPlayerPreviousPos(self->leader->position.x, self->leader->position.y);
@@ -68,7 +67,7 @@ static void MovePlayerXAxis(Player_t *self, Direction direction, int position_de
 
 static MovePlayerYAxis(Player_t *self, Direction direction, int position_delta)
 {
-    TileState tile = GetTileInFront(GetDungeonObject(), self->leader->position.x, self->leader->position.y, direction);
+    TileState tile = GetTileInFront(GetDungeonObject(), self->leader->position, direction);
     if (IsTilePassableByType(GetDungeonObject()->floor, tile.tile))
     {
         SetPlayerPreviousPos(self->leader->position.x, self->leader->position.y);

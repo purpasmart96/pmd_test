@@ -28,9 +28,10 @@
 #include "common/list_generic.h"
 
 #include "game_common/sprites.h"
-#include "game_common/shader.h"
+#include "game_common/renderer.h"
 
 
+static mat4 ortho_matrix;
 static mat4 model_matrix;
 static mat4 view_matrix;
 static mat4 projection_matrix;
@@ -46,20 +47,20 @@ struct VertexData
     GLfloat tex_coord[8];
 };
 
-Shader_t *Shader_New(bool init)
+Renderer_t *Renderer_New(bool init)
 {
-    Shader_t *shader = malloc(sizeof(*shader));
+    Renderer_t *renderer = malloc(sizeof(*renderer));
 
-    if (!shader)
+    if (!renderer)
     {
         return NULL;
     }
     else if (init)
     {
-        Shader_Init(shader);
+        Renderer_Init(renderer);
     }
 
-    return shader;
+    return renderer;
 }
 
 static const char *OpenFileFromPath(const char *path)
@@ -146,7 +147,7 @@ static GLuint LoadShader(const char *filename, GLenum shader_type)
 }
 
 
-//static void Shader_StoreDataInAttributeList(Shader_t *self, int attribute_num, int coord_size, float *data, int data_size)
+//static void Shader_StoreDataInAttributeList(Renderer_t *self, int attribute_num, int coord_size, float *data, int data_size)
 //{
 //    int vbo_id;
 //    int *vbo = LIST_TO_ARRAY(ListInt, self->vbo);
@@ -159,7 +160,7 @@ static GLuint LoadShader(const char *filename, GLenum shader_type)
 //}
 
 
-//static int Shader_MakeVAO(Shader_t *self)
+//static int Shader_MakeVAO(Renderer_t *self)
 //{
 //    int vao_id;
 //    int *vao = LIST_TO_ARRAY(ListInt, self->vao);
@@ -232,11 +233,11 @@ static GLubyte indices2[] =
 //};
 
 
-void ShaderRenderer_DrawSprite(Shader_t *self, Texture_t *texture, vec2 position, vec2 size, GLfloat rotate, vec3 color)
+void ShaderRenderer_DrawSprite(Renderer_t *self, Texture_t *texture, vec2 position, vec2 size, GLfloat rotate, vec3 color)
 {
-    Shader_Use(self);
+    Renderer_ShaderUse(self);
 
-    mat4 model = mat4_translate(model, position.x, position.y, 0.0f, 0.0f);
+    mat4 model = mat4_translate(model, position.x, position.y, 0.0f);
 
     model = mat4_translate(model, 0.5f * size.x, 0.5f * size.y, 0.0f);
     model = mat4_rotate(model, rotate, 0.0f, 0.0f, 1.0f);
@@ -244,8 +245,8 @@ void ShaderRenderer_DrawSprite(Shader_t *self, Texture_t *texture, vec2 position
 
     model = mat4_scale_xyz(model, size.x, size.y, 1.0f);
 
-    Shader_SetMatrix4(self, "ModelMatrix", &model);
-    Shader_SetVector3f(self, "vertex_color", &color);
+    Renderer_ShaderSetMatrix4(self, "ModelMatrix", &model);
+    Renderer_ShaderSetVector3f(self, "vertex_color", &color);
 
     glActiveTexture(GL_TEXTURE0);
 
@@ -256,7 +257,7 @@ void ShaderRenderer_DrawSprite(Shader_t *self, Texture_t *texture, vec2 position
     glBindVertexArray(0);
 }
 
-void Shader_InitSprite(Shader_t *self)
+void Shader_InitSprite(Renderer_t *self)
 {
     // Configure VAO/VBO
     GLuint VBO;
@@ -294,11 +295,11 @@ void Shader_InitSprite(Shader_t *self)
 }
 
 
-static void Renderer_Init(Shader_t *self)
-{
-}
+//static void Renderer_Init(Renderer_t *self)
+//{
+//}
 
-void Shader_LoadShaders(Shader_t *self)
+void Renderer_LoadShaders(Renderer_t *self)
 {
     self->vertex_shader = LoadShader("data/shaders/vertex.vsh", GL_VERTEX_SHADER);
     self->frag_shader = LoadShader("data/shaders/frag.psh", GL_FRAGMENT_SHADER);
@@ -308,19 +309,9 @@ void Shader_LoadShaders(Shader_t *self)
     glLinkProgram(self->program);
 }
 
-void Shader_Init(Shader_t *self)
+void Renderer_Init(Renderer_t *self)
 {
-    float fov = 90.0f;
-    float width = 1280.0f;
-    float height = 720.0f;
-    float znear = 0.1f; 
-    float zfar = 100.0f;
-
-    float aspect_ratio = width / (float)height;
-
-    Shader_SetProjectionMatrix(self, fov, aspect_ratio, znear, zfar);
-
-    Shader_LoadShaders(self);
+    Renderer_LoadShaders(self);
     // Setup quad colors
     quad_color[0] =  -0.6f; quad_color[1] =  1.0f; quad_color[2]  = 0.2f; quad_color[3] =  0.4f;
     quad_color[4]  = 0.7f; quad_color[5] =  0.4f; quad_color[6] =  0.5f; quad_color[7]  = 0.1f;
@@ -360,7 +351,7 @@ void Shader_Init(Shader_t *self)
     my_texture = LoadTexture(my_texture, "test2.png");
     //glUniform1i(glGetUniformLocation(self->program, "tex_sampler"), 0);
     
-    Shader_Use(self);
+    Renderer_ShaderUse(self);
 
     glEnable(GL_TEXTURE_2D);
     glEnable(GL_DEPTH_TEST);
@@ -369,7 +360,7 @@ void Shader_Init(Shader_t *self)
     free(vertex_data);
 }
 
-void Shader_Update(Shader_t *self)
+void Renderer_Update(Renderer_t *self)
 {
     //Shader_Use(self);
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -378,7 +369,7 @@ void Shader_Update(Shader_t *self)
     //mat4 m2 = mat4_identity();
 
     //glm::ortho(0, width, height, 0, 0, 1000)
-    //m1 = mat4_ortho2(m1, 1280, 720, 1.0f, 1.0f, 0.0f, 1000.0f);
+    
     //m2 = mat4_ortho3(m2, 1280, 720, 1.0f, 1.0f, 0.0f, 1000.0f);
 
 
@@ -391,13 +382,45 @@ void Shader_Update(Shader_t *self)
     //
     //glUniform1i(glGetUniformLocation(self->program, "tex_sampler"), 0);
     Sprites_BindTexture(my_texture, 0);
+
+    ortho_matrix = mat4_identity();
+    model_matrix = mat4_identity();
+    view_matrix = mat4_identity();
+
+    float fov = 90.0f;
+    float width = 1280.0f;
+    float height = 720.0f;
+    float znear = 0.1f; 
+    float zfar = 100.0f;
+
+    float aspect_ratio = width / (float)height;
+
+    Renderer_SetProjectionMatrix(self, fov, aspect_ratio, znear, zfar);
+
+    model_matrix = mat4_rotate(model_matrix, (float)glfwGetTime(), 0.0f, 1.0f, 1.0f);
+    //model_matrix = mat4_lookAt(make_vec3(0.0f, 15.0f, 40.0f), make_vec3(0.0f, 0.0f, 0.0f), make_vec3(0.0f, 1.0f, 0.0f));
+
+    view_matrix  = mat4_translate(view_matrix,  0.0f, 0.0f, 0.0f);
+
+    ortho_matrix = mat4_ortho(ortho_matrix, 0.0f, 1280.0f, 0.0f, 720.0f, 0.1f, 100.0f);
+
+    //mat4 transform = mat4_identity(); // make sure to initialize matrix to identity matrix first
+    //transform = mat4_translate(transform, 0.0f, 0.0f, 0.0f);
+    //transform = mat4_translate2(transform, make_vec3(0.5f, -0.5f, 0.0f));
+    //transform = mat4_translate3(transform, 0.5f, -0.5f, 0.0f);
+    //transform = mat4_rotate(transform, (float)glfwGetTime(), 0.0f, 0.0f, 1.0f);
+
+
+    Renderer_ShaderUse(self);
+
+    Renderer_ShaderSetMatrix4(self, "ProjectionMatrix", &ortho_matrix);
+    Renderer_ShaderSetMatrix4(self, "ModelMatrix", &model_matrix);
+    Renderer_ShaderSetMatrix4(self, "ViewMatrix", &view_matrix);
+
+
+
     //GLint uniform_sampler  = glGetUniformLocation(self->program, "tex_sampler");
     //glUniform1i(uniform_sampler, 0);
-
-    //int iModelViewLoc = glGetUniformLocation(self->program, "ModelMatrix");
-    //int iProjectionLoc = glGetUniformLocation(self->program, "ProjectionMatrix");
-
-    //glUniformMatrix4fv(iProjectionLoc, 1, GL_FALSE, Shader_GetProjectionMatrix(self).m);
 
     //mat4 ModelView = mat4_lookAt(make_vec3(0.0f, 15.0f, 40.0f), make_vec3(0.0f, 0.0f, 0.0f), make_vec3(0.0f, 1.0f, 0.0f));
 
@@ -406,65 +429,65 @@ void Shader_Update(Shader_t *self)
     glBindVertexArray(self->vao_);
 
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, indices);
-
+    //glDrawArrays(GL_TRIANGLES, 0, 6);
 
     //DrawSprite(self, make_vec2(200.0f, 200.0f), make_vec2(64.0f, 64.0f), 45.0f, make_vec4(0.0f, 0.0f, 0.0f, 0.0f));
 }
 
-void Shader_ShutDown(Shader_t *self)
+void Renderer_ShutDown(Renderer_t *self)
 {
     glDeleteProgram(self->program);
     free(self);
 }
 
-void Shader_Use(Shader_t *self)
+void Renderer_ShaderUse(Renderer_t *self)
 {
     glUseProgram(self->program);
 }
 
-void Shader_SetProjectionMatrix(Shader_t *self, float fov, float aspect_ratio, float znear, float zfar)
+void Renderer_SetProjectionMatrix(Renderer_t *self, float fov, float aspect_ratio, float znear, float zfar)
 {
     self->projection_matrix = mat4_perspective(fov, aspect_ratio, znear, zfar);
     //mat4 matrix = mat4_perspective(fov, aspect_ratio, znear, zfar);
     //memcpy(&self->projection_matrix, &matrix, sizeof(mat4));
 }
 
-mat4 *Shader_GetProjectionMatrix(Shader_t *self)
+mat4 *Renderer_GetProjectionMatrix(Renderer_t *self)
 {
     return self->projection_matrix;
 }
 
-void Shader_SetFloat(Shader_t *self, const GLchar *name, GLfloat value)
+void Renderer_ShaderSetFloat(Renderer_t *self, const GLchar *name, GLfloat value)
 {
     glUniform1f(glGetUniformLocation(self->program, name), value);
 }
 
-void Shader_SetInteger(Shader_t *self, const GLchar *name, GLint value)
+void Renderer_ShaderSetInteger(Renderer_t *self, const GLchar *name, GLint value)
 {
     glUniform1i(glGetUniformLocation(self->program, name), value);
 }
 
-void Shader_SetVector2f(Shader_t *self, const GLchar *name, const vec2 *vector)
+void Renderer_ShaderSetVector2f(Renderer_t *self, const GLchar *name, const vec2 *vector)
 {
     glUniform2fv(glGetUniformLocation(self->program, name), 1, vector->v);
 }
 
-void Shader_SetVector3f(Shader_t *self, const GLchar *name, const vec3 *vector)
+void Renderer_ShaderSetVector3f(Renderer_t *self, const GLchar *name, const vec3 *vector)
 {
     glUniform3fv(glGetUniformLocation(self->program, name), 1, vector->v);
 }
 
-void Shader_SetVector4f(Shader_t *self, const GLchar *name, const vec4 *vector)
+void Renderer_ShaderSetVector4f(Renderer_t *self, const GLchar *name, const vec4 *vector)
 {
     glUniform4fv(glGetUniformLocation(self->program, name), 1, vector->v);
 }
 
-void Shader_SetMatrix3(Shader_t *self, const GLchar *name, const mat3 *matrix)
+void Renderer_ShaderSetMatrix3(Renderer_t *self, const GLchar *name, const mat3 *matrix)
 {
     glUniformMatrix3fv(glGetUniformLocation(self->program, name), 1, GL_FALSE, matrix->m);
 }
 
-void Shader_SetMatrix4(Shader_t *self, const GLchar *name, const mat4 *matrix)
+void Renderer_ShaderSetMatrix4(Renderer_t *self, const GLchar *name, const mat4 *matrix)
 {
     glUniformMatrix4fv(glGetUniformLocation(self->program, name), 1, GL_FALSE, matrix->m);
 }

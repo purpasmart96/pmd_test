@@ -288,6 +288,8 @@ void Pokemon_StatusReset(Pokemon_t * pokemon, bool first_floor);
 Pokemon_t *Pokemon_New(const char *name, Species species, Type primary_type, Type sub_type, AbilityTypes ability, Sex sex, int level, int max_hp, bool team_leader);
 
 void AddPartyMember(PokemonParty *party, Pokemon_t *member);
+void RemovePartyMember(PokemonParty *party, Pokemon_t *member);
+void RemovePartyMemberByName(PokemonParty *party, const char *name);
 
 void SetPokemonName(Pokemon_t *pokemon, const char *name);
 char *GetPokemonName(Pokemon_t *pokemon);

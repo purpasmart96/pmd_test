@@ -77,7 +77,7 @@ void Dungeon_Init(PokemonParty *party)
     }
 
     int num_items = rand_interval(min_num_items, max_num_items);
-    dungeon->floor = GenerateFloor(seed, num_items);
+    dungeon->floor = GenerateFloor(/*seed,*/ num_items);
 
     PrintFloorFixed(dungeon->floor);
 
@@ -101,10 +101,10 @@ Dungeon *GetDungeonObject(void)
     return dungeon;
 }
 
-TileState GetTileInFront(Dungeon *dungeon, const int x, const int y, Direction direction)
+TileState GetTileInFront(Dungeon *dungeon, const ivec2 coords, Direction direction)
 {
-    int temp_x = x;
-    int temp_y = y;
+    int temp_x = coords.x;
+    int temp_y = coords.y;
 
     switch (direction)
     {
@@ -126,6 +126,42 @@ TileState GetTileInFront(Dungeon *dungeon, const int x, const int y, Direction d
     }
 
     return dungeon->floor->tiles[temp_x][temp_y];
+}
+
+static int GetTile(Floor *floor, int x, int y)
+{
+    if (x < 0 || x >= floor->width || y < 0 || y >= floor->height)
+    {
+        return tileEnd;
+    }
+    return floor->tiles[x][y].tile;
+}
+
+/**
+* Returns tile_wall if the tile is a boundary. Used to equate boundaries and walls
+* for graphics purposes
+*/
+static int GetTileBoundaryAsWall(Floor *floor, int x, int y)
+{
+    if (x < 0 || x >= floor->width || y < 0 || y >= floor->height)
+    {
+        return tileWall;
+    }
+    if (floor->tiles[x][y].tile == tileEnd)
+    {
+        return tileWall;
+    }
+    return floor->tiles[x][y].tile;
+}
+
+static int SetTile(Floor *floor, int x, int y, int tile)
+{
+    if (x < 0 || x >= floor->width || y < 0 || y >= floor->height)
+    {
+        return 0;
+    }
+    floor->tiles[x][y].tile = tile;
+    return 1;
 }
 
 int GetItemFromTile(Dungeon *dungeon, int x, int y)
@@ -185,41 +221,7 @@ static void SetPlayerSpawnPoint(Floor *floor, int x, int y)
     floor->tiles[x][y].tile = tilePlayer;
 }
 
-static int GetTile(Floor *floor, int x, int y)
-{
-    if (x < 0 || x >= floor->width || y < 0 || y >= floor->height)
-    {
-        return tileEnd;
-    }
-    return floor->tiles[x][y].tile;
-}
 
-/**
-* Returns tile_wall if the tile is a boundary. Used to equate boundaries and walls
-* for graphics purposes
-*/
-static int GetTileBoundaryAsWall(Floor *floor, int x, int y)
-{
-    if (x < 0 || x >= floor->width || y < 0 || y >= floor->height)
-    {
-        return tileWall;
-    }
-    if (floor->tiles[x][y].tile == tileEnd)
-    {
-        return tileWall;
-    }
-    return floor->tiles[x][y].tile;
-}
-
-static int SetTile(Floor *floor, int x, int y, int tile)
-{
-    if (x < 0 || x >= floor->width || y < 0 || y >= floor->height)
-    {
-        return 0;
-    }
-    floor->tiles[x][y].tile = tile;
-    return 1;
-}
 
 void PrintFloor(Floor *floor)
 {

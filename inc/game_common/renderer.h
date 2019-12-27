@@ -19,10 +19,10 @@
 // THE SOFTWARE.
 
 
-#ifndef _SHADER_MANAGER_H_
-#define _SHADER_MANAGER_H_
+#ifndef _RENDERER_MANAGER_H_
+#define _RENDERER_MANAGER_H_
 
-typedef struct Shader_s
+typedef struct Renderer_s
 {
     GLuint program;
     GLuint vertex_shader;
@@ -36,30 +36,30 @@ typedef struct Shader_s
     struct ListInt *vao;
     struct ListInt *textures;
     GLint image_sampler;
-} Shader_t;
+} Renderer_t;
 
-Shader_t *Shader_New(bool init);
-void Shader_LoadShaders(Shader_t * self);
-void Shader_Init(Shader_t *self);
-void Shader_Update(Shader_t *self);
-void Shader_ShutDown(Shader_t *self);
+Renderer_t *Renderer_New(bool init);
+void Renderer_LoadShaders(Renderer_t * self);
+void Renderer_Init(Renderer_t *self);
+void Renderer_Update(Renderer_t *self);
+void Renderer_ShutDown(Renderer_t *self);
 
-void Shader_Use(Shader_t *self);
+void Renderer_ShaderUse(Renderer_t *self);
 
-void Shader_SetProjectionMatrix(Shader_t * self, float fov, float aspect_ratio, float znear, float zfar);
+void Renderer_SetProjectionMatrix(Renderer_t * self, float fov, float aspect_ratio, float znear, float zfar);
 
-mat4 *Shader_GetProjectionMatrix(Shader_t * self);
+mat4 *Renderer_GetProjectionMatrix(Renderer_t * self);
 
-void Shader_SetFloat(Shader_t *self, const GLchar *name, GLfloat value);
-void Shader_SetInteger(Shader_t *self, const GLchar *name, GLint value);
-void Shader_SetVector2f(Shader_t *self, const GLchar *name, const vec2 *vector);
-void Shader_SetVector3f(Shader_t *self, const GLchar *name, const vec3 *vector);
-void Shader_SetVector4f(Shader_t *self, const GLchar *name, const vec4 *vector);
-void Shader_SetMatrix3(Shader_t * self, const GLchar * name, const mat3 * matrix);
-void Shader_SetMatrix4(Shader_t *self, const GLchar *name, const mat4 *matrix);
+void Renderer_ShaderSetFloat(Renderer_t *self, const GLchar *name, GLfloat value);
+void Renderer_ShaderSetInteger(Renderer_t *self, const GLchar *name, GLint value);
+void Renderer_ShaderSetVector2f(Renderer_t *self, const GLchar *name, const vec2 *vector);
+void Renderer_ShaderSetVector3f(Renderer_t *self, const GLchar *name, const vec3 *vector);
+void Renderer_ShaderSetVector4f(Renderer_t *self, const GLchar *name, const vec4 *vector);
+void Renderer_ShaderSetMatrix3(Renderer_t * self, const GLchar * name, const mat3 * matrix);
+void Renderer_ShaderSetMatrix4(Renderer_t *self, const GLchar *name, const mat4 *matrix);
 
-//void Shader_InitRenderData(Shader_t *self);
+//void Renderer_InitRenderData(Renderer_t *self);
 
-//void DrawSprite(Shader_t *self, vec2 position, vec2 size, GLfloat rotate, vec4 color);
+//void DrawSprite(Renderer_t *self, vec2 position, vec2 size, GLfloat rotate, vec4 color);
 
 #endif

@@ -97,7 +97,7 @@ void Dungeon_ShutDown();
 Dungeon *GetDungeonObject(void);
 
 typedef enum Direction Direction;
-TileState GetTileInFront(Dungeon * dungeon, const int x, const int y, Direction direction);
+TileState GetTileInFront(Dungeon * dungeon, const ivec2 coords, Direction direction);
 
 int GetItemFromTile(Dungeon *dungeon, int x, int y);
 void RemoveItemFromTile(Dungeon *dungeon, int x, int y);

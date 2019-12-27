@@ -41,6 +41,8 @@ void *stack_resize(Stack *stack, size_t capacity)
         return NULL;
     }
     stack->data = temp;
+
+    return temp;
 }
 
 void stack_delete(Stack *stack)

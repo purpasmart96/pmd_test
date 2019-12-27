@@ -125,6 +125,31 @@ void AddPartyMember(PokemonParty *party, Pokemon_t *member)
     party->members[party->size++] = member;
 }
 
+void RemovePartyMember(PokemonParty *party, Pokemon_t *member)
+{
+    for (int i = 0; i < party->size; i++)
+    {
+        if (member == party->members[i])
+        {
+            party->size--;
+            free(party->members[i]);
+            //memset(party->members[i], 0, sizeof(Pokemon_t));
+        }
+    }
+}
+
+void RemovePartyMemberByName(PokemonParty *party, const char *name)
+{
+    for (int i = 0; i < party->size; i++)
+    {
+        if (strcmp(party->members[i]->name, name) == 0)
+        {
+            party->size--;
+            //memset(party->members[i], 0, sizeof(Pokemon_t));
+            free(party->members[i]);
+        }
+    }
+}
 
 void SetPokemonAbility(Pokemon_t *pokemon, AbilityTypes ability_name)
 {

@@ -2379,7 +2379,7 @@ bool RemoveItem(struct Bag *bag, struct Pokemon_s *poke, ItemLocation location, 
         case LocationBag:
             return RemoveItemFromBag_(bag, item_name);
         case LocationPokemonLeader:
-            return RemoveItemFromPokemon(bag, item_name);
+            return RemoveItemFromPokemon(poke);
         case LocationGround:
             return RemoveItemFromGround(GetDungeonObject(), poke);
         default:

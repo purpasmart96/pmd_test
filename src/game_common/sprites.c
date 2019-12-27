@@ -27,11 +27,11 @@
 
 #include "common/list_generic.h"
 
-#include "game_common/shader.h"
+#include "game_common/renderer.h"
 #include "game_common/sprites.h"
 
 static const char *dir = "data/sprites/tiles/";
-static char path[64] = { '\0' };
+static char path[256] = { '\0' };
 
 static ListTexture *texture_list = NULL;
 
@@ -55,7 +55,7 @@ static int current_texture = 0;
 
 //void SpriteRenderer_DrawSprite(Sprites_t *self, Texture_t *texture, vec2 position, vec2 size, GLfloat rotate, vec3 color)
 //{
-//    Shader_Use(self);
+//    Renderer_ShaderUse(self);
 //
 //    mat4 model = mat4_translate(model, position.x, position.y, 0.0f, 0.0f);
 //
@@ -65,8 +65,8 @@ static int current_texture = 0;
 //
 //    model = mat4_scale_xyz(model, size.x, size.y, 1.0f);
 //
-//    Shader_SetMatrix4(self, "ModelMatrix", &model);
-//    Shader_SetVector3f(self, "vertex_color", &color);
+//    Renderer_ShaderSetMatrix4(self, "ModelMatrix", &model);
+//    Renderer_ShaderSetVector3f(self, "vertex_color", &color);
 //
 //    glActiveTexture(GL_TEXTURE0);
 //
@@ -110,13 +110,13 @@ void Sprites_Init(Sprites_t *self)
         1.0f, 0.0f, 1.0f, 0.0f
     };
 
-    glGenVertexArrays(1, &self->shader->quad_vao);
+    glGenVertexArrays(1, &self->renderer->quad_vao);
     glGenBuffers(1, &VBO);
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-    glBindVertexArray(self->shader->quad_vao);
+    glBindVertexArray(self->renderer->quad_vao);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (GLvoid*)0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);

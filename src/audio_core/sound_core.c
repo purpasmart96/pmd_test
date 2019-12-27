@@ -22,11 +22,12 @@
 #include "common/stack.h"
 #include "audio_core/al_common.h"
 #include "audio_core/sound_core.h"
-#include <vorbis/vorbisfile.h>
-#include <vorbis/codec.h>
 
 #include <ogg/os_types.h>
 #include <ogg/ogg.h>
+
+#include <vorbis/codec.h>
+#include <vorbis/vorbisfile.h>
 
 
 #include <io.h>
@@ -160,14 +161,14 @@ SoundInfo *SoundInfo_New(int freqency, int channels, int bits_per_channel, Stack
     sound_info->bits_per_channel = bits_per_channel;
     sound_info->buffer_data = malloc(buffer->size * 4096 * 2);
 
-    for (int i = 0; i < buffer->size; i++)
-    {
-        for (int j = 0; j < 4096; j++)
-        {
-            sound_info->buffer_data[j] = buffer->data[i];
-        }
+    //for (int i = 0; i < buffer->size; i++)
+    //{
+    //    for (int j = 0; j < 4096; j++)
+    //    {
+    //        sound_info->buffer_data[j] = buffer->data[i];
+    //    }
 
-    }
+    //}
 
 
     sound_info->size = size;
@@ -498,4 +499,77 @@ SoundInfo *ogg_decode(const char *file_name)
     DEBUG("Done.\n");
     return sound_info;
 
+}
+
+
+SoundInfo *SoundInfo_LoadOGG(const char *filename, ALuint pDestAudioBuffer)
+{
+    OggVorbis_File oggfile;
+    SoundInfo *sound_info = NULL;
+
+
+    if (ov_fopen(filename, &oggfile))
+    {
+        ERROR("ov_fopen failed.\n");
+        return false;
+    }
+
+    vorbis_info *info = ov_info(&oggfile, -1);
+
+    ALenum format;
+    switch (info->channels)
+    {
+        case 1:
+            format = AL_FORMAT_MONO16; break;
+        case 2:
+            format = AL_FORMAT_STEREO16; break;
+        case 4:
+            format = alGetEnumValue("AL_FORMAT_QUAD16"); break;
+        case 6:
+            format = alGetEnumValue("AL_FORMAT_51CHN16"); break;
+        case 7:
+            format = alGetEnumValue("AL_FORMAT_61CHN16"); break;
+        case 8:
+            format = alGetEnumValue("AL_FORMAT_71CHN16"); break;
+        default:
+            format = 0; break;
+    }
+
+    Stack *samples = stack_new(0x500000);
+    //std::vector<int16> samples;
+    char tmpbuf[4096];
+    int section = 0;
+    bool first_run = true;
+    while(true)
+    {
+        int result = ov_read(&oggfile, tmpbuf, 4096, 0, 2, 1, &section);
+        if (result > 0)
+        {
+            first_run = false;
+            stack_push(samples, tmpbuf);
+                //insert(const_iterator position, size_type n, const value_type& val);
+            //samples.insert(samples.end(), tmpbuf, tmpbuf + (result));
+        }
+        else
+        {
+            if (result < 0)
+            {
+                ERROR("Loading ogg sound data failed!\n");
+                ov_clear(&oggfile);
+                return false;
+            }
+            else
+            {
+                if (first_run)
+                    return false;
+                break;
+            }
+        }
+    }
+
+    sound_info = SoundInfo_New(info->rate, info->channels, 16, samples, oggfile.pcmlengths);
+    //alBufferData(pDestAudioBuffer, format, samples->data[0], ov_pcm_total(&oggfile, -1), info->rate);
+
+    //return true;
+    return sound_info;
 }

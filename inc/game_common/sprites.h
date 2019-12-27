@@ -21,12 +21,12 @@
 #ifndef _SPRITES_H_
 #define _SPRITES_H_
 
-typedef struct Shader_s Shader_t;
+typedef struct Renderer_s Renderer_t;
 //typedef struct Texture_s Texture_t;
 
 typedef struct Sprites_s
 {
-    struct Shader_s *shader;
+    struct Renderer_s *renderer;
 
 } Sprites_t;
 

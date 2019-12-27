@@ -1,4 +1,4 @@
-// Copyright(c) <2015> <Purpasmart>
+// Copyright(c) 2015 <Purpasmart>
 // The MIT License
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,8 +18,12 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+#include <pthread.h>
+
 #include "audio_core/sound_core.h"
 #include "audio_core/al_common.h"
+
+
 
 
 ALState *ALState_New(int buffer_count, bool seprate_thread, bool init_sources)
@@ -62,6 +66,20 @@ DWORD WINAPI ALState_UpdateThread(ALState *self,  __in LPVOID lpParameter)
     return 0;
 
 }
+
+//void *ALState_UpdateThread(ALState *self,  void *ptr)
+//{
+//    while (true)
+//    {
+//        alGetSourcei(self->source, AL_SOURCE_STATE, &self->source_state);
+//        if (self->source_state != AL_PLAYING)
+//        {
+//            alSourcePlay(self->source);
+//        }
+//    }
+//    return 0;
+//
+//}
 
 static void list_audio_devices(const ALCchar *devices)
 {
@@ -180,7 +198,8 @@ void AL_State_LoadBuffer(ALState *self)
 
     ALuint source_state;
 
-    sound_info = ogg_decode("D:/PokeMysteryDun/pmd_fix/data/sound/bgm/Icicle Forest.ogg");
+    //sound_info = ogg_decode("D:/PokeMysteryDun/pmd_fix/data/sound/bgm/Icicle Forest.ogg");
+    SoundInfo *si = SoundInfo_LoadOGG("D:/PokeMysteryDun/pmd_fix/data/sound/bgm/Aegis Cave.ogg", 0);
     if (sound_info != NULL)
     {
         alBufferData(buffer, to_al_format(sound_info->channels, sound_info->bits_per_channel), sound_info->buffer_data, sound_info->size, sound_info->freqency);

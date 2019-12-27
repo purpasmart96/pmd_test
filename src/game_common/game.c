@@ -68,6 +68,8 @@ static void key_callback(GLFWwindow *window, int key, int scancode, int action, 
     if (key == GLFW_KEY_E && action == GLFW_PRESS)
     {
         //SoundInfo *si = ogg_decode("D:/PokeMysteryDun/pmd_fix/data/sound/bgm/Aegis Cave.ogg");
+        
+        // TODO
         //AL_State_LoadBuffer(game->audio_state);
         //while (true)
         //{
@@ -78,17 +80,17 @@ static void key_callback(GLFWwindow *window, int key, int scancode, int action, 
         //    }
         //}
         //DEBUG("Done playing \n");
-    //}
+    
 
 
-        for (int i = 0; i < MAX_ITEMS; i++)
-        {
-            u32 item = rand_interval(67, 69);
-            AddItemToBagByType(game->bag, item);
-        }
-        printf("Current bag size is %d\n", game->bag->size);
+        //for (int i = 0; i < MAX_ITEMS; i++)
+        //{
+        //    u32 item = rand_interval(67, 69);
+        //    AddItemToBagByType(game->bag, item);
+        //}
+        //printf("Current bag size is %d\n", game->bag->size);
 
-        DisplayBag(game->bag);
+        //DisplayBag(game->bag);
     }
     else if (key == GLFW_KEY_SPACE && action == GLFW_PRESS)
     {
@@ -111,7 +113,14 @@ static void key_callback(GLFWwindow *window, int key, int scancode, int action, 
     }
     else if (key == GLFW_KEY_Y && action == GLFW_PRESS)
     {
-        DisplayBag(game->bag);
+        //DisplayBag(game->bag);
+        RemovePartyMemberByName(game->party, "Garchomp");
+
+        struct Pokemon_s *teamate = Pokemon_New("Garchomp", Garchomp, Dragon, Ground, RoughSkin, Female, 55, 255, false);
+        teamate->current_hp = 110;
+        teamate->attack = 92;
+        teamate->defense = 76;
+        AddPartyMember(game->party, teamate);
     }
     
 }
@@ -141,8 +150,14 @@ void Game_Init(Game_t *self)
     self->player  = Player_New(true);
     self->party = PokemonParty_New(4);
     AddPartyMember(self->party, self->player->leader);
+    struct Pokemon_s *teamate = Pokemon_New("Garchomp", Garchomp, Dragon, Ground, RoughSkin, Female, 55, 255, true);
+    teamate->current_hp = 110;
+    teamate->attack = 92;
+    teamate->defense = 76;
+
+    AddPartyMember(self->party, teamate);
     
-    self->bag     = Bag_New(true);
+    self->bag = Bag_New(true);
     self->audio_state = ALState_New(512, false, true);
 
 

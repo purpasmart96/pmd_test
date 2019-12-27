@@ -150,9 +150,6 @@
     <ClCompile Include="src\game_common\shop.c">
       <Filter>Source Files\game_common</Filter>
     </ClCompile>
-    <ClCompile Include="src\game_common\shader.c">
-      <Filter>Source Files\game_common</Filter>
-    </ClCompile>
     <ClCompile Include="src\game_common\pokemon.c">
       <Filter>Source Files\game_common</Filter>
     </ClCompile>
@@ -188,6 +185,12 @@
     </ClCompile>
     <ClCompile Include="src\common\file_io.c">
       <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game_common\renderer.c">
+      <Filter>Source Files\game_common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game_common\camera.c">
+      <Filter>Source Files\game_common</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -326,9 +329,6 @@
     <ClInclude Include="inc\game_common\pokemon.h">
       <Filter>Header Files\game_common</Filter>
     </ClInclude>
-    <ClInclude Include="inc\game_common\shader.h">
-      <Filter>Header Files\game_common</Filter>
-    </ClInclude>
     <ClInclude Include="inc\game_common\sound.h">
       <Filter>Header Files\game_common</Filter>
     </ClInclude>
@@ -352,6 +352,12 @@
     </ClInclude>
     <ClInclude Include="inc\common\file_io.h">
       <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\game_common\renderer.h">
+      <Filter>Header Files\game_common</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\game_common\camera.h">
+      <Filter>Header Files\game_common</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

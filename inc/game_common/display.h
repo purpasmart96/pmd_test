@@ -26,7 +26,7 @@ typedef struct Screen_s
     struct GLFWwindow *window;
     bool widescreen;
     bool vsync;
-    struct Shader_s *shader;
+    struct Renderer_s *renderer;
 } Screen_t;
 
 Screen_t *Screen_New(bool init);

@@ -301,7 +301,6 @@ ivec4 ivec4_scale_xyzw(ivec4 a, int x, int y, int z, int w)
     return b;
 }
 
-
 vec4 vec4_normalize(vec4 a)
 {
     return vec4_scale(a, 1 / vec4_length(a));
@@ -818,17 +817,39 @@ mat4 mat4_translate(mat4 m, float x, float y, float z)
     return m;
 }
 
-void mat4_translate2(mat4 m, vec3 v)
-{
-    vec4 v1, v2, v3;
-    v1 = vec4_scale(m.a, v.v[0]);
-    v2 = vec4_scale(m.b, v.v[1]);
-    v3 = vec4_scale(m.c, v.v[2]);
-    
-    m.d = vec4_add(v1, m.d);
-    m.d = vec4_add(v2, m.d);
-    m.d = vec4_add(v3, m.d);
-}
+//mat4 mat4_translate3(mat4 m, float x, float y, float z)
+//{
+//    mat4 translate_mat = mat4_identity();
+//    //translate_mat.a.w = x;
+//    //translate_mat.b.w = y;
+//    //translate_mat.c.w = y;
+//
+//    translate_mat.m[3] += x;
+//    translate_mat.m[7] += y;
+//    translate_mat.m[11] += z;
+//    m = mat4_mul(m, translate_mat);
+//
+//    return m;
+//}
+//
+//mat4 mat4_translate2(mat4 m, vec3 v)
+//{
+//    //vec4 v1, v2, v3;
+//    //v1 = vec4_scale(m.a, v.v[0]);
+//    //v2 = vec4_scale(m.b, v.v[1]);
+//    //v3 = vec4_scale(m.c, v.v[2]);
+//    //
+//    //m.d = vec4_add(v1, m.d);
+//    //m.d = vec4_add(v2, m.d);
+//    //m.d = vec4_add(v3, m.d);
+//    mat4 ret = mat4_identity();
+//    ret.m[12] = v.x;
+//    ret.m[13] = v.y;
+//    ret.m[14] = v.z;
+//
+//    m = mat4_mul(m, ret);
+//    return m;
+//}
 
 mat4 mat4_rotate(mat4 m, float angle, float x, float y, float z)
 {
@@ -913,14 +934,30 @@ mat4 mat4_tranpose2(mat4 m)
 //}
 //#endif
 
-mat4 mat4_ortho(float left, float right, float bottom, float top, float znear, float zfar)
+mat4 mat4_ortho(mat4 mtx , float left, float right, float bottom, float top, float znear, float zfar)
 {
-    return mat4_make(make_vec4(2.0f / (right - left), 0.0f, 0.0f, 0.0f),
-                     make_vec4(0.0f, 2.0f / (top - bottom), 0.0f, 0.0f),
-                     make_vec4(0.0f, 0.0f, 2.0f / (zfar - znear), 0.0f),
-                     make_vec4((right + left) / (right - left) * -1.0f,
-                               (top + bottom) / (top - bottom) * -1.0f,
-                               (zfar + znear) / (zfar - znear) * -1.0f, 1.0f));
+    float lr = 1 / (left - right);
+    float bt = 1 / (bottom - top);
+    float nf = 1 / (znear - zfar);
+
+    mtx.m[0] = -2.0f * lr;
+    mtx.m[1] = 0;
+    mtx.m[2] = 0;
+    mtx.m[3] = 0;
+    mtx.m[4] = 0;
+    mtx.m[5] = -2.0f * bt;
+    mtx.m[6] = 0;
+    mtx.m[7] = 0;
+    mtx.m[8] = 0;
+    mtx.m[9] = 0;
+    mtx.m[10] = 2.0f * nf;
+    mtx.m[11] = 0.0f;
+    mtx.m[12] = (left + right) * lr;
+    mtx.m[13] = (top + bottom) * bt;
+    mtx.m[14] = (zfar + znear) * nf;
+    mtx.m[15] = 1.0f;
+
+    return mtx;
 }
 
 mat4 mat4_ortho2(mat4 mtx, float left, float right, float bottom, float top, float znear, float zfar)

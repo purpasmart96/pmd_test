@@ -57,7 +57,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>false</SDLCheck>
-      <AdditionalIncludeDirectories>...\..\inc;...\..\lib\glew-2.1.0\include;...\..\lib\glfw-3.2.1\include\GLFW;...\..\lib\zlib\include;...\..\lib\SDL2-2.0.3\include;...\..\lib\openal-soft-1.17.1-bin\include;...\..\lib\libpng-1.6.20;...\..\lib\libvorbis-1.3.5\include;...\..\lib\libogg-1.3.2\include;...\..\lib\lode_png\include\lode_png</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>...\..\inc;...\..\lib\glew-2.1.0\include;...\..\lib\glfw-3.2.1\include\GLFW;...\..\lib\zlib\include;...\..\lib\SDL2-2.0.3\include;...\..\lib\pthreads-w32-2.9.1\include;...\..\lib\openal-soft-1.17.1-bin\include;...\..\lib\libpng-1.6.20;...\..\lib\libogg-1.3.2\include;...\..\lib\libvorbis-1.3.6\include;...\..\lib\lode_png\include\lode_png</AdditionalIncludeDirectories>
       <CompileAs>CompileAsC</CompileAs>
     </ClCompile>
     <Link>
@@ -65,8 +65,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>...\..\lib\glew-2.1.0\lib\Release\Win32;...\..\lib\glfw-3.2.1\lib-vc2013;...\..\lib\zlib\lib;...\..\lib\SDL2-2.0.3\lib\x86;...\..\lib\openal-soft-1.17.1-bin\libs\Win32;...\..\lib\libpng-1.6.20\projects\vstudio\Release;...\..\lib\libogg-1.3.2\lib\x86;...\..\lib\libvorbis-1.3.5\lib\x86;...\..\lib\lode_png\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3.lib;glew32.lib;glew32s.lib;opengl32.lib;zdll.lib;OpenAL32.lib;SDL2.lib;SDL2main.lib;libpng16.lib;libvorbis.lib;libogg.lib;LodePng.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>...\..\lib\glew-2.1.0\lib\Release\Win32;...\..\lib\glfw-3.2.1\lib-vc2013;...\..\lib\zlib\lib;...\..\lib\SDL2-2.0.3\lib\x86;...\..\lib\pthreads-w32-2.9.1\lib\x86;...\..\lib\openal-soft-1.17.1-bin\libs\Win32;...\..\lib\libpng-1.6.20\projects\vstudio\Release;...\..\lib\libogg-1.3.2\lib\x86;...\..\lib\libvorbis-1.3.6\lib\x86;...\..\lib\lode_png\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3.lib;glew32.lib;glew32s.lib;opengl32.lib;zdll.lib;OpenAL32.lib;SDL2.lib;SDL2main.lib;pthreadVC2.lib;libpng16.lib;libvorbis.lib;libvorbisfile.lib;libogg.lib;LodePng.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
   </ItemDefinitionGroup>
@@ -110,6 +110,7 @@
     <ClCompile Include="src\common\vec.c" />
     <ClCompile Include="src\dungeon\dungeon_gen.c" />
     <ClCompile Include="src\dungeon\floor_function.c" />
+    <ClCompile Include="src\game_common\camera.c" />
     <ClCompile Include="src\game_common\display.c" />
     <ClCompile Include="src\game_common\dungeon.c" />
     <ClCompile Include="src\game_common\game.c" />
@@ -135,7 +136,7 @@
     <ClCompile Include="src\game_common\move.c" />
     <ClCompile Include="src\game_common\player.c" />
     <ClCompile Include="src\game_common\pokemon.c" />
-    <ClCompile Include="src\game_common\shader.c" />
+    <ClCompile Include="src\game_common\renderer.c" />
     <ClCompile Include="src\game_common\shop.c" />
     <ClCompile Include="src\game_common\sound.c" />
     <ClCompile Include="src\game_common\sprites.c" />
@@ -167,6 +168,7 @@
     <ClInclude Include="inc\common\vec.h" />
     <ClInclude Include="inc\dungeon\dungeon_gen.h" />
     <ClInclude Include="inc\dungeon\floor_function.h" />
+    <ClInclude Include="inc\game_common\camera.h" />
     <ClInclude Include="inc\game_common\display.h" />
     <ClInclude Include="inc\game_common\dungeon.h" />
     <ClInclude Include="inc\game_common\game.h" />
@@ -192,7 +194,7 @@
     <ClInclude Include="inc\game_common\move.h" />
     <ClInclude Include="inc\game_common\player.h" />
     <ClInclude Include="inc\game_common\pokemon.h" />
-    <ClInclude Include="inc\game_common\shader.h" />
+    <ClInclude Include="inc\game_common\renderer.h" />
     <ClInclude Include="inc\game_common\sound.h" />
     <ClInclude Include="inc\game_common\sprites.h" />
     <ClInclude Include="inc\game_common\text.h" />
