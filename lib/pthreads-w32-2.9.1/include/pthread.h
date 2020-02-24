@@ -40,6 +40,7 @@
 #define PTW32_VERSION 2,9,1,0
 #define PTW32_VERSION_STRING "2, 9, 1, 0\0"
 
+#define HAVE_STRUCT_TIMESPEC
 /* There are three implementations of cancel cleanup.
  * Note that pthread.h is included in both application
  * compilation units and also internally for the library.

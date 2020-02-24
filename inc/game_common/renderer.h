@@ -24,39 +24,23 @@
 
 typedef struct Renderer_s
 {
-    GLuint program;
-    GLuint vertex_shader;
-    GLuint frag_shader;
-    GLint  vbo_;
-    GLint  vao_;
-    GLint  quad_vao[4];
-    mat4  *projection_matrix;
+    struct Camera_s *camera;
+    struct Shader_s *shader;
+    struct VertexArray_s *vao;
+    //struct VertexBuffer_s *vbo;
+    struct IndexBuffer_s *ibo;
     mat4   model_matrix;
-    struct ListInt *vbo;
-    struct ListInt *vao;
-    struct ListInt *textures;
     GLint image_sampler;
 } Renderer_t;
 
 Renderer_t *Renderer_New(bool init);
-void Renderer_LoadShaders(Renderer_t * self);
+void Renderer_DrawSprite(Renderer_t *self, Texture_t *texture, vec2 position, vec2 size, GLfloat rotate, vec3 color);
+
 void Renderer_Init(Renderer_t *self);
+//void DrawDungeonSprite(Renderer_t * self, Tile tile, vec2 position);
 void Renderer_Update(Renderer_t *self);
 void Renderer_ShutDown(Renderer_t *self);
 
-void Renderer_ShaderUse(Renderer_t *self);
-
-void Renderer_SetProjectionMatrix(Renderer_t * self, float fov, float aspect_ratio, float znear, float zfar);
-
-mat4 *Renderer_GetProjectionMatrix(Renderer_t * self);
-
-void Renderer_ShaderSetFloat(Renderer_t *self, const GLchar *name, GLfloat value);
-void Renderer_ShaderSetInteger(Renderer_t *self, const GLchar *name, GLint value);
-void Renderer_ShaderSetVector2f(Renderer_t *self, const GLchar *name, const vec2 *vector);
-void Renderer_ShaderSetVector3f(Renderer_t *self, const GLchar *name, const vec3 *vector);
-void Renderer_ShaderSetVector4f(Renderer_t *self, const GLchar *name, const vec4 *vector);
-void Renderer_ShaderSetMatrix3(Renderer_t * self, const GLchar * name, const mat3 * matrix);
-void Renderer_ShaderSetMatrix4(Renderer_t *self, const GLchar *name, const mat4 *matrix);
 
 //void Renderer_InitRenderData(Renderer_t *self);
 

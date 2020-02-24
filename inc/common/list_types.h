@@ -32,7 +32,7 @@ typedef struct
 {
     u32 count;
     ListNodeChar *first;
-	ListNodeChar *last;
+    ListNodeChar *last;
 } ListChar;
 
 typedef struct ListNodeInt
@@ -77,5 +77,32 @@ typedef struct ListTexture
     ListNodeTexture *last;
 } ListTexture;
 
+typedef struct ListNodeBuffer
+{
+    struct ListNodeBuffer *next;
+    struct ListNodeBuffer *prev;
+    struct VertexBuffer_s *data;
+} ListNodeBuffer;
+
+typedef struct ListBuffer
+{
+    u32 count;
+    ListNodeBuffer *first;
+    ListNodeBuffer *last;
+} ListBuffer;
+
+typedef struct ListNodeRenderer2DInfo
+{
+    struct ListNodeRenderer2DInfo *next;
+    struct ListNodeRenderer2DInfo *prev;
+    struct Renderer2DInfo_s *data;
+} ListNodeRenderer2DInfo;
+
+typedef struct ListRenderer2DInfo
+{
+    u32 count;
+    ListNodeRenderer2DInfo *first;
+    ListNodeRenderer2DInfo *last;
+} ListRenderer2DInfo;
 
 #endif

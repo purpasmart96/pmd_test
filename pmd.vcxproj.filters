@@ -54,12 +54,6 @@
     <ClCompile Include="src\pokemon\stats.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\dungeon\dungeon_gen.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\dungeon\dungeon_gen.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\game_common\items\berries.c">
       <Filter>Source Files\game_common\items</Filter>
     </ClCompile>
@@ -192,12 +186,42 @@
     <ClCompile Include="src\game_common\camera.c">
       <Filter>Source Files\game_common</Filter>
     </ClCompile>
+    <ClCompile Include="src\game_common\object.c">
+      <Filter>Source Files\game_common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game_common\vertex_buffer.c">
+      <Filter>Source Files\game_common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game_common\index_buffer.c">
+      <Filter>Source Files\game_common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game_common\vertex_array.c">
+      <Filter>Source Files\game_common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\common\timer.c">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game_common\shader.c">
+      <Filter>Source Files\game_common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game_common\renderer2d.c">
+      <Filter>Source Files\game_common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game_common\renderer2d_info.c">
+      <Filter>Source Files\game_common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\common\list_queue.c">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game_common\single_sprite.c">
+      <Filter>Source Files\game_common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\game_common\sprite.c">
+      <Filter>Source Files\game_common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="inc\util.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="inc\dungeon\dungeon_gen.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="inc\pokemon\database.h">
@@ -357,6 +381,39 @@
       <Filter>Header Files\game_common</Filter>
     </ClInclude>
     <ClInclude Include="inc\game_common\camera.h">
+      <Filter>Header Files\game_common</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\game_common\object.h">
+      <Filter>Header Files\game_common</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\game_common\vertex_buffer.h">
+      <Filter>Header Files\game_common</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\game_common\index_buffer.h">
+      <Filter>Header Files\game_common</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\game_common\vertex_array.h">
+      <Filter>Header Files\game_common</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\common\timer.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\game_common\shader.h">
+      <Filter>Header Files\game_common</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\game_common\renderer2d.h">
+      <Filter>Header Files\game_common</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\game_common\renderer2d_info.h">
+      <Filter>Header Files\game_common</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\common\list_queue.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\game_common\single_sprite.h">
+      <Filter>Header Files\game_common</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\game_common\sprite.h">
       <Filter>Header Files\game_common</Filter>
     </ClInclude>
   </ItemGroup>

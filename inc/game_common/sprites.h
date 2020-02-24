@@ -30,14 +30,13 @@ typedef struct Sprites_s
 
 } Sprites_t;
 
-Texture_t *LoadTexture(Texture_t *texture, const char *name);
+Texture_t *LoadTexture(const char *name);
+
 //void LoadTexture(const char *name);
 
 void Sprites_BindTexture(Texture_t *texture, int texture_unit);
-
 void Sprite_LoadAllTextures(void);
 //void SpriteRenderer_DrawSprite(Sprites_t *self, Texture_t *texture, vec2 position, vec2 size, GLfloat rotate, vec3 color);
-void Sprites_Init(Sprites_t *self);
 
 u32 Texture_GetWidth(Texture_t * texture);
 u32 Texture_GetHeight(Texture_t * texture);

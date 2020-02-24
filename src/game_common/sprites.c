@@ -41,99 +41,34 @@ static ListTexture *texture_list = NULL;
 static const char *background_sprites[] =
 {
     "empty.png",
+    "alpha.png",
     "dirt.png",
     "grass.png",
     "sand.png",
     "stone.png",
+    "stairs_desc.png",
+    "dark_crater_ground_middle.png",
+    "dark_crater_wall_left.png",
+    "dark_crater_wall_right.png",
+    "dark_crater_lava_border_top_left.png",
+    "dark_crater_lava_border_top_middle.png",
+    "dark_crater_lava_border_top_right.png",
+    "dark_crater_lava_border_middle_left.png",
+    "dark_crater_lava_middle.png",
+    "dark_crater_lava_border_middle_right.png",
+    "dark_crater_lava_border_bottom_left.png",
+    "dark_crater_lava_border_bottom_middle.png",
+    "dark_crater_lava_border_bottom_right.png",
+    "volcano_ground.png",
     "water.png",
     "test.png",
     "test2.png",
+    "flygon_front_facing_alpha.png",
+    "flygon_front_facing2_alpha.png",
 };
 
-static int current_texture = 0;
 
-
-//void SpriteRenderer_DrawSprite(Sprites_t *self, Texture_t *texture, vec2 position, vec2 size, GLfloat rotate, vec3 color)
-//{
-//    Renderer_ShaderUse(self);
-//
-//    mat4 model = mat4_translate(model, position.x, position.y, 0.0f, 0.0f);
-//
-//    model = mat4_translate(model, 0.5f * size.x, 0.5f * size.y, 0.0f);
-//    model = mat4_rotate(model, rotate, 0.0f, 0.0f, 1.0f);
-//    model = mat4_translate(model, -0.5f * size.x, -0.5f * size.y, 0.0f);
-//
-//    model = mat4_scale_xyz(model, size.x, size.y, 1.0f);
-//
-//    Renderer_ShaderSetMatrix4(self, "ModelMatrix", &model);
-//    Renderer_ShaderSetVector3f(self, "vertex_color", &color);
-//
-//    glActiveTexture(GL_TEXTURE0);
-//
-//    glBindTexture(GL_TEXTURE_2D, texture->id);
-//
-//    glBindVertexArray(self->shader->quad_vao);
-//    glDrawArrays(GL_TRIANGLES, 0, 6);
-//    glBindVertexArray(0);
-//}
-
-
-Sprites_t *Sprites_New(bool init)
-{
-    Sprites_t *sprites = malloc(sizeof(*sprites));
-
-    if (!sprites)
-    {
-        return NULL;
-    }
-    else if (init)
-    {
-        Sprites_Init(sprites);
-    }
-
-    return sprites;
-}
-
-
-void Sprites_Init(Sprites_t *self)
-{
-    // Configure VAO/VBO
-    GLuint VBO;
-    GLfloat vertices[] = {
-        // Pos      // Tex
-        0.0f, 1.0f, 0.0f, 1.0f,
-        1.0f, 0.0f, 1.0f, 0.0f,
-        0.0f, 0.0f, 0.0f, 0.0f,
-
-        0.0f, 1.0f, 0.0f, 1.0f,
-        1.0f, 1.0f, 1.0f, 1.0f,
-        1.0f, 0.0f, 1.0f, 0.0f
-    };
-
-    glGenVertexArrays(1, &self->renderer->quad_vao);
-    glGenBuffers(1, &VBO);
-
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-    glBindVertexArray(self->renderer->quad_vao);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (GLvoid*)0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
-
-
-
-    //int scale_x = 1920 / VIRTUAL_WIDTH;
-    //int scale_y = 1080 / VIRTUAL_HEIGHT;
-    //mat4 sprite_matrix = { 0 };
-    //mat4 matrix = mat4_scale_xyz(sprite_matrix, scale_x, scale_y, 1.0f);
-
-    //_spriteBatch.Begin(transformMatrix: matrix);
-}
-
-
-Texture_t *Texture_New(const char *name, u8 *image,GLuint internal_format, GLuint image_format, GLuint wrap_s, GLuint wrap_t, GLuint filter_min,
+Texture_t *Texture_New(const char *name, u8 *image, GLuint internal_format, GLuint image_format, GLuint wrap_s, GLuint wrap_t, GLuint filter_min,
                        GLuint filter_max, u32 width, u32 height)
 {
     Texture_t *texture = malloc(sizeof(*texture));
@@ -149,6 +84,11 @@ Texture_t *Texture_New(const char *name, u8 *image,GLuint internal_format, GLuin
     texture->height = height;
 
     return texture;
+}
+
+void Texture_Delete(Texture_t *texture)
+{
+    //free(texture);
 }
 
 u32 Texture_GetWidth(Texture_t *texture)
@@ -185,9 +125,9 @@ static Texture_t *GetTextureFromListByName(const char *name)
     }
 }
 
-Texture_t *LoadTexture(Texture_t *texture, const char *name)
+Texture_t *LoadTexture(const char *name)
 {
-    texture = GetTextureFromListByName(name);
+    Texture_t *texture = GetTextureFromListByName(name);
     glGenTextures(1, &texture->id);
     glBindTexture(GL_TEXTURE_2D, texture->id);
 

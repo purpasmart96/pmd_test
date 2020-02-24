@@ -1,6 +1,6 @@
 #version 330 core
 
-uniform mat4 ProjectionMatrix; 
+uniform mat4 OrthoMatrix; 
 uniform mat4 ModelMatrix; 
 uniform mat4 ViewMatrix;
 
@@ -15,8 +15,8 @@ void main()
 {
     //gl_Position = vec4(vertex_position.xy, 0.0, 1.0);
     //gl_Position = vec4(0.0, 0.0, 0.0, 1.0);
-    //gl_Position = ProjectionMatrix * ModelMatrix * vec4(vertex_position.xy, 1.0); 
-    gl_Position = vertex_position * ProjectionMatrix * ModelMatrix * ViewMatrix;
+    //gl_Position = OrthoMatrix * ModelMatrix * vec4(vertex_position.xy, 1.0); 
+    gl_Position = vertex_position * OrthoMatrix * ModelMatrix * ViewMatrix;
     color = vertex_color;
     tex_coord = vertex_texcoord; //vertex_position.zw;
 }

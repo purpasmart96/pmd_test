@@ -31,10 +31,20 @@ typedef enum
     tileUnused = 0,
     tileEnd,
     tileWall,
+    tileWallLeft,
+    tileWallRight,
     tileFloor,
     tileHall,
     tileStairs,
     tileLava,
+    tileLavaBorderUp,
+    tileLavaBorderRightUp,
+    tileLavaBorderLeftUp,
+    tileLavaBorderBottom,
+    tileLavaBorderBottomRight,
+    tileLavaBorderBottomLeft,
+    tileLavaBorderMiddleLeft,
+    tileLavaBorderMiddleRight,
     tileItem,
     tilePlayer,
 } Tile;
@@ -56,9 +66,10 @@ typedef struct {
     Tile tile;
 } TileState;
 
-typedef struct 
+typedef struct
 {
     TileState **tiles;
+    Tile previous_tile_type_before_player;
     int width;
     int height;
     ivec2 player_spawn_point;
@@ -66,13 +77,12 @@ typedef struct
     int start_y;
     int end_x;
     int end_y;
-    //SDL_Surface* surface;
 } Floor;
 
 typedef struct Dungeon
 {
     int name;
-    int seed;
+    u64 seed;
     int difficulty;
     int *floor_seeds;
     int total_floors;
@@ -97,15 +107,16 @@ void Dungeon_ShutDown();
 Dungeon *GetDungeonObject(void);
 
 typedef enum Direction Direction;
-TileState GetTileInFront(Dungeon * dungeon, const ivec2 coords, Direction direction);
+TileState GetTileInFront(Dungeon *dungeon, const ivec2 coords, Direction direction);
 
 int GetItemFromTile(Dungeon *dungeon, int x, int y);
 void RemoveItemFromTile(Dungeon *dungeon, int x, int y);
 void SetItemToTile(Dungeon *dungeon, int x, int y, int item);
 
-void SetPlayerPreviousPos(int x, int y);
+void SetPlayerPreviousPos(ivec2 coords);
 
-void SetPlayerTile(Dungeon * dungeon, int x, int y);
+void SetPlayerTile(Dungeon *dungeon, ivec2 coords);
+//void SetPlayerTile(Dungeon * dungeon, int x, int y);
 
 ivec2 GetPlayerSpawnPoint(Dungeon *dungeon);
 
@@ -115,3 +126,4 @@ void Dungeon_SetStatusAfterStairs(struct PokemonParty *party);
 void Dungeon_NextFloorLevel(Dungeon *self, struct PokemonParty *party);
 
 #endif
+

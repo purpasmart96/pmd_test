@@ -22,30 +22,98 @@
 
 #include <GL/glew.h>
 #include <glfw3.h>
-//#include <SOIL.h>
 
 #include "common/vec.h"
 #include "common/list_generic.h"
 
+#include "game_common/game.h"
+#include "game_common/dungeon.h"
 #include "game_common/sprites.h"
+#include "game_common/player.h"
+#include "game_common/vertex_buffer.h"
+#include "game_common/index_buffer.h"
+#include "game_common/vertex_array.h"
+#include "game_common/camera.h"
+#include "game_common/shader.h"
 #include "game_common/renderer.h"
-
 
 static mat4 ortho_matrix;
 static mat4 model_matrix;
 static mat4 view_matrix;
-static mat4 projection_matrix;
-static mat4 model_view_matrix;
-static mat4 model_view_projection_matrix;
 
-static Texture_t *my_texture;
+//struct VertexData
+//{
+//    GLfloat quad[12];
+//    GLfloat quad_color[12];
+//    GLfloat tex_coord[8];
+//};
 
-struct VertexData
+static Texture_t *sprite0;
+static Texture_t *sprite1;
+static Texture_t *sprite2;
+static Texture_t *sprite3;
+static Texture_t *sprite4;
+static Texture_t *sprite5;
+static Texture_t *sprite6;
+static Texture_t *sprite7;
+static Texture_t *sprite8;
+static Texture_t *sprite9;
+
+static Texture_t *sprite10;
+static Texture_t *sprite11;
+static Texture_t *sprite12;
+static Texture_t *sprite13;
+static Texture_t *sprite14;
+static Texture_t *sprite15;
+static Texture_t *sprite16;
+static Texture_t *sprite17;
+
+static void LoadBackgroundTextures()
 {
-    GLfloat quad[12];
-    GLfloat quad_color[12];
-    GLfloat tex_coord[8];
-};
+    sprite0 = LoadTexture("empty.png");
+    sprite1 = LoadTexture("empty.png");
+    sprite2 = LoadTexture("dark_crater_wall_left.png");
+    sprite3 = LoadTexture("dark_crater_wall_left.png");
+    sprite4 = LoadTexture("dark_crater_ground_middle.png");
+    sprite5 = LoadTexture("dark_crater_ground_middle.png");
+    sprite6 = LoadTexture("stairs_desc.png");
+    sprite7 = LoadTexture("dark_crater_lava_middle.png");
+    sprite9 = LoadTexture("alpha.png");
+
+    sprite10 = LoadTexture("dark_crater_lava_border_top_left.png");
+    sprite11 = LoadTexture("dark_crater_lava_border_top_middle.png");
+    sprite12 = LoadTexture("dark_crater_lava_border_top_right.png");
+    sprite13 = LoadTexture("dark_crater_lava_border_bottom_left.png");
+    sprite14 = LoadTexture("dark_crater_lava_border_bottom_middle.png");
+    sprite15 = LoadTexture("dark_crater_lava_border_bottom_right.png");
+
+    sprite16 = LoadTexture("dark_crater_lava_border_middle_left.png");
+    sprite17 = LoadTexture("dark_crater_lava_border_middle_right.png");
+}
+
+static void LoadPlayerTextures()
+{
+    sprite8 = LoadTexture("flygon_front_facing_alpha.png");
+}
+static void LoadAllTextures()
+{
+    LoadBackgroundTextures();
+    LoadPlayerTextures();
+}
+
+static void DeleteAllTextures()
+{
+    //Texture_Delete(sprite0);
+    //Texture_Delete(sprite1);
+    //Texture_Delete(sprite2);
+    //Texture_Delete(sprite3);
+    //Texture_Delete(sprite4);
+    //Texture_Delete(sprite5);
+    //Texture_Delete(sprite6);
+    //Texture_Delete(sprite7);
+    //Texture_Delete(sprite8);
+    //Texture_Delete(sprite9);
+}
 
 Renderer_t *Renderer_New(bool init)
 {
@@ -63,150 +131,24 @@ Renderer_t *Renderer_New(bool init)
     return renderer;
 }
 
-static const char *OpenFileFromPath(const char *path)
+static GLuint indices[] =
 {
-    // Load file
-    FILE *file = fopen(path, "r");
-    if (file == NULL)
-    {
-        ERROR("Couldn't Read File!\n");
-    }
-
-    // Get Length
-    fseek(file, 0, SEEK_END);
-    size_t length = ftell(file);
-    fseek(file, 0, SEEK_SET);
-
-    // Get source
-    char *source = malloc(length + 1);
-    if (source == NULL)
-    {
-        ERROR("Couldn't allocate enough space for the shader!\n");
-    }
-
-    // Read file
-    fread(source, 1, length, file);
-
-    // Close file
-    fclose(file);
-    source[length] = '\n';
-    return source;
-}
-
-static GLuint LoadShader(const char *filename, GLenum shader_type)
-{
-    GLuint shader_id = 0;
-    FILE *file;
-    size_t file_size = -1;
-    char *glsl_source;
-
-    if (NULL != (file = fopen(filename, "rb")) && 0 == fseek(file, 0, SEEK_END) && -1 != (file_size = ftell(file)))
-    {
-        rewind(file);
-
-        glsl_source = malloc(file_size + 1);
-        if (glsl_source != NULL)
-        {
-            if (file_size == fread(glsl_source, sizeof(char), file_size, file))
-            {
-                glsl_source[file_size] = '\0';
-
-                shader_id = glCreateShader(shader_type);
-                if (shader_id != 0)
-                {
-                    glShaderSource(shader_id, 1, (const GLchar**)&glsl_source, NULL);
-                    glCompileShader(shader_id);
-                }
-                else
-                {
-                    ERROR("Could not create a shader.\n");
-                }
-            }
-            else
-            {
-                ERROR("Could not read file %s\n", filename);
-            }
-
-            free(glsl_source);
-        }
-        else
-        {
-            ERROR("Could not allocate %ld bytes.\n", file_size);
-        }
-
-        fclose(file);
-    }
-    else
-    {
-        if (file != NULL)
-            fclose(file);
-        ERROR("Could not open file %s\n", filename);
-    }
-
-    return shader_id;
-}
-
-
-//static void Shader_StoreDataInAttributeList(Renderer_t *self, int attribute_num, int coord_size, float *data, int data_size)
-//{
-//    int vbo_id;
-//    int *vbo = LIST_TO_ARRAY(ListInt, self->vbo);
-//    glGenBuffers(vbo_id, vbo);
-//    LIST_PUSH(ListInt, self->vbo, vbo_id);
-//    glBindBuffer(GL_ARRAY_BUFFER, vbo_id);
-//    glBufferData(GL_ARRAY_BUFFER, data_size, data, GL_STATIC_DRAW);
-//    glVertexAttribPointer(attribute_num, coord_size, GL_FLOAT, false, 0, 0);
-//    glBindBuffer(GL_ARRAY_BUFFER, 0);
-//}
-
-
-//static int Shader_MakeVAO(Renderer_t *self)
-//{
-//    int vao_id;
-//    int *vao = LIST_TO_ARRAY(ListInt, self->vao);
-//    glGenVertexArrays(vao_id, vao);
-//    free(vao);
-//
-//    LIST_PUSH(ListInt, self->vao, vao_id);
-//    glBindVertexArray(vao_id);
-//    return vao_id;
-//}
-
-static GLfloat quad_color[12];
-
-GLfloat quad[] =
-{
-    -1, -1, 0, // bottom left corner
-    -1,  1, 0, // top left corner
-     1,  1, 0, // top right corner
-     1, -1, 0 }; // bottom right corner
-
-static GLfloat tex_coords[] =
-{
-    0.0f, 0.0f,
-    1.0f, 0.0f,
-    1.0f, 1.0f,
-    0.0f, 1.0f
+    0,1,2, // first triangle (bottom left - top left - top right)
+    2,3,0 // second triangle (bottom left - top right - bottom right)
 };
 
-static GLfloat tex_coords2[] =
+static GLfloat texcoords[] =
 {
+    0.0f, 1.0f,
+    1.0f, 0.0f,
     0.0f, 0.0f,
+
     0.0f, 1.0f,
     1.0f, 1.0f,
     1.0f, 0.0f
 };
 
-// OpenGL textures are loaded left to right, bottom to top.
-static GLfloat tex_coords3[] =
-{
-    0.0f, 0.0f,
-    1.0f, 0.0f,
-    0.0f, 1.0f,
-    1.0f, 1.0f
-};
-
-//static GLfloat tex_coords[] =
+//static GLfloat texcoords[] =
 //{
 //    0.0f, 0.0f,
 //    1.0f, 0.0f,
@@ -214,30 +156,21 @@ static GLfloat tex_coords3[] =
 //    0.0f, 1.0f
 //};
 
-static GLubyte indices[] =
-{
-    0,1,2, // first triangle (bottom left - top left - top right)
-    0,2,3 // second triangle (bottom left - top right - bottom right)
+static GLfloat vertices[] = {
+    // Pos  
+    0.0f, 1.0f,
+    1.0f, 0.0f,
+    0.0f, 0.0f,
+
+    0.0f, 1.0f,
+    1.0f, 1.0f,
+    1.0f, 0.0f
 };
 
-static GLubyte indices2[] =
+void Renderer_DrawSprite(Renderer_t *self, Texture_t *texture, vec2 position, vec2 size, GLfloat rotate, vec3 color)
 {
-    0,1,2, // first triangle (bottom left - top left - top right)
-    2,3,0 // second triangle (bottom left - top right - bottom right)
-};
-
-//GLuint elements[] =
-//{
-//    0, 1, 2,
-//    2, 3, 0
-//};
-
-
-void ShaderRenderer_DrawSprite(Renderer_t *self, Texture_t *texture, vec2 position, vec2 size, GLfloat rotate, vec3 color)
-{
-    Renderer_ShaderUse(self);
-
-    mat4 model = mat4_translate(model, position.x, position.y, 0.0f);
+    mat4 model = mat4_identity();
+    model = mat4_translate(model, position.x, position.y, 0.0f);
 
     model = mat4_translate(model, 0.5f * size.x, 0.5f * size.y, 0.0f);
     model = mat4_rotate(model, rotate, 0.0f, 0.0f, 1.0f);
@@ -245,250 +178,272 @@ void ShaderRenderer_DrawSprite(Renderer_t *self, Texture_t *texture, vec2 positi
 
     model = mat4_scale_xyz(model, size.x, size.y, 1.0f);
 
-    Renderer_ShaderSetMatrix4(self, "ModelMatrix", &model);
-    Renderer_ShaderSetVector3f(self, "vertex_color", &color);
+    Shader_SetMatrix4(self->shader, "ModelMatrix", &model);
+    Shader_SetVector3f(self->shader, "sprite_color", &color);
+    Sprites_BindTexture(texture, 0);
 
-    glActiveTexture(GL_TEXTURE0);
-
-    glBindTexture(GL_TEXTURE_2D, texture->id);
-
-    glBindVertexArray(self->quad_vao);
+    VertexArray_Bind(self->vao);
+    //IndexBuffer_Bind(self->ibo);
     glDrawArrays(GL_TRIANGLES, 0, 6);
-    glBindVertexArray(0);
+    //glDrawElements(GL_TRIANGLES, self->ibo->count, GL_UNSIGNED_SHORT, 0);
+    //IndexBuffer_Unbind(self->ibo);
+    VertexArray_Unbind(self->vao);
 }
 
-void Shader_InitSprite(Renderer_t *self)
+static void Renderer_DrawSpriteLayers(Renderer_t *self, Texture_t *texture0, Texture_t *texture1, vec2 position, vec2 size, GLfloat rotate, vec3 color)
 {
-    // Configure VAO/VBO
-    GLuint VBO;
-    GLfloat vertices[] = {
-        // Pos      // Tex
-        0.0f, 1.0f, 0.0f, 1.0f,
-        1.0f, 0.0f, 1.0f, 0.0f,
-        0.0f, 0.0f, 0.0f, 0.0f,
+    mat4 model = mat4_identity();
+    model = mat4_translate(model, position.x, position.y, 0.0f);
 
-        0.0f, 1.0f, 0.0f, 1.0f,
-        1.0f, 1.0f, 1.0f, 1.0f,
-        1.0f, 0.0f, 1.0f, 0.0f
-    };
+    model = mat4_translate(model, 0.5f * size.x, 0.5f * size.y, 0.0f);
+    model = mat4_rotate(model, rotate, 0.0f, 0.0f, 1.0f);
+    model = mat4_translate(model, -0.5f * size.x, -0.5f * size.y, 0.0f);
 
-    glGenVertexArrays(1, &self->quad_vao);
-    glGenBuffers(1, &VBO);
+    model = mat4_scale_xyz(model, size.x, size.y, 1.0f);
 
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    Shader_SetMatrix4(self->shader, "ModelMatrix", &model);
+    Shader_SetVector3f(self->shader, "sprite_color", &color);
+    Sprites_BindTexture(texture0, 0);
+    Sprites_BindTexture(texture1, 1);
 
-    glBindVertexArray(self->quad_vao);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (GLvoid*)0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
-
-
-
-    //int scale_x = 1920 / VIRTUAL_WIDTH;
-    //int scale_y = 1080 / VIRTUAL_HEIGHT;
-    //mat4 sprite_matrix = { 0 };
-    //mat4 matrix = mat4_scale_xyz(sprite_matrix, scale_x, scale_y, 1.0f);
-
-    //_spriteBatch.Begin(transformMatrix: matrix);
+    VertexArray_Bind(self->vao);
+    //IndexBuffer_Bind(self->ibo);
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+    //glDrawElements(GL_TRIANGLES, self->ibo->count, GL_UNSIGNED_INT, 0);
+    //IndexBuffer_Unbind(self->ibo);
+    VertexArray_Unbind(self->vao);
 }
 
-
-//static void Renderer_Init(Renderer_t *self)
-//{
-//}
-
-void Renderer_LoadShaders(Renderer_t *self)
+void Renderer_InitSprite(Renderer_t *self)
 {
-    self->vertex_shader = LoadShader("data/shaders/vertex.vsh", GL_VERTEX_SHADER);
-    self->frag_shader = LoadShader("data/shaders/frag.psh", GL_FRAGMENT_SHADER);
-    self->program = glCreateProgram();
-    glAttachShader(self->program, self->vertex_shader);
-    glAttachShader(self->program, self->frag_shader);
-    glLinkProgram(self->program);
+    self->vao = VertexArray_New();
+
+    VertexBuffer_t *vbo_vertices = VertexBuffer_New(vertices, 6 * 2, 2);
+    VertexBuffer_t *vbo_texcoords = VertexBuffer_New(texcoords, 6 * 2, 2);
+    //self->ibo = IndexBuffer_New(indices, 6);
+
+    const GLuint vertex_index = 0;
+    const GLuint texcoords_index = 1;
+
+    VertexArray_AddBuffer(self->vao, vbo_vertices, vertex_index);
+    VertexArray_AddBuffer(self->vao, vbo_texcoords, texcoords_index);
+
+}
+
+static void DrawDungeonSprite(Renderer_t *self, Tile tile, vec2 position, vec2 sprite_size)
+{
+    switch (tile)
+    {
+        case tileUnused:
+            Renderer_DrawSprite(self, sprite0, position, sprite_size, 0.0f, make_vec3(1.0f, 1.0f, 1.0f));
+            break;
+        case tileEnd:
+            Renderer_DrawSprite(self, sprite1, position, sprite_size, 0.0f, make_vec3(1.0f, 1.0f, 1.0f));
+            break;
+        case tileWall:
+            Renderer_DrawSprite(self, sprite2, position, sprite_size, 0.0f, make_vec3(1.0f, 1.0f, 1.0f));
+            break;
+        case tileWallLeft:
+            Renderer_DrawSprite(self, sprite3, position, sprite_size, 0.0f, make_vec3(1.0f, 1.0f, 1.0f));
+            break;
+        case tileFloor:
+            Renderer_DrawSprite(self, sprite4, position, sprite_size, 0.0f, make_vec3(1.0f, 1.0f, 1.0f));
+            break;
+        case tileHall:
+            Renderer_DrawSprite(self, sprite5, position, sprite_size, 0.0f, make_vec3(1.0f, 1.0f, 1.0f));
+            break;
+        case tileStairs:
+            Renderer_DrawSprite(self, sprite6, position, sprite_size, 0.0f, make_vec3(1.0f, 1.0f, 1.0f));
+            break;
+        case tileLava:
+            Renderer_DrawSprite(self, sprite7, position, sprite_size, 0.0f, make_vec3(1.0f, 1.0f, 1.0f));
+            break;
+        case tilePlayer:
+            Renderer_DrawSprite(self, sprite4, position, sprite_size, 0.0f, make_vec3(1.0f, 1.0f, 1.0f));
+            //Renderer_DrawSpriteLayer1(self, sprite0, position, sprite_size, 0.0f, make_vec3(1.0f, 1.0f, 1.0f));
+            break;
+        default:
+            break;
+    }
+}
+
+static void DrawDungeonSpriteLayers(Renderer_t *self, Tile tile, vec2 position, vec2 sprite_size)
+{
+    switch (tile)
+    {
+        case tileUnused:
+            Renderer_DrawSpriteLayers(self, sprite0, sprite9, position, sprite_size, 0.0f, make_vec3(1.0f, 1.0f, 1.0f));
+            break;
+        case tileEnd:
+            Renderer_DrawSpriteLayers(self, sprite1, sprite9, position, sprite_size, 0.0f, make_vec3(1.0f, 1.0f, 1.0f));
+            break;
+        case tileWall:
+            Renderer_DrawSpriteLayers(self, sprite2, sprite9, position, sprite_size, 0.0f, make_vec3(1.0f, 1.0f, 1.0f));
+            break;
+        case tileWallLeft:
+            Renderer_DrawSpriteLayers(self, sprite3, sprite9, position, sprite_size, 0.0f, make_vec3(1.0f, 1.0f, 1.0f));
+            break;
+        case tileFloor:
+            Renderer_DrawSpriteLayers(self, sprite4, sprite9, position, sprite_size, 0.0f, make_vec3(1.0f, 1.0f, 1.0f));
+            break;
+        case tileHall:
+            Renderer_DrawSpriteLayers(self, sprite5, sprite9, position, sprite_size, 0.0f, make_vec3(1.0f, 1.0f, 1.0f));
+            break;
+        case tileStairs:
+            Renderer_DrawSpriteLayers(self, sprite6, sprite9, position, sprite_size, 0.0f, make_vec3(1.0f, 1.0f, 1.0f));
+            break;
+        case tileLava:
+            Renderer_DrawSpriteLayers(self, sprite7, sprite9, position, sprite_size, 0.0f, make_vec3(1.0f, 1.0f, 1.0f));
+            break;
+        case tileLavaBorderUp:
+            Renderer_DrawSpriteLayers(self, sprite11, sprite9, position, sprite_size, 0.0f, make_vec3(1.0f, 1.0f, 1.0f));
+            break;
+        case tileLavaBorderRightUp:
+            Renderer_DrawSpriteLayers(self, sprite12, sprite9, position, sprite_size, 0.0f, make_vec3(1.0f, 1.0f, 1.0f));
+            break;
+        case tileLavaBorderLeftUp:
+            Renderer_DrawSpriteLayers(self, sprite10, sprite9, position, sprite_size, 0.0f, make_vec3(1.0f, 1.0f, 1.0f));
+            break;
+        case tileLavaBorderBottom:
+            Renderer_DrawSpriteLayers(self, sprite14, sprite9, position, sprite_size, 0.0f, make_vec3(1.0f, 1.0f, 1.0f));
+            break;
+        case tileLavaBorderBottomRight:
+            Renderer_DrawSpriteLayers(self, sprite15, sprite9, position, sprite_size, 0.0f, make_vec3(1.0f, 1.0f, 1.0f));
+            break;
+        case tileLavaBorderBottomLeft:
+            Renderer_DrawSpriteLayers(self, sprite13, sprite9, position, sprite_size, 0.0f, make_vec3(1.0f, 1.0f, 1.0f));
+            break;
+        case tileLavaBorderMiddleLeft:
+            Renderer_DrawSpriteLayers(self, sprite16, sprite9, position, sprite_size, 0.0f, make_vec3(1.0f, 1.0f, 1.0f));
+            break;
+        case tileLavaBorderMiddleRight:
+            Renderer_DrawSpriteLayers(self, sprite17, sprite9, position, sprite_size, 0.0f, make_vec3(1.0f, 1.0f, 1.0f));
+            break;
+        case tilePlayer:
+            Renderer_DrawSpriteLayers(self, sprite4, sprite8, position, sprite_size, 0.0f, make_vec3(1.0f, 1.0f, 1.0f));
+            break;
+        default:
+            break;
+    }
+}
+
+static void DrawFloor(Renderer_t *renderer)
+{
+    Dungeon *dungeon = GetDungeonObject();
+    for (int y = 0; y < dungeon->floor->height; y++)
+    {
+        for (int x = 0; x < dungeon->floor->width; x++)
+        {
+            float coord_x = x * 64.0f;
+            float coord_y = y * 64.0f;
+
+            bool is_coord_x_inside = coord_x <= 1280.0f;
+            bool is_coord_y_inside = coord_y < 720.0f;
+
+            if (is_coord_x_inside && is_coord_y_inside)
+            {
+                DrawDungeonSprite(renderer, dungeon->floor->tiles[x][y].tile, make_vec2(coord_x, coord_y),  make_vec2(64.0f, 64.0f));
+            }
+            else if (!is_coord_x_inside && !is_coord_y_inside)
+            {
+                return;
+            }
+        }
+    }
+}
+
+static void DrawFloorAtPlayer(Renderer_t *renderer, vec2 sprite_size, float width, float height)
+{
+    // Find a  better way to pass this info
+    ivec2 position = Player_GetPosition();
+
+    struct Dungeon *dungeon = GetDungeonObject();
+
+    // Offsets for drawing the player in the middle of the screen
+    int new_x = position.x - 9; // 9 tiles
+    int new_y = position.y - 5; // 5 Tiles
+
+    for (int y = 0; y < dungeon->floor->height; y++)
+    {
+        for (int x = 0; x < dungeon->floor->width; x++)
+        {
+            float coord_x = x * sprite_size.x;
+            float coord_y = y * sprite_size.y;
+
+            bool is_coord_x_inside = coord_x < width;
+            bool is_coord_y_inside = coord_y < height;
+
+            if (is_coord_x_inside && is_coord_y_inside)
+            {
+                int new_coord_x = new_x + x;
+                int new_coord_y = new_y + y;
+
+                if (new_coord_x >= dungeon->floor->width || new_coord_y >= dungeon->floor->height || new_coord_x < 0 || new_coord_y < 0)
+                {
+                    DrawDungeonSpriteLayers(renderer, tileUnused, make_vec2(coord_x, coord_y), sprite_size);
+                }
+                else
+                {
+                    DrawDungeonSpriteLayers(renderer, dungeon->floor->tiles[new_coord_x][new_coord_y].tile, make_vec2(coord_x, coord_y), sprite_size);
+                }
+
+            }
+            else if (!is_coord_x_inside && !is_coord_y_inside)
+            {
+                return;
+            }
+        }
+    }
 }
 
 void Renderer_Init(Renderer_t *self)
 {
-    Renderer_LoadShaders(self);
-    // Setup quad colors
-    quad_color[0] =  -0.6f; quad_color[1] =  1.0f; quad_color[2]  = 0.2f; quad_color[3] =  0.4f;
-    quad_color[4]  = 0.7f; quad_color[5] =  0.4f; quad_color[6] =  0.5f; quad_color[7]  = 0.1f;
-    quad_color[8]  = 0.1f; quad_color[9] =  0.3f; quad_color[10] = 0.1f; quad_color[11] = 0.2f; 
+    self->shader = Shader_New("data/shaders/sprite.vsh", "data/shaders/sprite.psh");
+    Renderer_InitSprite(self);
 
-    GLint attrib_position  = glGetAttribLocation(self->program, "vertex_position");
-    GLint attrib_color     = glGetAttribLocation(self->program, "vertex_color");
-    GLint attrib_tex_coord = glGetAttribLocation(self->program, "vertex_texcoord");
-    GLint uniform_sampler  = glGetUniformLocation(self->program, "tex_sampler");
-
-    // setup and copy
-    struct VertexData *vertex_data = malloc(sizeof(struct VertexData));
-
-    memcpy(vertex_data->quad, quad, sizeof(GLfloat) * 12);
-    memcpy(vertex_data->quad_color, quad_color, sizeof(GLfloat) * 12);
-    memcpy(vertex_data->tex_coord, tex_coords2, sizeof(GLfloat) * 8);
-
-    // Generate VBO handle for drawing
-    glGenBuffers(1, &self->vbo_);
-
-    // Generate VAO
-    glGenVertexArrays(1, &self->vao_);
-    glBindVertexArray(self->vao_);
-
-    // Attach vertex data to VAO
-    glBindBuffer(GL_ARRAY_BUFFER, self->vbo_);
-
-    glBufferData(GL_ARRAY_BUFFER, sizeof(struct VertexData), vertex_data, GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (GLvoid*)offsetof(struct VertexData, quad));
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (GLvoid*)offsetof(struct VertexData, quad_color));
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, (GLvoid*)offsetof(struct VertexData, tex_coord));
-
-    glEnableVertexAttribArray(0);
-    glEnableVertexAttribArray(1);
-    glEnableVertexAttribArray(2);
-
-    my_texture = LoadTexture(my_texture, "test2.png");
-    //glUniform1i(glGetUniformLocation(self->program, "tex_sampler"), 0);
-    
-    Renderer_ShaderUse(self);
-
-    glEnable(GL_TEXTURE_2D);
+    LoadAllTextures();
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_FRONT);
     glEnable(GL_DEPTH_TEST);
     glClearDepth(1.0);
 
-    free(vertex_data);
+    vec3 eye = make_vec3(0.0f, 0.0f, 0.0f);
+    vec3 center = make_vec3(0.0f, 0.0f, -1.0f);
+    vec3 up = make_vec3(0.0f, 1.0f, 0.0f);
+    self->camera = Camera_New(eye, center, up, 1280.0f, 720.0f);
+
+    //ortho_matrix = mat4_identity();
+    //model_matrix = mat4_identity();
+    view_matrix = mat4_identity();
+    //ortho_matrix = mat4_ortho(ortho_matrix, 0.0f, 1280.0f, 0.0f, 720.0f, -1.0f, 1.0f);
+    //vec3 eye = make_vec3(0.0f, 0.0f, 0.0f);
+    //vec3 center = make_vec3(1.0f, 1.0f, 0.0f);
+    //vec3 up = make_vec3(0.0f, 1.0f, 0.0f);
+
+    Shader_SetInteger(self->shader, "texture_layer0", 0);
+    Shader_SetInteger(self->shader, "texture_layer1", 1);
+    Shader_SetMatrix4(self->shader, "ProjectionMatrix", &self->camera->ortho_matrix);
+    Shader_SetMatrix4(self->shader, "ViewMatrix", &view_matrix);
+
 }
 
 void Renderer_Update(Renderer_t *self)
 {
-    //Shader_Use(self);
-    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-
-    //mat4 m1 = mat4_identity();
-    //mat4 m2 = mat4_identity();
-
-    //glm::ortho(0, width, height, 0, 0, 1000)
-    
-    //m2 = mat4_ortho3(m2, 1280, 720, 1.0f, 1.0f, 0.0f, 1000.0f);
-
-
-    //Shader_SetMatrix4(self, "ProjectionMatrix", Shader_GetProjectionMatrix(self));
-
-    	// Texture binding - we set GL_ACTIVE_TEXTURE0, and then we tell fragment shader
-     // that gSampler variable will fetch data from GL_ACTIVE_TEXTURE0
-
-    //Shader_SetInteger(self, "tex_sampler", 0);
-    //
-    //glUniform1i(glGetUniformLocation(self->program, "tex_sampler"), 0);
-    Sprites_BindTexture(my_texture, 0);
-
-    ortho_matrix = mat4_identity();
-    model_matrix = mat4_identity();
-    view_matrix = mat4_identity();
-
-    float fov = 90.0f;
-    float width = 1280.0f;
-    float height = 720.0f;
-    float znear = 0.1f; 
-    float zfar = 100.0f;
-
-    float aspect_ratio = width / (float)height;
-
-    Renderer_SetProjectionMatrix(self, fov, aspect_ratio, znear, zfar);
-
-    model_matrix = mat4_rotate(model_matrix, (float)glfwGetTime(), 0.0f, 1.0f, 1.0f);
-    //model_matrix = mat4_lookAt(make_vec3(0.0f, 15.0f, 40.0f), make_vec3(0.0f, 0.0f, 0.0f), make_vec3(0.0f, 1.0f, 0.0f));
-
-    view_matrix  = mat4_translate(view_matrix,  0.0f, 0.0f, 0.0f);
-
-    ortho_matrix = mat4_ortho(ortho_matrix, 0.0f, 1280.0f, 0.0f, 720.0f, 0.1f, 100.0f);
-
-    //mat4 transform = mat4_identity(); // make sure to initialize matrix to identity matrix first
-    //transform = mat4_translate(transform, 0.0f, 0.0f, 0.0f);
-    //transform = mat4_translate2(transform, make_vec3(0.5f, -0.5f, 0.0f));
-    //transform = mat4_translate3(transform, 0.5f, -0.5f, 0.0f);
-    //transform = mat4_rotate(transform, (float)glfwGetTime(), 0.0f, 0.0f, 1.0f);
-
-
-    Renderer_ShaderUse(self);
-
-    Renderer_ShaderSetMatrix4(self, "ProjectionMatrix", &ortho_matrix);
-    Renderer_ShaderSetMatrix4(self, "ModelMatrix", &model_matrix);
-    Renderer_ShaderSetMatrix4(self, "ViewMatrix", &view_matrix);
-
-
-
-    //GLint uniform_sampler  = glGetUniformLocation(self->program, "tex_sampler");
-    //glUniform1i(uniform_sampler, 0);
-
-    //mat4 ModelView = mat4_lookAt(make_vec3(0.0f, 15.0f, 40.0f), make_vec3(0.0f, 0.0f, 0.0f), make_vec3(0.0f, 1.0f, 0.0f));
-
-    // Quad render
-
-    glBindVertexArray(self->vao_);
-
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, indices);
-    //glDrawArrays(GL_TRIANGLES, 0, 6);
-
-    //DrawSprite(self, make_vec2(200.0f, 200.0f), make_vec2(64.0f, 64.0f), 45.0f, make_vec4(0.0f, 0.0f, 0.0f, 0.0f));
+    vec3 eye = make_vec3(0.0f, 0.0f, 0.0f);
+    vec3 center = make_vec3(0.0f, 0.0f, -1.0f);
+    vec3 up = make_vec3(0.0f, 1.0f, 0.0f);
+    view_matrix = mat4_lookAt(eye, center, up);
+    Shader_SetMatrix4(self->shader, "ViewMatrix", &view_matrix);
+    DrawFloorAtPlayer(self, make_vec2(64.0f, 64.0f), 1280.0f, 720.0f);
+    //DrawPlayerTile(self, make_vec2(64.0f, 64.0f));
 }
 
 void Renderer_ShutDown(Renderer_t *self)
 {
-    glDeleteProgram(self->program);
+    DeleteAllTextures();
+    VertexArray_ShutDown(self->vao);
+    Shader_ShutDown(self->shader);
     free(self);
 }
 
-void Renderer_ShaderUse(Renderer_t *self)
-{
-    glUseProgram(self->program);
-}
-
-void Renderer_SetProjectionMatrix(Renderer_t *self, float fov, float aspect_ratio, float znear, float zfar)
-{
-    self->projection_matrix = mat4_perspective(fov, aspect_ratio, znear, zfar);
-    //mat4 matrix = mat4_perspective(fov, aspect_ratio, znear, zfar);
-    //memcpy(&self->projection_matrix, &matrix, sizeof(mat4));
-}
-
-mat4 *Renderer_GetProjectionMatrix(Renderer_t *self)
-{
-    return self->projection_matrix;
-}
-
-void Renderer_ShaderSetFloat(Renderer_t *self, const GLchar *name, GLfloat value)
-{
-    glUniform1f(glGetUniformLocation(self->program, name), value);
-}
-
-void Renderer_ShaderSetInteger(Renderer_t *self, const GLchar *name, GLint value)
-{
-    glUniform1i(glGetUniformLocation(self->program, name), value);
-}
-
-void Renderer_ShaderSetVector2f(Renderer_t *self, const GLchar *name, const vec2 *vector)
-{
-    glUniform2fv(glGetUniformLocation(self->program, name), 1, vector->v);
-}
-
-void Renderer_ShaderSetVector3f(Renderer_t *self, const GLchar *name, const vec3 *vector)
-{
-    glUniform3fv(glGetUniformLocation(self->program, name), 1, vector->v);
-}
-
-void Renderer_ShaderSetVector4f(Renderer_t *self, const GLchar *name, const vec4 *vector)
-{
-    glUniform4fv(glGetUniformLocation(self->program, name), 1, vector->v);
-}
-
-void Renderer_ShaderSetMatrix3(Renderer_t *self, const GLchar *name, const mat3 *matrix)
-{
-    glUniformMatrix3fv(glGetUniformLocation(self->program, name), 1, GL_FALSE, matrix->m);
-}
-
-void Renderer_ShaderSetMatrix4(Renderer_t *self, const GLchar *name, const mat4 *matrix)
-{
-    glUniformMatrix4fv(glGetUniformLocation(self->program, name), 1, GL_FALSE, matrix->m);
-}
 

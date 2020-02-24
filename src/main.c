@@ -30,8 +30,8 @@ int main(int argc, char **argv)
     }
     Game_ShutDown(game);
 
-    printf("Press Any Key to Continue\n");
-    _getch();
+    //printf("Press Any Key to Continue\n");
+    //_getch();
 
-    return 0;
+    return EXIT_SUCCESS;
 }

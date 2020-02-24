@@ -29,12 +29,13 @@ typedef struct Player_s
 {
     struct Pokemon_s *leader;
     struct Input_s *input;
-
+    double prev_update;
 } Player_t;
 
 Player_t *Player_New(bool init);
 void Player_Init(Player_t *self);
-void Player_Update(Player_t *self);
+ivec2 Player_GetPosition();
+void Player_Update(Player_t *self, u64 delta_time);
 void Player_ShutDown(Player_t *self);
 
 #endif

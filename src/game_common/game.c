@@ -25,6 +25,7 @@
 #include "common/vec.h"
 #include "common/list_generic.h"
 #include "common/rand_num.h"
+#include "common/timer.h"
 
 #include "audio_core/sound_core.h"
 
@@ -32,13 +33,11 @@
 #include "game_common/move.h"
 #include "game_common/pokemon.h"
 #include "game_common/display.h"
-//#include "game_common/shader.h"
 #include "game_common/sprites.h"
 #include "game_common/input.h"
 #include "game_common/player.h"
 #include "game_common/item.h"
 #include "game_common/game.h"
-
 
 void cursor_enter_callback(GLFWwindow *window, int entered)
 {
@@ -52,18 +51,33 @@ void cursor_enter_callback(GLFWwindow *window, int entered)
     }
 }
 
-static int prev_state = GLFW_RELEASE;
+
+static void cursor_position_callback(GLFWwindow *window, double xpos, double ypos)
+{
+    Game_t *game = glfwGetWindowUserPointer(window);
+
+    game->player->input->mouse_x = xpos;
+    game->player->input->mouse_y = ypos;
+}
+
+static void mouse_button_callback(GLFWwindow *window, int button, int action, int mods)
+{
+    Game_t *game = glfwGetWindowUserPointer(window);
+    
+    game->player->input->buttons[button] = action != GLFW_RELEASE;
+}
 
 static void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods)
 {
     Game_t *game = glfwGetWindowUserPointer(window);
 
-    game->player->input->current_key = key;
-    game->player->input->scan_code = scancode;
-    game->player->input->action = action;
-    game->player->input->mods = mods;
+    game->player->input->keys[key] = action != GLFW_RELEASE;
+    //game->player->input->current_key = key;
+    //game->player->input->scan_code = scancode;
+    //game->player->input->action = action;
+    //game->player->input->mods = mods;
 
-    Player_Update(game->player);
+    //Player_Update(game->player);
     
     if (key == GLFW_KEY_E && action == GLFW_PRESS)
     {
@@ -125,6 +139,7 @@ static void key_callback(GLFWwindow *window, int key, int scancode, int action, 
     
 }
 
+
 Game_t *Game_New(bool init)
 {
     Game_t *game = malloc(sizeof(*game));
@@ -144,9 +159,17 @@ Game_t *Game_New(bool init)
 void Game_Init(Game_t *self)
 {
     self->running = true;
+    //self->delta_time = 0.0;
+    self->accumulator = 0;
+    self->alpha = 0;
+    self->current_time = 0.0;
+    self->frames = 0;
+    self->updates = 0;
+    self->previous_time = glfwGetTime();
+    self->timer = self->previous_time;
     Sprite_LoadAllTextures();
-    self->screen  = Screen_New(true);
     Dungeon_Init(NULL);
+    self->screen  = Screen_New(true);
     self->player  = Player_New(true);
     self->party = PokemonParty_New(4);
     AddPartyMember(self->party, self->player->leader);
@@ -163,18 +186,71 @@ void Game_Init(Game_t *self)
 
     glfwSetWindowUserPointer(self->screen->window, self);
     glfwSetKeyCallback(self->screen->window, key_callback);
+    glfwSetMouseButtonCallback(self->screen->window, mouse_button_callback);
+    glfwSetCursorPosCallback(self->screen->window, cursor_position_callback);
+}
+
+//static double GetDeltaTime(Game_t *self, struct timeval *end)
+//{
+//    double time = glfwGetTime();
+//    gettimeofday(end, NULL);
+//
+//    int milliseconds_start = self->current_time / 1000;
+//    int milliseconds_end = end->tv_usec / 1000;
+//
+//    int min_ms = MIN(milliseconds_end, milliseconds_start);
+//    int max_ms = MAX(milliseconds_end, milliseconds_start);
+//    int delta_time = (max_ms - min_ms);
+//    return (double)delta_time;
+//}
+//
+//static void UpdateDeltaTime(Game_t *self, struct timeval *end)
+//{
+//    glfwSetTime(0.0);
+//    self->current_time = end->tv_usec;
+//}
+
+static double GetDeltaTime(Game_t *self)
+{
+    double time = glfwGetTime();
+    double delta = (time - self->previous_time);
+    self->previous_time = time;
+    return delta;
 }
 
 void Game_Update(Game_t *self)
 {
-    Player_Update(self->player);
+    double delta_time = GetDeltaTime(self);
+
+    self->accumulator += delta_time;
+
+    while (self->accumulator >= FPS_LIMIT)
+    {
+        Player_Update(self->player, self->updates);
+        //Screen_Update(self->screen);
+        //self->frames++;
+        self->updates++;
+        self->accumulator -= FPS_LIMIT;
+    }
+
+    self->alpha = self->accumulator / FPS_LIMIT;
     Screen_Update(self->screen);
+    self->frames++;
+
+    if (glfwGetTime() - self->timer > 1.0)
+    {
+        self->timer += 1.0;
+
+        printf("ups %llu, fps %llu\n", self->updates, self->frames);
+
+        self->updates = 0;
+        self->frames = 0;
+    }
 
     if (glfwWindowShouldClose(self->screen->window))
     {
         self->running = false;
     }
-
 }
 
 void Game_ShutDown(Game_t *self)

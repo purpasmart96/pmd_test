@@ -24,19 +24,32 @@
 #include "game_common/camera.h"
 
 
-Camera_t *Camera_New(bool init)
+Camera_t *Camera_New(vec3 position, vec3 target, vec3 up, float width, float height)
 {
     Camera_t *camera = malloc(sizeof(*camera));
-    if (init)
+    if (camera)
     {
-        Camera_Init(camera);
+        Camera_Init(camera, position, target, up, width, height);
     }
     return camera;
 }
 
-void Camera_Init(Camera_t *self)
+void Camera_Init(Camera_t *self, vec3 position, vec3 target, vec3 up, float width, float height)
 {
+    self->ortho_matrix = mat4_identity();
+    self->ortho_matrix = mat4_ortho(self->ortho_matrix, 0.0f, width, 0.0f, height, -1.0f, 1.0f);
+    //self->position = make_vec3(0.0f, 0.0f, 0.0f);
+    //self->direction = make_vec3(0.0f, 0.0f, -1.0f);
+    //self->up = make_vec3(0.0f, 1.0f, 0.0f);
+    self->position = position;
+    self->direction = vec3_normalize(vec3_sub(self->position, target));
+    self->right = vec3_normalize(vec3_cross(up, self->direction));
+    self->up = vec3_normalize(vec3_cross(self->direction, self->right));
+}
 
+void Camera_Move(Camera_t *self, vec3 movement)
+{
+    self->position = vec3_add(self->position, movement);
 }
 
 void Camera_Update(Camera_t *self)

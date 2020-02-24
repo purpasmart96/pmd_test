@@ -18,23 +18,28 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-
 #ifndef _INPUT_MANAGER_H_
 #define _INPUT_MANAGER_H_
 
 typedef struct Game_s Game_t;
 
+#define MAX_KEYS 1024
+#define MAX_BUTTONS 32
+
 typedef struct Input_s
 {
-    bool keys[GLFW_KEY_LAST];
-    int current_key;
-    int scan_code;
-    int action;
-    int mods;
+    bool keys[MAX_KEYS];
+    bool buttons[MAX_BUTTONS];
+
+    double mouse_x;
+    double mouse_y;
+
+    //int current_key;
+    //int scan_code;
+    //int action;
+    //int mods;
 
     GLFWcursor *cursor;
-    int cursor_x;
-    int cursor_y;
 } Input_t;
 
 Input_t *Input_New(bool init);
@@ -42,5 +47,8 @@ void Input_Init(Input_t *self);
 void Input_Update(Input_t *self);
 void Input_ShutDown(Input_t *self);
 
+bool Input_IsKeyPressed(Input_t *self, u32 key_code);
+vec2 Input_GetMousePosition(Input_t *self);
+bool Input_IsMouseButtonPressed(Input_t * self, u32 button);
 
 #endif

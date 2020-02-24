@@ -62,12 +62,18 @@ u32 rand_interval(u32 min, u32 max)
     return min + (r / buckets);
 }
 
-u32 rand_interval_seed(u32 min, u32 max)
+u32 rand_interval_seed(u64 *seed, u32 min, u32 max)
 {
     int r = 0;
     const u32 range = 1 + max - min;
     const u32 buckets = RAND_MAX / range;
     const u32 limit = buckets * range;
+
+    time_t new_seed;
+    new_seed = time(NULL) + *seed;
+    *seed = new_seed;
+
+    srand(new_seed);
 
     /* Create equal size buckets all in a row, then fire randomly towards
     * the buckets until you land in one of them. All buckets are equally
@@ -75,7 +81,6 @@ u32 rand_interval_seed(u32 min, u32 max)
     */
     do
     {
-        srand(time(NULL));
         r = rand();
     } while (r >= limit);
 

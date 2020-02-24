@@ -20,7 +20,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -49,7 +49,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level2</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PrecompiledHeader>
       </PrecompiledHeader>
@@ -59,6 +59,11 @@
       <SDLCheck>false</SDLCheck>
       <AdditionalIncludeDirectories>...\..\inc;...\..\lib\glew-2.1.0\include;...\..\lib\glfw-3.2.1\include\GLFW;...\..\lib\zlib\include;...\..\lib\SDL2-2.0.3\include;...\..\lib\pthreads-w32-2.9.1\include;...\..\lib\openal-soft-1.17.1-bin\include;...\..\lib\libpng-1.6.20;...\..\lib\libogg-1.3.2\include;...\..\lib\libvorbis-1.3.6\include;...\..\lib\lode_png\include\lode_png</AdditionalIncludeDirectories>
       <CompileAs>CompileAsC</CompileAs>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -66,7 +71,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>...\..\lib\glew-2.1.0\lib\Release\Win32;...\..\lib\glfw-3.2.1\lib-vc2013;...\..\lib\zlib\lib;...\..\lib\SDL2-2.0.3\lib\x86;...\..\lib\pthreads-w32-2.9.1\lib\x86;...\..\lib\openal-soft-1.17.1-bin\libs\Win32;...\..\lib\libpng-1.6.20\projects\vstudio\Release;...\..\lib\libogg-1.3.2\lib\x86;...\..\lib\libvorbis-1.3.6\lib\x86;...\..\lib\lode_png\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3.lib;glew32.lib;glew32s.lib;opengl32.lib;zdll.lib;OpenAL32.lib;SDL2.lib;SDL2main.lib;pthreadVC2.lib;libpng16.lib;libvorbis.lib;libvorbisfile.lib;libogg.lib;LodePng.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;glew32.lib;glew32s.lib;opengl32.lib;zdll.lib;OpenAL32.lib;SDL2.lib;SDL2main.lib;pthreadVC2.lib;libpng16.lib;libvorbis.lib;libvorbisfile.lib;libogg.lib;LodePng.lib;legacy_stdio_definitions.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
   </ItemDefinitionGroup>
@@ -101,20 +106,22 @@
     <ClCompile Include="src\common\dynamic_array.c" />
     <ClCompile Include="src\common\file_io.c" />
     <ClCompile Include="src\common\list_generic.c" />
+    <ClCompile Include="src\common\list_queue.c" />
     <ClCompile Include="src\common\rand_num.c" />
     <ClCompile Include="src\common\stack.c" />
     <ClCompile Include="src\common\stack_generic.c" />
     <ClCompile Include="src\common\string.c" />
     <ClCompile Include="src\common\strlcat.c" />
     <ClCompile Include="src\common\strlcpy.c" />
+    <ClCompile Include="src\common\timer.c" />
     <ClCompile Include="src\common\vec.c" />
-    <ClCompile Include="src\dungeon\dungeon_gen.c" />
     <ClCompile Include="src\dungeon\floor_function.c" />
     <ClCompile Include="src\game_common\camera.c" />
     <ClCompile Include="src\game_common\display.c" />
     <ClCompile Include="src\game_common\dungeon.c" />
     <ClCompile Include="src\game_common\game.c" />
     <ClCompile Include="src\game_common\health.c" />
+    <ClCompile Include="src\game_common\index_buffer.c" />
     <ClCompile Include="src\game_common\input.c" />
     <ClCompile Include="src\game_common\items\apples.c" />
     <ClCompile Include="src\game_common\items\bands.c" />
@@ -134,14 +141,22 @@
     <ClCompile Include="src\game_common\hunger.c" />
     <ClCompile Include="src\game_common\menu.c" />
     <ClCompile Include="src\game_common\move.c" />
+    <ClCompile Include="src\game_common\object.c" />
     <ClCompile Include="src\game_common\player.c" />
     <ClCompile Include="src\game_common\pokemon.c" />
     <ClCompile Include="src\game_common\renderer.c" />
+    <ClCompile Include="src\game_common\renderer2d.c" />
+    <ClCompile Include="src\game_common\renderer2d_info.c" />
+    <ClCompile Include="src\game_common\shader.c" />
     <ClCompile Include="src\game_common\shop.c" />
+    <ClCompile Include="src\game_common\single_sprite.c" />
     <ClCompile Include="src\game_common\sound.c" />
+    <ClCompile Include="src\game_common\sprite.c" />
     <ClCompile Include="src\game_common\sprites.c" />
     <ClCompile Include="src\game_common\text.c" />
     <ClCompile Include="src\game_common\tile.c" />
+    <ClCompile Include="src\game_common\vertex_array.c" />
+    <ClCompile Include="src\game_common\vertex_buffer.c" />
     <ClCompile Include="src\main.c" />
     <ClCompile Include="src\pokemon\database.c" />
     <ClCompile Include="src\pokemon\stats.c" />
@@ -154,6 +169,7 @@
     <ClInclude Include="inc\common\exception.h" />
     <ClInclude Include="inc\common\file_io.h" />
     <ClInclude Include="inc\common\list_generic.h" />
+    <ClInclude Include="inc\common\list_queue.h" />
     <ClInclude Include="inc\common\list_types.h" />
     <ClInclude Include="inc\common\rand_num.h" />
     <ClInclude Include="inc\common\stack.h" />
@@ -164,9 +180,9 @@
     <ClInclude Include="inc\common\strlcat.h" />
     <ClInclude Include="inc\common\strlcpy.h" />
     <ClInclude Include="inc\common\template.h" />
+    <ClInclude Include="inc\common\timer.h" />
     <ClInclude Include="inc\common\types.h" />
     <ClInclude Include="inc\common\vec.h" />
-    <ClInclude Include="inc\dungeon\dungeon_gen.h" />
     <ClInclude Include="inc\dungeon\floor_function.h" />
     <ClInclude Include="inc\game_common\camera.h" />
     <ClInclude Include="inc\game_common\display.h" />
@@ -174,6 +190,7 @@
     <ClInclude Include="inc\game_common\game.h" />
     <ClInclude Include="inc\game_common\health.h" />
     <ClInclude Include="inc\game_common\hunger.h" />
+    <ClInclude Include="inc\game_common\index_buffer.h" />
     <ClInclude Include="inc\game_common\input.h" />
     <ClInclude Include="inc\game_common\items\apples.h" />
     <ClInclude Include="inc\game_common\items\bands.h" />
@@ -192,13 +209,21 @@
     <ClInclude Include="inc\game_common\item.h" />
     <ClInclude Include="inc\game_common\map.h" />
     <ClInclude Include="inc\game_common\move.h" />
+    <ClInclude Include="inc\game_common\object.h" />
     <ClInclude Include="inc\game_common\player.h" />
     <ClInclude Include="inc\game_common\pokemon.h" />
     <ClInclude Include="inc\game_common\renderer.h" />
+    <ClInclude Include="inc\game_common\renderer2d.h" />
+    <ClInclude Include="inc\game_common\renderer2d_info.h" />
+    <ClInclude Include="inc\game_common\shader.h" />
+    <ClInclude Include="inc\game_common\single_sprite.h" />
     <ClInclude Include="inc\game_common\sound.h" />
+    <ClInclude Include="inc\game_common\sprite.h" />
     <ClInclude Include="inc\game_common\sprites.h" />
     <ClInclude Include="inc\game_common\text.h" />
     <ClInclude Include="inc\game_common\tile.h" />
+    <ClInclude Include="inc\game_common\vertex_array.h" />
+    <ClInclude Include="inc\game_common\vertex_buffer.h" />
     <ClInclude Include="inc\pokemon\stats.h" />
     <ClInclude Include="inc\pokemon\database.h" />
     <ClInclude Include="inc\util.h" />

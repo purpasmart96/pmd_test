@@ -23,6 +23,15 @@
 
 #include "audio_core/sound_core.h"
 
+#define FPS_LIMIT_MS 1.0 / 60.0 * 1000.0
+#define FPS_LIMIT 1.0 / 8.0
+#define FPS_LIMIT_FAST 1.0 / 20.0
+#define PLAYER_MOVEMENT_SPEED 1.0 / 20.0
+
+//#define USE_BATCH_RENDERER 
+//#define USE_SLOW_RENDERER
+#define USE_FAST_OLD_RENDERER
+
 #define	MAX_CVAR_VALUE_STRING	256
 
 
@@ -52,6 +61,11 @@ typedef struct Cvar
     struct Cvar *hash_next;
 } Cvar;
 
+typedef enum {
+    GAME_PUASED,
+    GAME_ACTIVE,
+
+} GameSate_t;
 
 typedef struct Game_s
 {
@@ -62,6 +76,14 @@ typedef struct Game_s
     struct PokemonParty *party;
     ALState *audio_state;
     //struct ListInt *list;
+    double accumulator;
+    double alpha;
+    double current_time;
+    double previous_time;
+    double timer;
+    //double delta_time;
+    u64 frames;
+    u64 updates;
 } Game_t;
 
 

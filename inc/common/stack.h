@@ -23,7 +23,6 @@
 #define _STACK_H_
 
 #include "util.h"
-#include "dungeon/dungeon_gen.h"
 
 #define STACK_DEFUALT 100
 

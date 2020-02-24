@@ -25,7 +25,14 @@
 #include <glfw3.h>
 
 #include "common/vec.h"
+#include "game_common/game.h"
+
+#if defined(USE_BATCH_RENDERER) || defined(USE_SLOW_RENDERER)
+#include "game_common/renderer2d.h"
+#else
 #include "game_common/renderer.h"
+#endif
+
 #include "game_common/display.h"
 
 
@@ -46,7 +53,7 @@ Screen_t *Screen_New(bool init)
 
 void Screen_Init(Screen_t *self)
 {
-    self->vsync = true;
+    self->vsync = false;
     // Initialize GLFW
     if (!glfwInit())
     {
@@ -72,14 +79,18 @@ void Screen_Init(Screen_t *self)
         if (!self->window)
         {
             ERROR("Window could not be created!\n");
+            glfwTerminate();
         }
         else if (glewInit() != GLEW_OK)
         {
             ERROR("GLEW could not initialize!\n");
+            glfwTerminate();
+
         }
         else if (!GLEW_VERSION_3_3)
         {
             ERROR("OpenGL 3.3 required version support not present.\n");
+            glfwTerminate();
             //exit(-1);
         }
         else
@@ -87,17 +98,31 @@ void Screen_Init(Screen_t *self)
             glfwSetWindowAspectRatio(self->window, 16, 9);
             glViewport(0, 0, 1280, 720);
             glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+
+        #ifdef USE_BATCH_RENDERER
+            self->renderer = BatchRenderer2D_New();
+        #elif defined(USE_SLOW_RENDERER)
+            self->renderer = Renderer2D_New();
+        #else   
             self->renderer = Renderer_New(true);
+        #endif
+
         }
     }
-
 }
 
 void Screen_Update(Screen_t *self)
 {
     // Clear color and depth buffer  
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+#ifdef USE_BATCH_RENDERER
+    BatchRenderer2D_Update(self->renderer);
+#elif defined(USE_SLOW_RENDERER)
+    Renderer2D_Update(self->renderer);
+#else   
     Renderer_Update(self->renderer);
+#endif
     // Swap the buffers  
     glfwSwapBuffers(self->window);
     glfwSwapInterval(self->vsync);
@@ -105,7 +130,13 @@ void Screen_Update(Screen_t *self)
 
 void Screen_ShutDown(Screen_t *self)
 {
+#ifdef USE_BATCH_RENDERER
+    BatchRenderer2D_ShutDown(self->renderer);
+#elif defined(USE_SLOW_RENDERER)
+    Renderer2D_ShutDown(self->renderer);
+#else   
     Renderer_ShutDown(self->renderer);
+#endif
     glfwDestroyWindow(self->window);
     glfwTerminate();
     free(self);

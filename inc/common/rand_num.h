@@ -23,6 +23,6 @@
 #include "util.h"
 u32 random_at_most(u32 max);
 u32 rand_interval(u32 min, u32 max);
-u32 rand_interval_seed(u32 min, u32 max);
+u32 rand_interval_seed(u64 *seed, u32 min, u32 max);
 
 #endif

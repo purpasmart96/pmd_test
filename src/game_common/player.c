@@ -21,10 +21,14 @@
 #include "util.h"
 #include <glfw3.h>
 
+#include "game_common/game.h"
 #include "game_common/pokemon.h"
 #include "game_common/input.h"
 #include "game_common/player.h"
 #include "game_common/dungeon.h"
+
+// Do not modify, this is just for getting values outside player.c
+static ivec2 player_position;
 
 Player_t *Player_New(bool init)
 {
@@ -45,6 +49,7 @@ Player_t *Player_New(bool init)
 
 void Player_Init(Player_t *self)
 {
+    self->prev_update = glfwGetTime();
     self->leader = Pokemon_New("Flygon", Flygon, Dragon, Ground, Levitate, Female, 45, 255, true);
     self->leader->current_hp = 100;
     self->leader->attack = 72;
@@ -53,88 +58,135 @@ void Player_Init(Player_t *self)
     self->input = Input_New(true);
 }
 
-static void MovePlayerXAxis(Player_t *self, Direction direction, int position_delta)
+static void MovePlayerXAxis(Player_t *self, Dungeon *dungeon, Direction direction, int position_delta)
 {
-    TileState tile = GetTileInFront(GetDungeonObject(), self->leader->position, direction);
-    if (IsTilePassableByType(GetDungeonObject()->floor, tile.tile))
+    TileState tile = GetTileInFront(dungeon, self->leader->position, direction);
+    if (IsTilePassableByType(dungeon->floor, tile.tile))
     {
-        SetPlayerPreviousPos(self->leader->position.x, self->leader->position.y);
+        SetPlayerPreviousPos(self->leader->position);
         self->leader->position.x += position_delta;
         
-        SetPlayerTile(GetDungeonObject(), self->leader->position.x, self->leader->position.y);
+        SetPlayerTile(dungeon, self->leader->position);
     }
 }
 
-static MovePlayerYAxis(Player_t *self, Direction direction, int position_delta)
+static MovePlayerYAxis(Player_t *self, Dungeon *dungeon, Direction direction, int position_delta)
 {
-    TileState tile = GetTileInFront(GetDungeonObject(), self->leader->position, direction);
-    if (IsTilePassableByType(GetDungeonObject()->floor, tile.tile))
+    TileState tile = GetTileInFront(dungeon, self->leader->position, direction);
+    if (IsTilePassableByType(dungeon->floor, tile.tile))
     {
-        SetPlayerPreviousPos(self->leader->position.x, self->leader->position.y);
+        SetPlayerPreviousPos(self->leader->position);
         self->leader->position.y += position_delta;
         
-        SetPlayerTile(GetDungeonObject(), self->leader->position.x, self->leader->position.y);
+        SetPlayerTile(dungeon, self->leader->position);
     }
 }
 
-static void MoveLeft(Player_t *self)
+static bool DoneWaiting()
 {
-    MovePlayerXAxis(self, West, -1);
+    u64 current_frames_updated = Game_GetTicks();
+    return current_frames_updated % 10 == 0;
+}
+
+static void MoveLeft(Player_t *self, Dungeon *dungeon)
+{
+    MovePlayerXAxis(self, dungeon, West, -1);
     DEBUG("Player position X %d\n", self->leader->position.x);
 }
 
-static void MoveRight(Player_t *self)
+static void MoveRight(Player_t *self, Dungeon *dungeon)
 {
-    MovePlayerXAxis(self, East, 1);
+    MovePlayerXAxis(self, dungeon, East, 1);
     DEBUG("Player position X %d\n", self->leader->position.x);
 }
 
-static void MoveDown(Player_t *self)
+static void MoveDown(Player_t *self, Dungeon *dungeon)
 {
-    MovePlayerYAxis(self, South, -1);
+    MovePlayerYAxis(self, dungeon, South, -1);
     DEBUG("Player position Y %d\n", self->leader->position.y);
 }
 
-static void MoveUp(Player_t *self)
+static void MoveUp(Player_t *self, Dungeon *dungeon)
 {
-    MovePlayerYAxis(self, North, 1);
+    MovePlayerYAxis(self, dungeon, North, 1);
     DEBUG("Player position Y %d\n", self->leader->position.y);
 }
 
 static void HandleButtunPress(Player_t *self)
 {
-    switch (self->input->current_key)
+    Dungeon *dungeon = GetDungeonObject();
+
+    if (Input_IsKeyPressed(self->input, GLFW_KEY_S))
     {
-        case GLFW_KEY_S:
-            MoveDown(self);
-            break;
-        case GLFW_KEY_A:
-            MoveLeft(self);
-            break;
-        case GLFW_KEY_W:
-            MoveUp(self);
-            break;
-        case GLFW_KEY_D:
-            MoveRight(self);
-            break;
-        default:
-            break;
+        MoveDown(self, dungeon);
     }
+
+    if (Input_IsKeyPressed(self->input, GLFW_KEY_A))
+    {
+        MoveLeft(self, dungeon);
+    }
+
+    if (Input_IsKeyPressed(self->input, GLFW_KEY_W))
+    {
+        MoveUp(self, dungeon);
+    }
+
+    if (Input_IsKeyPressed(self->input, GLFW_KEY_D))
+    {
+        MoveRight(self, dungeon);
+    }
+
+    //switch (self->input->current_key)
+    //{
+    //    case GLFW_KEY_S:
+    //        MoveDown(self, dungeon);
+    //        break;
+    //    case GLFW_KEY_A:
+    //        MoveLeft(self, dungeon);
+    //        break;
+    //    case GLFW_KEY_W:
+    //        MoveUp(self, dungeon);
+    //        break;
+    //    case GLFW_KEY_D:
+    //        MoveRight(self, dungeon);
+    //        break;
+    //    default:
+    //        break;
+    //}
+}
+
+static void Player_SetPosition(Player_t *self)
+{
+    player_position = self->leader->position;
 }
 
 static void Player_Move(Player_t *self)
 {
-    if (self->input->action == GLFW_PRESS || self->input->action == GLFW_REPEAT)
-    {
-        HandleButtunPress(self);
-    }
+    HandleButtunPress(self);
+    Player_SetPosition(self);
 }
 
-void Player_Update(Player_t *self)
+ivec2 Player_GetPosition()
+{
+    return player_position;
+}
+
+void Player_Update(Player_t *self, u64 delta_time)
 {
     glfwPollEvents();
-    Player_Move(self);
 
+    //double time  = glfwGetTime();
+
+    //double delta = (time - self->prev_update);
+
+
+    //double new_delta = delta_time * 10000.0;
+    //bool update = delta_time % 5 == 0;
+    //if (delta >= PLAYER_MOVEMENT_SPEED)
+    //{
+        Player_Move(self);
+    //    self->prev_update = time;
+    //}
     //glfwWaitEvents();
 }
 

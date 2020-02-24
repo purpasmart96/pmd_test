@@ -23,8 +23,8 @@
 
 #include "game_common/item.h"
 #include "game_common/hunger.h"
-#include "game_common/dungeon.h"
 #include "game_common/pokemon.h"
+#include "game_common/dungeon.h"
 
 #define MIN_ROOM_BUFFER 7
 #define MAX_PLACEMENT_FAILURES 100
@@ -37,7 +37,6 @@ static int max_room_dimension;
 static int total_corridor_length;
 static int min_num_items;
 static int max_num_items;
-static int previous_tile_type_before_player;
 static int previous_pos_x;
 static int previous_pos_y;
 
@@ -61,7 +60,7 @@ void Dungeon_Init(PokemonParty *party)
     previous_pos_y = 0;
     dungeon->difficulty = 5;
     floor_w = 80; // x
-    floor_h = 40; // y
+    floor_h = 60; // y
     min_room_dimension = 5;
     max_room_dimension = 16;
     total_corridor_length = floor_w * floor_h / 10;
@@ -76,11 +75,17 @@ void Dungeon_Init(PokemonParty *party)
         dungeon->floor_seeds[i] = rand();
     }
 
-    int num_items = rand_interval(min_num_items, max_num_items);
+    int num_items = rand_interval_seed(&dungeon->seed, min_num_items, max_num_items);
     dungeon->floor = GenerateFloor(/*seed,*/ num_items);
 
     PrintFloorFixed(dungeon->floor);
 
+}
+
+void GenerateNewFloor(int min_num_items, int max_num_items)
+{
+    int num_items = rand_interval_seed(&dungeon->seed, min_num_items, max_num_items);
+    dungeon->floor = GenerateFloor(/*seed,*/ num_items);
 }
 
 void Dungeon_ShutDown()
@@ -171,8 +176,8 @@ int GetItemFromTile(Dungeon *dungeon, int x, int y)
 
 void RemoveItemFromTile(Dungeon *dungeon, int x, int y)
 {
-    dungeon->floor->tiles[x][y].item = None;
-    dungeon->floor->tiles[x][y].tile = tileFloor;
+    SetItemToTile(dungeon, x, y, None);
+    SetTile(floor, x, y, tileFloor);
 }
 
 void SetItemToTile(Dungeon *dungeon, int x, int y, int item)
@@ -182,30 +187,30 @@ void SetItemToTile(Dungeon *dungeon, int x, int y, int item)
 
 static void RestoreOldPreviousTile(Floor *floor, int x, int y)
 {
-    SetTile(dungeon->floor, x, y, previous_tile_type_before_player);
+    SetTile(floor, x, y, floor->previous_tile_type_before_player);
 }
 
-static void SetNewPreviousTile(Floor *floor, int x, int y)
+static void SetNewPreviousTile(Floor *floor, ivec2 coords)
 {
-    previous_tile_type_before_player = GetTile(floor, x, y);
+    floor->previous_tile_type_before_player = GetTile(floor, coords.x, coords.y);
 }
 
-void SetPlayerPreviousPos(int x, int y)
+void SetPlayerPreviousPos(ivec2 coords)
 {
-    previous_pos_x = x;
-    previous_pos_y = y;
+    previous_pos_x = coords.x;
+    previous_pos_y = coords.y;
 }
 
-void SetPlayerTile(Dungeon *dungeon, int x, int y)
+void SetPlayerTile(Dungeon *dungeon, ivec2 coords)
 {
     if (previous_pos_x || previous_pos_y)
     {
         RestoreOldPreviousTile(dungeon->floor, previous_pos_x, previous_pos_y);
     }
 
-    SetNewPreviousTile(dungeon->floor, x, y);
-    SetTile(dungeon->floor, x, y, tilePlayer);
-    PrintFloorFixed(dungeon->floor);
+    SetNewPreviousTile(dungeon->floor, coords);
+    SetTile(dungeon->floor, coords.x, coords.y, tilePlayer);
+    //PrintFloorFixed(dungeon->floor);
 }
 
 ivec2 GetPlayerSpawnPoint(Dungeon *dungeon)
@@ -213,14 +218,63 @@ ivec2 GetPlayerSpawnPoint(Dungeon *dungeon)
     return dungeon->floor->player_spawn_point;
 }
 
-static void SetPlayerSpawnPoint(Floor *floor, int x, int y)
+static void SetPlayerSpawnPoint(Floor *floor, ivec2 coords)
 {
-    floor->player_spawn_point.x = x;
-    floor->player_spawn_point.y = y;
-    SetNewPreviousTile(floor, x, y);
-    floor->tiles[x][y].tile = tilePlayer;
+    floor->player_spawn_point.x = coords.x;
+    floor->player_spawn_point.y = coords.y;
+    SetNewPreviousTile(floor, coords);
+    //SetTile(dungeon->floor, coords.x, coords.y, tilePlayer);
+    floor->tiles[coords.x][coords.y].tile = tilePlayer;
 }
 
+bool IsAdjacent(Floor *floor, int x, int y, Tile tile)
+{
+    return GetTile(floor, x - 1, y) == tile || GetTile(floor, x + 1, y) == tile || GetTile(floor, x, y - 1) == tile || GetTile(floor, x, y + 1) == tile;
+}
+
+
+static Tile GetCorrectLavaTileType(Floor *floor, int x, int y)
+{
+    // TODO: Clean up this shit code
+
+    Tile left = GetTile(floor, x - 1, y);
+    Tile right = GetTile(floor, x + 1, y);
+
+    Tile up = GetTile(floor, x, y + 1);
+    Tile up_right = GetTile(floor, x + 1, y + 1);
+    Tile up_left = GetTile(floor, x - 1, y + 1);
+
+    Tile bottom = GetTile(floor, x, y - 1);
+    Tile bottom_right = GetTile(floor, x + 1, y - 1);
+    Tile bottom_left = GetTile(floor, x - 1, y - 1);
+   
+    if (left == tileFloor || left == tileHall)
+        return tileLavaBorderMiddleLeft;
+
+    if (right == tileFloor || right == tileHall)
+        return tileLavaBorderMiddleRight;
+
+    if (up_left == tileFloor && up != tileFloor || up_left == tileHall &&  up != tileHall)
+        return tileLavaBorderLeftUp;
+
+    if (up == tileFloor || up == tileHall)
+        return tileLavaBorderUp;
+
+    if (up_right == tileFloor && up != tileFloor || up_right == tileHall &&  up != tileHall)
+        return tileLavaBorderRightUp;
+
+    if (bottom_left == tileFloor && bottom != tileFloor || bottom_left == tileHall &&  bottom != tileHall)
+        return tileLavaBorderBottomLeft;
+
+    if (bottom == tileFloor || up == tileHall)
+        return tileLavaBorderBottom;
+
+    if (bottom_right == tileFloor && bottom != tileFloor || bottom_right == tileHall &&  bottom != tileHall)
+        return tileLavaBorderBottomRight;
+
+
+    return tileLava;
+}
 
 
 void PrintFloor(Floor *floor)
@@ -228,6 +282,8 @@ void PrintFloor(Floor *floor)
     char *strings[] =
     {
         " ",
+        "=",
+        "=",
         "=",
         "=",
         ".",
@@ -257,9 +313,19 @@ void PrintFloorFixed(Floor *floor)
         " ",
         "=",
         "=",
+        "=",
+        "=",
         ".",
         ".",
         "X",
+        "n",
+        "n",
+        "n",
+        "n",
+        "n",
+        "n",
+        "n",
+        "n",
         "n",
         "*",
         "%"
@@ -270,7 +336,7 @@ void PrintFloorFixed(Floor *floor)
     {
         for (int x = 0; x < floor->width; x++)
         {
-            int tile = GetTile(floor, x, y);
+            Tile tile = GetTile(floor, x, y);
             char *tile_char = strings[tile];
             printf("%s", tile_char);
         }
@@ -346,6 +412,14 @@ int IsTilePassable(Floor *floor, int x, int y)
         case tileStairs:
             return 1;
         case tileLava:
+        case tileLavaBorderUp:
+        case tileLavaBorderRightUp:
+        case tileLavaBorderLeftUp:
+        case tileLavaBorderBottom:
+        case tileLavaBorderBottomRight:
+        case tileLavaBorderBottomLeft:
+        case tileLavaBorderMiddleLeft:
+        case tileLavaBorderMiddleRight:
             return 0;
         case tileItem:
             return 1;
@@ -367,6 +441,14 @@ int IsTilePassableByType(Floor *floor, Tile tile)
         case tileStairs:
             return 1;
         case tileLava:
+        case tileLavaBorderUp:
+        case tileLavaBorderRightUp:
+        case tileLavaBorderLeftUp:
+        case tileLavaBorderBottom:
+        case tileLavaBorderBottomRight:
+        case tileLavaBorderBottomLeft:
+        case tileLavaBorderMiddleLeft:
+        case tileLavaBorderMiddleRight:
             return 0;
         case tileItem:
             return 1;
@@ -551,6 +633,21 @@ int AddTerrain(Floor *floor, int tile_terrain, int ax, int ay, int bx, int by)
     return 1;
 }
 
+static void FixLavaTiles(Floor *floor)
+{
+    for (int y = floor->height; y > 0; y--)
+    {
+        for (int x = 0; x < floor->width; x++)
+        {
+            if (GetTile(floor, x, y) == tileLava)
+            {
+                Tile tile_terrain = GetCorrectLavaTileType(floor, x, y);
+                SetTile(floor, x, y, tile_terrain);
+            }
+        }
+    }
+}
+
 static void MakeItems(Floor *floor, int num_items)
 {
     int tries = 0;
@@ -564,8 +661,8 @@ static void MakeItems(Floor *floor, int num_items)
         if (current_num_items > num_items - 1)
             return;
 
-        int x = rand_interval(1, floor->width - 2);
-        int y = rand_interval(1, floor->height - 2);
+        int x = rand_interval(2, floor->width - 2);
+        int y = rand_interval(2, floor->height - 2);
 
         if (GetTile(floor, x, y) == tileFloor)
         {
@@ -587,12 +684,12 @@ static void MakeSpawnPointForPlayer(Floor *floor)
 
     for (; tries != maxTries; ++tries)
     {
-        int x = rand_interval(1, floor->width - 2);
-        int y = rand_interval(1, floor->height - 2);
+        int x = rand_interval(2, floor->width - 2);
+        int y = rand_interval(2, floor->height - 2);
 
         if (GetTile(floor, x, y) == tileFloor)
         {
-            SetPlayerSpawnPoint(floor, x, y);
+            SetPlayerSpawnPoint(floor, make_ivec2(x, y));
             return;
         }
     }
@@ -628,13 +725,13 @@ Floor *GenerateFloor(int num_items)
     }
 
     // Fill with corridors
-    int hall_start_x = rand_interval(1, floor_w - 2);
-    int hall_start_y = rand_interval(1, floor_h - 2);
+    int hall_start_x = rand_interval(3, floor_w - 3);
+    int hall_start_y = rand_interval(3, floor_h - 3);
     int length = 0;
     while (length < total_corridor_length)
     {
-        int dest_x = rand_interval(1, floor_w - 2);
-        int dest_y = rand_interval(1, floor_h - 2);
+        int dest_x = rand_interval(3, floor_w - 3);
+        int dest_y = rand_interval(3, floor_h - 3);
         AddCorridor(floor, hall_start_x, hall_start_y, dest_x, dest_y);
         length += abs(dest_x - hall_start_x) + abs(dest_y - hall_start_y);
         hall_start_x = dest_x;
@@ -649,8 +746,13 @@ Floor *GenerateFloor(int num_items)
     {
         int w = rand_interval(min_room_dimension, floor_w / min_room_dimension);
         int h = rand_interval(min_room_dimension, floor_h / min_room_dimension);
-        int x = rand_interval(0, floor_w - w);
-        int y = rand_interval(0, floor_h - h);
+        int max_x = MAX(floor_w - 3, floor_w - w);
+        int max_y = MAX(floor_h - 3, floor_h - h);
+        //int x = rand_interval(3, floor_w - w);
+        //int y = rand_interval(3, floor_h - h);
+        int x = rand_interval(3, max_x);
+        int y = rand_interval(3, max_y);
+
         if (!AddRoom(floor, x, y, w, h))
         {
             failure_count++;
@@ -673,13 +775,14 @@ Floor *GenerateFloor(int num_items)
     // Place terrain
     for (int i = 0; i < floor->width / 10; i++)
     {
-        int terrain_start_x = rand_interval(1, floor_w - 2);
-        int terrain_start_y = rand_interval(1, floor_h - 2);
+        int terrain_start_x = rand_interval(2, floor_w - 2);
+        int terrain_start_y = rand_interval(2, floor_h - 2);
         int terrain_length = 0;
         while (terrain_length < total_corridor_length * 5)
         {
             int dest_x = rand_interval(MAX(1, terrain_start_x - 4), MIN(floor_w - 2, terrain_start_x + 4));
             int dest_y = rand_interval(MAX(1, terrain_start_y - 4), MIN(floor_w - 2, terrain_start_y + 4));
+            
             AddTerrain(floor, tileLava, terrain_start_x, terrain_start_y, dest_x, dest_y);
             terrain_length += abs(dest_x - terrain_start_x) + abs(dest_y - terrain_start_y);
             terrain_start_x = dest_x;
@@ -716,6 +819,7 @@ Floor *GenerateFloor(int num_items)
         }
     }
 
+    FixLavaTiles(floor);
     MakeItems(floor, num_items);
     MakeSpawnPointForPlayer(floor);
     // Add graphics
@@ -723,7 +827,6 @@ Floor *GenerateFloor(int num_items)
 
     return floor;
 }
-
 
 
 // Called when starting a new dungeon

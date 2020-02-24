@@ -26,7 +26,14 @@ typedef struct Screen_s
     struct GLFWwindow *window;
     bool widescreen;
     bool vsync;
+
+#ifdef USE_BATCH_RENDERER
+    struct BatchRenderer2D_s *renderer;
+#elif defined(USE_SLOW_RENDERER)
+    struct Renderer2D_s *renderer;
+#else   
     struct Renderer_s *renderer;
+#endif
 } Screen_t;
 
 Screen_t *Screen_New(bool init);

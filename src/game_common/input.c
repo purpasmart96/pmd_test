@@ -21,6 +21,8 @@
 #include "util.h"
 #include <glfw3.h>
 
+#include "common/vec.h"
+
 #include "game_common/input.h"
 
 Input_t *Input_New(bool init)
@@ -39,6 +41,32 @@ Input_t *Input_New(bool init)
     return input;
 }
 
+bool Input_IsKeyPressed(Input_t *self, u32 key_code)
+{
+    if (key_code >= MAX_KEYS)
+    {
+        ERROR("Out of range key_code input! %u\n", key_code);
+        return false;
+    }
+
+    return self->keys[key_code];
+}
+
+vec2 Input_GetMousePosition(Input_t *self)
+{
+    return make_vec2(self->mouse_x, self->mouse_y);
+}
+
+bool Input_IsMouseButtonPressed(Input_t *self, u32 button)
+{
+    if (button >= MAX_BUTTONS)
+    {
+        ERROR("Out of range mouse button input! %u\n", button);
+        return false;
+    }
+
+    return self->buttons[button];
+}
 
 void Input_Init(Input_t *self)
 {
@@ -51,15 +79,20 @@ void Input_Init(Input_t *self)
     //self->cursor = glfwCreateCursor(&image, 0, 0);
 
     // Initialize all the keys to being released and not pressed.
-    for (int i = 0; i < GLFW_KEY_LAST; i++)
+    for (int i = 0; i < MAX_KEYS; i++)
     {
         self->keys[i] = false;
     }
 
-    self->current_key = 0;
-    self->scan_code = 0;
-    self->action = 0;
-    self->mods = 0;
+    for (int i = 0; i < MAX_BUTTONS; i++)
+    {
+        self->buttons[i] = false;
+    }
+
+    //self->current_key = 0;
+    //self->scan_code = 0;
+    //self->action = 0;
+    //self->mods = 0;
 }
 
 void Input_Update(Input_t *self)

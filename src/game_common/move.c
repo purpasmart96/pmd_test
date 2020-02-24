@@ -653,7 +653,7 @@ static const Move move_table[] =
     { "", "", NoMove, 0, 0, 0, 0, 0, 0, 0 },
     { "", "", NoMove, 0, 0, 0, 0, 0, 0, 0 },
     { "", "", NoMove, 0, 0, 0, 0, 0, 0, 0 },
-    { "", "", NoMove, 0, 0, 0,   0, 0, 0, 0, 0, 0 },
+    { "", "", NoMove, 0, 0, 0,  0, 0, 0, 0, 0, 0 },
 };
 
 static const MoveEffectiveness move_effectiveness_combos[4][4] =
@@ -663,6 +663,11 @@ static const MoveEffectiveness move_effectiveness_combos[4][4] =
     { LittleEffect,     NotVeryEffective, NormalEffective,  SuperEffective   },
     { NotVeryEffective, NormalEffective,  SuperEffective,   SuperEffective   },
 };
+
+//static const Move type_chart[4][4] =
+//{
+//    
+//};
 
 bool IsMovesEmpty(MoveSet *moves)
 {
@@ -731,10 +736,10 @@ static bool CalculateCriticalHit(Move move, struct Pokemon_s *attacker, struct P
         critical_hit_rate /= 2;
     }
 
-    //if (attacker->held_item->type == ScopeLens)
-    //{
-    //    critical_hit_rate += 15;
-    //}
+    if (attacker->held_item == ScopeLens)
+    {
+        critical_hit_rate += 15;
+    }
 
     if (critical_hit_chance < critical_hit_rate)
         return true;
@@ -744,7 +749,15 @@ static bool CalculateCriticalHit(Move move, struct Pokemon_s *attacker, struct P
 
 // TODO
 static MoveEffectiveness GetTypeAffinity(Type move_type, Type target_type)
-{
+{        
+    switch (move_type)
+    {
+        case Water:
+            return 1;
+        default:
+            return 0;
+    }
+
     return NormalEffective;
 }
 

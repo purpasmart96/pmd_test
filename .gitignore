@@ -17,3 +17,4 @@ lib/glfw-3.2.1/docs/
 *.exe
 *.bmp
 *.db
+*.ipch

@@ -32,6 +32,11 @@ TEMPLATE(list_new, LIST_T)()
 TEMPLATE(list_delete, LIST_T)(S)
 #endif
 
+#ifndef LIST_REMOVE
+#define LIST_REMOVE(LIST_T, S, N) \
+TEMPLATE(list_remove, LIST_T)(S, N)
+#endif
+
 #ifndef LIST_PUSH
 #define LIST_PUSH(LIST_T, S, element) \
 TEMPLATE(list_push, LIST_T)(S, element)
@@ -127,6 +132,30 @@ T TEMPLATE(list_at, LIST_T)(LIST_T *list, int index);
 #define LIST_T ListTexture
 #define NODE_T ListNodeTexture
 #define T struct Texture_s *
+#define _LIST_FOREACH(L, S, M, V) NODE_T *_node = NULL;\
+    NODE_T *V = NULL;\
+    for (V = _node = L->S; _node != NULL; V = _node = _node->M)
+#include "list_generic.h"
+#undef _LIST_FOREACH
+#undef T
+#undef NODE_T
+#undef LIST_T
+
+#define LIST_T ListBuffer
+#define NODE_T ListNodeBuffer
+#define T struct VertexBuffer_s *
+#define _LIST_FOREACH(L, S, M, V) NODE_T *_node = NULL;\
+    NODE_T *V = NULL;\
+    for (V = _node = L->S; _node != NULL; V = _node = _node->M)
+#include "list_generic.h"
+#undef _LIST_FOREACH
+#undef T
+#undef NODE_T
+#undef LIST_T
+
+#define LIST_T ListRenderer2DInfo
+#define NODE_T ListNodeRenderer2DInfo
+#define T struct Renderer2DInfo_s *
 #define _LIST_FOREACH(L, S, M, V) NODE_T *_node = NULL;\
     NODE_T *V = NULL;\
     for (V = _node = L->S; _node != NULL; V = _node = _node->M)

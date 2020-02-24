@@ -24,16 +24,21 @@
 
 typedef struct Camera_s
 {
-    vec3 position;
-    vec3 direction;
+    mat4 ortho_matrix;
+    vec3 position; // eye
+    vec3 direction; // target - position
+    vec3 right;
+    vec3 up; // rotation
 } Camera_t;
 
-Camera_t * Camera_New(bool init);
+Camera_t *Camera_New(vec3 position, vec3 target, vec3 up, float width, float height);
 
-void Camera_Init(Camera_t * self);
+void Camera_Init(Camera_t *self, vec3 position, vec3 target, vec3 up, float width, float height);
 
-void Camera_Update(Camera_t * self);
+void Camera_Move(Camera_t *self, vec3 movement);
 
-void Camera_ShutDown(Camera_t * self);
+void Camera_Update(Camera_t *self);
+
+void Camera_ShutDown(Camera_t *self);
 
 #endif

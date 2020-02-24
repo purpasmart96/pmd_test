@@ -619,6 +619,24 @@ ivec2 ivec2_add(ivec2 a, ivec2 b)
     return t;
 }
 
+vec2 vec2_sub(vec2 a, vec2 b)
+{
+    vec2 t;
+    t.x = a.x - b.x;
+    t.y = a.y - b.y;
+
+    return t;
+}
+
+ivec2 ivec2_sub(ivec2 a, ivec2 b)
+{
+    ivec2 t;
+    t.x = a.x - b.x;
+    t.y = a.y - b.y;
+
+    return t;
+}
+
 vec2 vec2_mul(vec2 v, vec2 u)
 {
     vec2 t;
@@ -790,31 +808,37 @@ mat4 mat4_scale(mat4 m, float lamba)
 
 mat4 mat4_scale_xyz(mat4 m, float x, float y, float z)
 {
-    m.a = vec4_scale_xyz(m.a, x, y, z);
-    m.b = vec4_scale_xyz(m.b, x, y, z);
-    m.c = vec4_scale_xyz(m.c, x, y, z);
-    m.d = vec4_scale_xyz(m.d, x, y, z);
+    m.a = vec4_scale(m.a, x);
+    m.b = vec4_scale(m.b, y);
+    m.c = vec4_scale(m.c, z);
 
     return m;
 }
 
 mat4 mat4_scale_xyzw(mat4 m, float x, float y, float z, float w)
 {
-    m.a = vec4_scale_xyzw(m.a, x, y, z, w);
-    m.b = vec4_scale_xyzw(m.b, x, y, z, w);
-    m.c = vec4_scale_xyzw(m.c, x, y, z, w);
-    m.d = vec4_scale_xyzw(m.d, x, y, z, w);
+    m.a = vec4_scale(m.a, x);
+    m.b = vec4_scale(m.b, y);
+    m.c = vec4_scale(m.c, z);
+    m.d = vec4_scale(m.d, w);
 
     return m;
 }
 
 mat4 mat4_translate(mat4 m, float x, float y, float z)
 {
-    m.m[3] += x;
-    m.m[7] += y;
-    m.m[11] += z;
+    vec4 v1, v2, v3;
+    
+    v1 = vec4_scale(m.a, x);
+    v2 = vec4_scale(m.b, y);
+    v3 = vec4_scale(m.c, z);
+
+    m.d = vec4_add(v1, m.d);
+    m.d = vec4_add(v2, m.d);
+    m.d = vec4_add(v3, m.d);
 
     return m;
+
 }
 
 //mat4 mat4_translate3(mat4 m, float x, float y, float z)
@@ -934,7 +958,7 @@ mat4 mat4_tranpose2(mat4 m)
 //}
 //#endif
 
-mat4 mat4_ortho(mat4 mtx , float left, float right, float bottom, float top, float znear, float zfar)
+mat4 mat4_ortho(mat4 mtx, float left, float right, float bottom, float top, float znear, float zfar)
 {
     float lr = 1 / (left - right);
     float bt = 1 / (bottom - top);
@@ -996,7 +1020,7 @@ mat4 mat4_ortho3(mat4 mtx, float left, float right, float bottom, float top, flo
     return mtx;
 }
 
-mat4	*mat4_perspective(float angle, float ratio, float znear, float zfar)
+mat4	mat4_perspective(float angle, float ratio, float znear, float zfar)
 {
     mat4	ret = mat4_init();
     float	t = tanf(angle / 2.0f);
@@ -1018,14 +1042,42 @@ mat4	*mat4_perspective(float angle, float ratio, float znear, float zfar)
     ret.m[14] = -2.0f * zfar * znear / (zfar - znear);
     ret.m[15] = 0.f;
 
-    return &ret;
+    return ret;
 }
-
 
 mat4 mat4_lookAt(vec3 eye, vec3 center, vec3 up)
 {
     vec3 f, u, s;
     mat4 dest = mat4_init();
+    f = vec3_sub(center, eye);
+    f = vec3_normalize(f);
+    
+    s = vec3_cross(f, up);
+    s = vec3_normalize(s);
+    u = vec3_cross(s, f);
+    
+    dest.a.x =  s.x;
+    dest.a.y =  u.x;
+    dest.a.z =- f.x;
+    dest.b.x =  s.y;
+    dest.b.y =  u.y;
+    dest.b.z =- f.y;
+    dest.c.x =  s.z;
+    dest.c.y =  u.z;
+    dest.c.z =- f.z;
+    dest.d.x =- vec3_dot(s, eye);
+    dest.d.y =- vec3_dot(u, eye);
+    dest.d.z =  vec3_dot(f, eye);
+    dest.a.w =  dest.b.w = dest.c.w = 0.0f;
+    dest.d.w =  1.0f;
+
+    return dest;
+}
+
+mat4 mat4_lookAt2(mat4 mtx, vec3 eye, vec3 center, vec3 up)
+{
+    vec3 f, u, s;
+    mat4 dest = mtx;
     f = vec3_sub(center, eye);
     f = vec3_normalize(f);
     

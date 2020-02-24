@@ -1,0 +1,22 @@
+#version 330 core
+
+uniform sampler2D texture_layer0;
+uniform sampler2D texture_layer1;
+uniform vec3 sprite_color;
+
+in vec2 texcoord;
+out vec4 color;
+
+void main()
+{
+    //vec4 new_color = vec4(sprite_color.rgb, 1.0) * vec4(2.2f, 2.2f, 2.2f, 2.2f);
+   
+    vec2 flipped_coord = texcoord;
+    flipped_coord.y = 1.0 - texcoord.y;
+    vec4 color0 = vec4(sprite_color.rgb, 1.0) * texture(texture_layer0, flipped_coord);
+    //vec4 color1 = vec4(sprite_color.rgb, 1.0) * texture(texture_layer1, flipped_coord);
+    //color = color0 + (color1);
+
+    color = color0;
+    //color = mix(color0, color1, 0.5f);
+}
