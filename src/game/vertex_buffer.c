@@ -18,39 +18,48 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#ifndef _TIMER_H_
-#define _TIMER_H_
+#include "util.h"
 
-typedef struct TimeInfo_s
+#include <GL/glew.h>
+#include <glfw3.h>
+
+#include "common/vec.h"
+#include "common/list_generic.h"
+
+#include "game/vertex_buffer.h"
+
+VertexBuffer_t *VertexBuffer_New(GLfloat *data, GLsizei count, GLuint component_count)
 {
-    double accumulator;
-    double alpha;
-    double current_time;
-    double previous_time;
-    double timer;
-}TimeInfo_t;
+    VertexBuffer_t *vertex_buffer = malloc(sizeof(*vertex_buffer));
+    if (vertex_buffer)
+    {
+        VertexBuffer_Init(vertex_buffer, data, count, component_count);
+    }
+    return vertex_buffer;
+}
 
-
-#ifdef _WIN32
-
-//struct timeval
-//{
-//    long int tv_sec;
-//    long int tv_usec;
-//};
-
-struct timezone
+void VertexBuffer_Init(VertexBuffer_t *self, GLfloat *data, GLsizei count, GLuint component_count)
 {
-    int  tz_minuteswest;
-    int  tz_dsttime;
-};
+    self->component_count = component_count;
 
-int gettimeofday(struct timeval *tp, struct timezone *tzp);
+    glGenBuffers(1, &self->buffer_id);
+    glBindBuffer(GL_ARRAY_BUFFER, self->buffer_id);
+    glBufferData(GL_ARRAY_BUFFER, count * sizeof(GLfloat), data, GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
 
-#endif
+void VertexBuffer_Bind(VertexBuffer_t *self)
+{
+    glBindBuffer(GL_ARRAY_BUFFER, self->buffer_id);
+}
 
-double GetDeltaTime(TimeInfo_t *self);
+void VertexBuffer_Unbind(VertexBuffer_t *self)
+{
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
 
-TimeInfo_t *TimeInfo_New();
-
-#endif
+void VertexBuffer_ShutDown(VertexBuffer_t *self)
+{
+    glDeleteBuffers(1, &self->buffer_id);
+    free(self);
+}

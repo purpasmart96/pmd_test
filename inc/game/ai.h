@@ -1,4 +1,4 @@
-// Copyright(c) 2015 Purpasmart
+// Copyright(c) 2020 Purpasmart
 // The MIT License
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,12 +18,12 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#ifndef _RAND_NUM_H_
-#define _RAND_NUM_H_
-#include "util.h"
-u32 random_at_most(u32 max);
-u32 rand_interval(u32 min, u32 max);
-u32 rand_color();
-u32 rand_interval_seed(u64 *seed, u32 min, u32 max);
+#ifndef _AI_H_
+#define _AI_H_
+
+typedef struct AI_s
+{
+    int dummy_value;
+} AI_t;
 
 #endif

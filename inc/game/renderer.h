@@ -1,4 +1,4 @@
-// Copyright(c) 2015 Purpasmart
+// Copyright(c) 2016 Purpasmart
 // The MIT License
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,12 +18,39 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#ifndef _RAND_NUM_H_
-#define _RAND_NUM_H_
-#include "util.h"
-u32 random_at_most(u32 max);
-u32 rand_interval(u32 min, u32 max);
-u32 rand_color();
-u32 rand_interval_seed(u64 *seed, u32 min, u32 max);
+
+#ifndef _RENDERER_MANAGER_H_
+#define _RENDERER_MANAGER_H_
+
+#include <pthread.h>
+
+typedef struct Renderer_s
+{
+    bool renderering;
+    pthread_mutex_t mutex;
+    pthread_t thread_id;
+    struct Camera_s *camera;
+    struct Shader_s *shader;
+    struct VertexArray_s *vao;
+    //struct VertexBuffer_s *vbo;
+    struct IndexBuffer_s *ibo;
+    mat4   model_matrix;
+    GLint image_sampler;
+    mat4 view_matrix;
+} Renderer_t;
+
+Renderer_t *Renderer_New(bool init);
+void Renderer_DrawSprite(Renderer_t *self, Texture_t *texture, vec2 position, vec2 size, GLfloat rotate, vec3 color);
+
+void Renderer_Init(Renderer_t *self);
+void Renderer_StartThread(Renderer_t *self);
+//void DrawDungeonSprite(Renderer_t * self, Tile tile, vec2 position);
+void Renderer_Update(Renderer_t *self, ivec2 position);
+void Renderer_ShutDown(Renderer_t *self);
+
+
+//void Renderer_InitRenderData(Renderer_t *self);
+
+//void DrawSprite(Renderer_t *self, vec2 position, vec2 size, GLfloat rotate, vec4 color);
 
 #endif

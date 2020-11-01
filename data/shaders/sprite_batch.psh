@@ -2,18 +2,25 @@
 
 uniform sampler2D texture_layer0;
 uniform sampler2D texture_layer1;
-uniform vec3 sprite_color;
+uniform vec4 sprite_color;
 
-in vec2 texcoord;
+//in vec2 texcoord;
+
+in DATA
+{
+	vec2 texcoord;
+	vec4 color;
+} fs_in;
+
 out vec4 color;
 
 void main()
 {
     //vec4 new_color = vec4(sprite_color.rgb, 1.0) * vec4(2.2f, 2.2f, 2.2f, 2.2f);
    
-    vec2 flipped_coord = texcoord;
-    flipped_coord.y = 1.0 - texcoord.y;
-    vec4 color0 = vec4(sprite_color.rgb, 1.0) * texture(texture_layer0, flipped_coord);
+    vec2 flipped_coord = fs_in.texcoord;
+    flipped_coord.y = 1.0 - fs_in.texcoord.y;
+    vec4 color0 = vec4(fs_in.color.rgb, 1.0) * texture(texture_layer0, flipped_coord);
     //vec4 color1 = vec4(sprite_color.rgb, 1.0) * texture(texture_layer1, flipped_coord);
     //color = color0 + (color1);
 

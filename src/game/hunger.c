@@ -18,12 +18,21 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#ifndef _RAND_NUM_H_
-#define _RAND_NUM_H_
-#include "util.h"
-u32 random_at_most(u32 max);
-u32 rand_interval(u32 min, u32 max);
-u32 rand_color();
-u32 rand_interval_seed(u64 *seed, u32 min, u32 max);
+#include "game/dungeon.h"
+#include "game/pokemon.h"
+#include "game/hunger.h"
 
-#endif
+void AdjustBellySize(Pokemon_t *team_member, int amount)
+{
+    if (team_member->status->current_belly == team_member->status->max_belly)
+    {
+        printf("Belly is Full!\n");
+    }
+    else
+    {
+        team_member->status->current_belly += amount;
+        team_member->status->current_belly = CLAMP(team_member->status->current_belly, BELLY_EMPTY, team_member->status->max_belly);
+    }
+}
+
+

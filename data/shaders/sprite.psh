@@ -9,11 +9,13 @@ out vec4 color;
 
 void main()
 {
-    //vec4 new_color = vec4(sprite_color.rgb, 1.0) * vec4(2.2f, 2.2f, 2.2f, 2.2f);
     vec2 flipped_coord = texcoord;
     flipped_coord.y = 1.0 - texcoord.y;
+
+    vec4 pokemon_sprite = texture(texture_layer1, flipped_coord);
+ 
     vec4 color0 = vec4(sprite_color.rgb, 1.0) * texture(texture_layer0, flipped_coord);
-    vec4 color1 = vec4(sprite_color.rgb, 1.0) * texture(texture_layer1, flipped_coord);
-    color = color0 + (color1);
-    //color = mix(color0, color1, 0.5f);
+    vec4 color1 = vec4(sprite_color.rgb, 1.0) * pokemon_sprite;
+
+    color = mix(color0, color1, pokemon_sprite.a);
 }

@@ -1,4 +1,4 @@
-// Copyright(c) 2015 Purpasmart
+// Copyright(c) 2016 Purpasmart
 // The MIT License
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,12 +18,35 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#ifndef _RAND_NUM_H_
-#define _RAND_NUM_H_
-#include "util.h"
-u32 random_at_most(u32 max);
-u32 rand_interval(u32 min, u32 max);
-u32 rand_color();
-u32 rand_interval_seed(u64 *seed, u32 min, u32 max);
+
+#ifndef _RENDERER2D_INFO_MANAGER_H_
+#define _RENDERER2D_INFO_MANAGER_H_
+
+typedef struct VertexData_s
+{
+    vec3 vertex;
+    u32  color;
+    vec2 texcoord;
+} VertexData_t;
+
+typedef struct Renderer2DInfo_s
+{
+    vec3 position;
+    vec2 size;
+    vec4 color;
+    vec2 texcoords[4];
+
+    Texture_t *texture0;
+    Texture_t *texture1;
+
+} Renderer2DInfo_t;
+
+Renderer2DInfo_t *Renderer2DInfo_New(vec3 position, vec2 size, vec4 color, Texture_t *texture0, Texture_t *texture1);
+void Renderer2DInfo_Init(Renderer2DInfo_t *self, vec3 position, vec2 size, vec4 color, Texture_t *texture0, Texture_t *texture1);
+void Renderer2DInfo_ShutDown(Renderer2DInfo_t *self);
+
+//void Renderer_InitRenderData(Renderer_t *self);
+
+//void DrawSprite(Renderer_t *self, vec2 position, vec2 size, GLfloat rotate, vec4 color);
 
 #endif

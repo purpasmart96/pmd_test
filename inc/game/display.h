@@ -1,4 +1,4 @@
-// Copyright(c) 2015 Purpasmart
+// Copyright(c) 2016 Purpasmart
 // The MIT License
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,12 +18,41 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#ifndef _RAND_NUM_H_
-#define _RAND_NUM_H_
-#include "util.h"
-u32 random_at_most(u32 max);
-u32 rand_interval(u32 min, u32 max);
-u32 rand_color();
-u32 rand_interval_seed(u64 *seed, u32 min, u32 max);
+#ifndef _DISPLAY_MANAGER_H_
+#define _DISPLAY_MANAGER_H_
+
+#include <pthread.h>
+
+typedef union ivec2 ivec2;
+
+typedef struct Screen_s
+{
+    struct GLFWwindow *window;
+    struct GLFWmonitor *monitor;
+    int width;
+    int height;
+    bool widescreen;
+    bool vsync;
+    bool fullscreen;
+    bool exit;
+
+#ifdef USE_BATCH_RENDERER
+    struct BatchRenderer2D_s *renderer;
+#elif defined(USE_SLOW_RENDERER)
+    struct Renderer2D_s *renderer;
+#else   
+    struct Renderer_s *renderer;
+#endif
+} Screen_t;
+
+//Screen_t *GetScreenInstance();
+
+Screen_t *Screen_New(bool init);
+void Screen_Init(Screen_t *self);
+void Screen_Update(Screen_t *self, ivec2 position);
+void Screen_ShutDown(Screen_t *self);
+//void Screen_Update();
+//void Screen_ShutDown(Screen_t *self, pthread_t thread);
+
 
 #endif

@@ -796,6 +796,15 @@ mat4 mat4_init()
                      make_vec4(0.0f, 0.0f, 0.0f, 0.0f));
 }
 
+mat4 mat4_add(mat4 a, mat4 b)
+{
+     for (int i = 0; i < 16; i++)
+     {
+         a.m[i] += b.m[i];
+     }
+     return (a);
+}
+
 mat4 mat4_scale(mat4 m, float lamba)
 {
     m.a = vec4_scale(m.a, lamba);
@@ -1020,10 +1029,10 @@ mat4 mat4_ortho3(mat4 mtx, float left, float right, float bottom, float top, flo
     return mtx;
 }
 
-mat4	mat4_perspective(float angle, float ratio, float znear, float zfar)
+mat4 mat4_perspective(float angle, float ratio, float znear, float zfar)
 {
-    mat4	ret = mat4_init();
-    float	t = tanf(angle / 2.0f);
+    mat4 ret = mat4_init();
+    float t = tanf(angle / 2.0f);
 
     ret.m[0] = 1.0f / (t * ratio);
     ret.m[1] = 0.f;

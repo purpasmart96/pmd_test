@@ -18,12 +18,21 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#ifndef _RAND_NUM_H_
-#define _RAND_NUM_H_
-#include "util.h"
-u32 random_at_most(u32 max);
-u32 rand_interval(u32 min, u32 max);
-u32 rand_color();
-u32 rand_interval_seed(u64 *seed, u32 min, u32 max);
+#include "game/item.h"
+#include "game/hunger.h"
 
-#endif
+/*
+void AppleUse(Bag *self, Pokemon *poke)
+{
+    AdjustBellySize(poke, APPLE_HUNGER_REDUCE);
+    RemoveItemFromBag(self, Apple);
+}
+
+void AppleThrow(Bag *self, Pokemon *poke)
+{
+}
+
+void AppleDrop(Bag *self, Pokemon *poke)
+{
+}
+*/

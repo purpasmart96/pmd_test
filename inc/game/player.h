@@ -1,4 +1,4 @@
-// Copyright(c) 2015 Purpasmart
+// Copyright(c) 2017 Purpasmart
 // The MIT License
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,12 +18,30 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#ifndef _RAND_NUM_H_
-#define _RAND_NUM_H_
-#include "util.h"
-u32 random_at_most(u32 max);
-u32 rand_interval(u32 min, u32 max);
-u32 rand_color();
-u32 rand_interval_seed(u64 *seed, u32 min, u32 max);
+
+#ifndef _PLAYER_H_
+#define _PLAYER_H_
+
+typedef struct Pokemon_s Pokemon_t;
+typedef struct Input_s Input_t;
+
+typedef struct Player_s
+{
+    bool exit;
+    struct Pokemon_s *leader;
+    struct Input_s *input;
+    double prev_update;
+    struct TimeInfo_s *time_info;
+} Player_t;
+
+//Player_t *GetPlayerInstance();
+
+ivec2 Player_GetPosition(Player_t *self);
+
+Player_t *Player_New(bool init);
+void Player_Init(Player_t *self);
+void Player_Update(Player_t *self);
+//void Player_Update();
+void Player_ShutDown(Player_t *self, pthread_t thread);
 
 #endif

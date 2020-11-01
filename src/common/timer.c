@@ -20,6 +20,7 @@
 
 #include <time.h>
 #include <windows.h>
+#include <glfw3.h>
 
 #include "common/timer.h"
 
@@ -47,5 +48,24 @@ int gettimeofday(struct timeval *tp, struct timezone *tzp)
     return 0;
 }
 #endif
+
+double GetDeltaTime(TimeInfo_t *self)
+{
+    double time = glfwGetTime();
+    double delta = (time - self->previous_time);
+    self->previous_time = time;
+    return delta;
+}
+
+TimeInfo_t *TimeInfo_New()
+{
+    TimeInfo_t *time_info = malloc(sizeof(*time_info));
+    time_info->accumulator = 0;
+    time_info->alpha = 0;
+    time_info->current_time = 0.0;
+    time_info->previous_time = glfwGetTime();
+    time_info->timer = time_info->previous_time;
+    return time_info;
+}
 
 

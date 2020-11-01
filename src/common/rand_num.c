@@ -62,6 +62,11 @@ u32 rand_interval(u32 min, u32 max)
     return min + (r / buckets);
 }
 
+u32 rand_color()
+{
+    return rand_interval(1, 255);
+}
+
 u32 rand_interval_seed(u64 *seed, u32 min, u32 max)
 {
     int r = 0;

@@ -18,12 +18,38 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#ifndef _RAND_NUM_H_
-#define _RAND_NUM_H_
-#include "util.h"
-u32 random_at_most(u32 max);
-u32 rand_interval(u32 min, u32 max);
-u32 rand_color();
-u32 rand_interval_seed(u64 *seed, u32 min, u32 max);
+#include "game/item.h"
+#include "game/hunger.h"
+#include "game/items/apples.h"
 
-#endif
+void AppleUse(Bag *bag, PokemonParty *party, Pokemon_t *user, ItemLocation location)
+{
+    RemoveItem(bag, user, location, "Apple");
+    AdjustBellySize(user, APPLE_HUNGER_REDUCE);
+}
+
+void AppleThrow(Bag *bag, PokemonParty *party, Pokemon_t *user, ItemLocation location)
+{
+    printf("AppleThrow stub called!\n");
+}
+
+void AppleDrop(Bag *bag, PokemonParty *party, Pokemon_t *user, ItemLocation location)
+{
+    printf("AppleDrop stub called!\n");
+}
+
+void BigAppleUse(Bag *bag, PokemonParty *party, Pokemon_t *user, ItemLocation location)
+{
+    RemoveItem(bag, user, location, "BigApple");
+    AdjustBellySize(user, BIG_APPLE_HUNGER_REDUCE);
+}
+
+void BigAppleThrow(Bag *bag, PokemonParty *party, Pokemon_t *user, ItemLocation location)
+{
+    printf("BigAppleThrow stub called!\n");
+}
+
+void BigAppleDrop(Bag *bag, PokemonParty *party, Pokemon_t *user, ItemLocation location)
+{
+    printf("BigAppleDrop stub called!\n");
+}

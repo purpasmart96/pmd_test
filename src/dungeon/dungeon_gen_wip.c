@@ -23,17 +23,17 @@
 #include <assert.h>
 
 
-void SetCell(Map map, int x, int y, Tile celltype)
+void SetCell(Map *map, int x, int y, Tile celltype)
 {
     assert(IsXInBounds(map, x));
     assert(IsYInBounds(map, y));
 
-    map.data[x + map.xSize * y] = celltype;
+    map->data[x + map->size_x * y] = celltype;
 }
 
-int GetCell(Map map, int x, int y)
+int GetCell(Map *map, int x, int y)
 {
-    return map.data[x + map.xSize * y];
+    return map->data[x + map->size_x * y];
 }
 
 int GetRand(u64 rng, int min, int max)
@@ -58,29 +58,29 @@ Direction GetRandomDirection(u64 rng)
     return (Direction)GetRand(rng, 0, 3);
 }
 
-Map Generate(Dungeon dungeon)
+Map *Generate(Dungeon dungeon)
 {
     u64 rng = (dungeon.Seed);
-    Map map;
-    map.xSize = dungeon.XSize;
-    map.ySize = dungeon.YSize;
-    map.data = calloc(0, sizeof(int) * (dungeon.XSize * dungeon.YSize));
+    Map *map = malloc(sizeof(Map));
+    map->size_x = dungeon.size_x;
+    map->size_y = dungeon.size_y;
+    map->data = calloc(0, sizeof(int) * (dungeon.size_x * dungeon.size_y));
 
     MakeDungeon(dungeon, map, rng);
     return map;
 }
 
-bool IsXInBounds(Map map, int x)
+bool IsXInBounds(Map *map, int x)
 {
-    return x >= 0 && x < map.xSize;
+    return x >= 0 && x < map->size_x;
 }
 
-bool IsYInBounds(Map map, int y)
+bool IsYInBounds(Map *map, int y)
 {
-    return y >= 0 && y < map.ySize;
+    return y >= 0 && y < map->size_y;
 }
 
-bool IsAreaUnused(Map map, int xStart, int yStart, int xEnd, int yEnd)
+bool IsAreaUnused(Map *map, int xStart, int yStart, int xEnd, int yEnd)
 {
     assert(IsXInBounds(map, xStart) && IsXInBounds(map, xEnd));
     assert(IsYInBounds(map, yStart) && IsYInBounds(map, yEnd));
@@ -101,7 +101,7 @@ bool IsAreaUnused(Map map, int xStart, int yStart, int xEnd, int yEnd)
     return true;
 }
 
-bool IsAdjacent(Map map, int x, int y, Tile tile)
+bool IsAdjacent(Map *map, int x, int y, Tile tile)
 {
     assert(IsXInBounds(map, x - 1) && IsXInBounds(map, x + 1));
     assert(IsYInBounds(map, y - 1) && IsYInBounds(map, y + 1));
@@ -112,7 +112,7 @@ bool IsAdjacent(Map map, int x, int y, Tile tile)
 }
 
 
-void SetCells(Map map, int xStart, int yStart, int xEnd, int yEnd, Tile cellType)
+void SetCells(Map *map, int xStart, int yStart, int xEnd, int yEnd, Tile cellType)
 {
     assert(IsXInBounds(map, xStart) && IsXInBounds(map, xEnd));
     assert(IsYInBounds(map, yStart) && IsYInBounds(map, yEnd));
@@ -129,12 +129,12 @@ void SetCells(Map map, int xStart, int yStart, int xEnd, int yEnd, Tile cellType
     }
 }
 
-bool MakeCorridor(Map map, u64 rng, int x, int y, int maxLength, Direction direction)
+bool MakeCorridor(Map *map, u64 rng, int x, int y, int maxLength, Direction direction)
 {
-    assert(x >= 0 && x < XSize);
-    assert(y >= 0 && y < YSize);
+    assert(x >= 0 && x < size_x);
+    assert(y >= 0 && y < size_y);
 
-    assert(maxLength > 0 && maxLength <= MAX(XSize, YSize));
+    assert(maxLength > 0 && maxLength <= MAX(size_x, size_y));
 
     int length = GetRand(rng, 2, maxLength);
 
@@ -144,6 +144,29 @@ bool MakeCorridor(Map map, u64 rng, int x, int y, int maxLength, Direction direc
     int xEnd = x;
     int yEnd = y;
 
+    switch (direction)
+    {
+        case North:
+        yStart = y - length;
+        break;
+	
+        case East:
+        xEnd = x + length;
+        break;
+
+        case South:
+        yEnd = y + length;
+        break;
+
+        case West:
+        xStart = x - length;
+        break;
+
+        default:
+        break;
+    }
+
+/*
     if (direction == North)
     {
         yStart = y - length;
@@ -160,6 +183,8 @@ bool MakeCorridor(Map map, u64 rng, int x, int y, int maxLength, Direction direc
     {
         xStart = x - length;
     }
+*/
+    
     if (!IsXInBounds(map, xStart) || !IsXInBounds(map, xEnd) || !IsYInBounds(map, yStart) || !IsYInBounds(map, yEnd))
     {
         return false;
@@ -176,7 +201,12 @@ bool MakeCorridor(Map map, u64 rng, int x, int y, int maxLength, Direction direc
     return true;
 }
 
-bool MakeRoom(Map map, u64 rng, int x, int y, int xMaxLength, int yMaxLength, Direction direction)
+static void RoomDirection(int *yStart, int *xStart)
+{
+    
+}
+
+bool MakeRoom(Map *map, u64 rng, int x, int y, int xMaxLength, int yMaxLength, Direction direction)
 {
     // Minimum room size of 6x6 tiles (3x3 for walking on, the rest is walls)
     int xLength = GetRand(rng, 4, xMaxLength);
@@ -188,7 +218,42 @@ bool MakeRoom(Map map, u64 rng, int x, int y, int xMaxLength, int yMaxLength, Di
     int xEnd = x;
     int yEnd = y;
 
-    if (direction == North)
+    switch (direction)
+    {
+        case North:
+        {
+            yStart = y - yLength;
+            xStart = x - xLength / 2;
+            xEnd = x + (xLength + 1) / 2;
+            break;
+        }
+        case East:
+        {
+            yStart = y - yLength / 2;
+            yEnd = y + (yLength + 1) / 2;
+            xEnd = x + xLength;
+            break;
+        }
+        case South:
+        {
+            yEnd = y + yLength;
+            xStart = x - xLength / 2;
+            xEnd = x + (xLength + 1) / 2;
+            break;
+        }
+        case West:
+        {
+            yStart = y - yLength / 2;
+            yEnd = y + (yLength + 1) / 2;
+            xStart = x - xLength;
+            break;
+        }
+        
+        default:
+        break;
+    }
+
+/*     if (direction == North)
     {
         yStart = y - yLength;
         xStart = x - xLength / 2;
@@ -211,7 +276,7 @@ bool MakeRoom(Map map, u64 rng, int x, int y, int xMaxLength, int yMaxLength, Di
         yStart = y - yLength / 2;
         yEnd = y + (yLength + 1) / 2;
         xStart = x - xLength;
-    }
+    } */
 
     if (!IsXInBounds(map, xStart) || !IsXInBounds(map, xEnd) || !IsYInBounds(map, yStart) || !IsYInBounds(map, yEnd))
         return false;
@@ -227,7 +292,7 @@ bool MakeRoom(Map map, u64 rng, int x, int y, int xMaxLength, int yMaxLength, Di
     return true;
 }
 
-bool MakeFeature(Dungeon dungeon, Map map, u64 rng, int x, int y, int xmod, int ymod, Direction direction)
+bool MakeFeature(Dungeon dungeon, Map *map, u64 rng, int x, int y, int xmod, int ymod, Direction direction)
 {
     // Choose what to build
     int chance = GetRand(rng, 0, 100);
@@ -259,7 +324,7 @@ bool MakeFeature(Dungeon dungeon, Map map, u64 rng, int x, int y, int xmod, int 
     }
 }
 
-bool MakeFeatures(Dungeon dungeon, Map map, u64 rng)
+bool MakeFeatures(Dungeon dungeon, Map *map, u64 rng)
 {
     int tries = 0;
     int maxTries = 1000;
@@ -271,8 +336,8 @@ bool MakeFeatures(Dungeon dungeon, Map map, u64 rng)
         // Find a direction from which it's reachable.
         // Attempt to make a feature (room or corridor) starting at this point.
 
-        int x = GetRand(rng, 1, dungeon.XSize - 2);
-        int y = GetRand(rng, 1, dungeon.YSize - 2);
+        int x = GetRand(rng, 1, dungeon.size_x - 2);
+        int y = GetRand(rng, 1, dungeon.size_y - 2);
 
         if (GetCell(map, x, y) != DirtWall && GetCell(map, x, y) != Corridor)
             continue;
@@ -305,15 +370,15 @@ bool MakeFeatures(Dungeon dungeon, Map map, u64 rng)
     return false;
 }
 
-bool MakeStairs(Dungeon dungeon, Map map, u64 rng, Tile tile)
+bool MakeStairs(Dungeon dungeon, Map *map, u64 rng, Tile tile)
 {
     int tries = 0;
     int maxTries = 10000;
 
     for (; tries != maxTries; ++tries)
     {
-        int x = GetRand(rng, 1, dungeon.XSize - 2);
-        int y = GetRand(rng, 1, dungeon.YSize - 2);
+        int x = GetRand(rng, 1, dungeon.size_x - 2);
+        int y = GetRand(rng, 1, dungeon.size_y - 2);
 
         if (!IsAdjacent(map, x, y, DirtFloor) && !IsAdjacent(map, x, y, Corridor))
             continue;
@@ -329,10 +394,10 @@ bool MakeStairs(Dungeon dungeon, Map map, u64 rng, Tile tile)
     return false;
 }
 
-bool MakeDungeon(Dungeon dungeon, Map map, u64 rng)
+bool MakeDungeon(Dungeon dungeon, Map *map, u64 rng)
 {
     // Make one room in the middle to start things off.
-    MakeRoom(map, rng, dungeon.XSize / 2, dungeon.YSize / 2, 8, 6, GetRandomDirection(rng));
+    MakeRoom(map, rng, dungeon.size_x / 2, dungeon.size_y / 2, 8, 6, GetRandomDirection(rng));
 
     for (int features = 1; features != dungeon.MaxFeatures; ++features)
     {
@@ -365,9 +430,9 @@ void Print(Map map)
     // TODO: proper ostream iterator.
     // TODO: proper lookup of character from enum.
 
-    for (int y = 0; y != map.ySize; y++)
+    for (int y = 0; y != map->size_y; y++)
     {
-        for (int x = 0; x != map.xSize; x++)
+        for (int x = 0; x != map->size_x; x++)
         {
             switch (GetCell(map, x, y))
             {
@@ -401,9 +466,9 @@ void Print(Map map)
                 break;
             };
         }
-                printf("\n");
+        printf("\n");
     }
-                printf("\n");
+    printf("\n");
 }
 
 void dungeon_main()
@@ -411,12 +476,12 @@ void dungeon_main()
     
     Dungeon dungeon;
     dungeon.Seed = 3905838349;
-    dungeon.XSize = 80;
-    dungeon.YSize = 25;
+    dungeon.size_x = 80;
+    dungeon.size_y = 25;
     dungeon.MaxFeatures = 100;
     dungeon.ChanceRoom = 75;
     dungeon.ChanceCorridor = 25;
     Map map = Generate(dungeon);
     Print(map);
-    free(map.data);
+    free(map->data);
 }

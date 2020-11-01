@@ -1,4 +1,4 @@
-// Copyright(c) 2015 Purpasmart
+// Copyright(c) 2020 Purpasmart
 // The MIT License
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,12 +18,48 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#ifndef _RAND_NUM_H_
-#define _RAND_NUM_H_
 #include "util.h"
-u32 random_at_most(u32 max);
-u32 rand_interval(u32 min, u32 max);
-u32 rand_color();
-u32 rand_interval_seed(u64 *seed, u32 min, u32 max);
 
-#endif
+#include <GL/glew.h>
+#include <glfw3.h>
+
+#include "common/vec.h"
+#include "common/list_generic.h"
+
+#include "game/index_buffer.h"
+
+IndexBuffer_t *IndexBuffer_New(GLuint *data, GLsizei count)
+{
+    IndexBuffer_t *index_buffer = malloc(sizeof(*index_buffer));
+    if (index_buffer)
+    {
+        IndexBuffer_Init(index_buffer, data, count);
+    }
+    return index_buffer;
+}
+
+void IndexBuffer_Init(IndexBuffer_t *self, GLuint *data, GLsizei count)
+{
+    self->count = count;
+
+    glGenBuffers(1, &self->buffer_id);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, self->buffer_id);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(GLuint), data, GL_STATIC_DRAW);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+}
+
+void IndexBuffer_Bind(IndexBuffer_t *self)
+{
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, self->buffer_id);
+}
+
+void IndexBuffer_Unbind(IndexBuffer_t *self)
+{
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+}
+
+void IndexBuffer_ShutDown(IndexBuffer_t *self)
+{
+    glDeleteBuffers(1, &self->buffer_id);
+    free(self);
+}

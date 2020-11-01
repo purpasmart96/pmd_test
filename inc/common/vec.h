@@ -299,6 +299,7 @@ ivec2 make_ivec2(int x, int y);
 mat4 mat4_make(vec4 a, vec4 b, vec4 c, vec4 d);
 mat4 mat4_identity();
 mat4 mat4_init();
+mat4 mat4_add(mat4 a, mat4 b);
 mat4 mat4_scale(mat4 m, float lamba);
 mat4 mat4_scale_xyz(mat4 m, float x, float y, float z);
 mat4 mat4_scale_xyzw(mat4 m, float x, float y, float z, float w);

@@ -18,7 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#include "game_common/game.h"
+#include "game/game.h"
 
 int main(int argc, char **argv)
 {

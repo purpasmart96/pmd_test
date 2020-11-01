@@ -57,7 +57,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>false</SDLCheck>
-      <AdditionalIncludeDirectories>...\..\inc;...\..\lib\glew-2.1.0\include;...\..\lib\glfw-3.2.1\include\GLFW;...\..\lib\zlib\include;...\..\lib\SDL2-2.0.3\include;...\..\lib\pthreads-w32-2.9.1\include;...\..\lib\openal-soft-1.17.1-bin\include;...\..\lib\libpng-1.6.20;...\..\lib\libogg-1.3.2\include;...\..\lib\libvorbis-1.3.6\include;...\..\lib\lode_png\include\lode_png</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>...\..\inc;...\..\lib\glew-2.1.0\include;...\..\lib\glfw-3.2.1\include\GLFW;...\..\lib\zlib\include;...\..\lib\SDL2-2.0.3\include;...\..\lib\pthreads-w32-2.9.1\include;...\..\lib\openal-soft-1.17.1-bin\include;...\..\lib\libpng-1.6.20;...\..\lib\libogg-1.3.2\include;...\..\lib\libvorbis-1.3.6\include;...\..\lib\lode_png\include\lode_png;...\..\lib\\iniparser\include</AdditionalIncludeDirectories>
       <CompileAs>CompileAsC</CompileAs>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
@@ -70,8 +70,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>...\..\lib\glew-2.1.0\lib\Release\Win32;...\..\lib\glfw-3.2.1\lib-vc2013;...\..\lib\zlib\lib;...\..\lib\SDL2-2.0.3\lib\x86;...\..\lib\pthreads-w32-2.9.1\lib\x86;...\..\lib\openal-soft-1.17.1-bin\libs\Win32;...\..\lib\libpng-1.6.20\projects\vstudio\Release;...\..\lib\libogg-1.3.2\lib\x86;...\..\lib\libvorbis-1.3.6\lib\x86;...\..\lib\lode_png\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3.lib;glew32.lib;glew32s.lib;opengl32.lib;zdll.lib;OpenAL32.lib;SDL2.lib;SDL2main.lib;pthreadVC2.lib;libpng16.lib;libvorbis.lib;libvorbisfile.lib;libogg.lib;LodePng.lib;legacy_stdio_definitions.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>...\..\lib\glew-2.1.0\lib\Release\Win32;...\..\lib\glfw-3.2.1\lib-vc2013;...\..\lib\zlib\lib;...\..\lib\SDL2-2.0.3\lib\x86;...\..\lib\pthreads-w32-2.9.1\lib\x86;...\..\lib\openal-soft-1.17.1-bin\libs\Win32;...\..\lib\libpng-1.6.20\projects\vstudio\Release;...\..\lib\libogg-1.3.2\lib\x86;...\..\lib\libvorbis-1.3.6\lib\x86;...\..\lib\lode_png\lib\x86;...\..\lib\iniparser\lib-vc2015;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3.lib;glew32.lib;glew32s.lib;opengl32.lib;zdll.lib;OpenAL32.lib;SDL2.lib;SDL2main.lib;pthreadVC2.lib;libpng16.lib;libvorbis.lib;libvorbisfile.lib;libogg.lib;LodePng.lib;iniparser.lib;legacy_stdio_definitions.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
   </ItemDefinitionGroup>
@@ -116,47 +116,48 @@
     <ClCompile Include="src\common\timer.c" />
     <ClCompile Include="src\common\vec.c" />
     <ClCompile Include="src\dungeon\floor_function.c" />
-    <ClCompile Include="src\game_common\camera.c" />
-    <ClCompile Include="src\game_common\display.c" />
-    <ClCompile Include="src\game_common\dungeon.c" />
-    <ClCompile Include="src\game_common\game.c" />
-    <ClCompile Include="src\game_common\health.c" />
-    <ClCompile Include="src\game_common\index_buffer.c" />
-    <ClCompile Include="src\game_common\input.c" />
-    <ClCompile Include="src\game_common\items\apples.c" />
-    <ClCompile Include="src\game_common\items\bands.c" />
-    <ClCompile Include="src\game_common\items\berries.c" />
-    <ClCompile Include="src\game_common\items\chests.c" />
-    <ClCompile Include="src\game_common\items\gummies.c" />
-    <ClCompile Include="src\game_common\items\misc.c" />
-    <ClCompile Include="src\game_common\items\orbs.c" />
-    <ClCompile Include="src\game_common\items\projectiles.c" />
-    <ClCompile Include="src\game_common\items\ribbons.c" />
-    <ClCompile Include="src\game_common\items\scarfs.c" />
-    <ClCompile Include="src\game_common\items\seeds.c" />
-    <ClCompile Include="src\game_common\items\specs.c" />
-    <ClCompile Include="src\game_common\items\tm.c" />
-    <ClCompile Include="src\game_common\items\vitamins.c" />
-    <ClCompile Include="src\game_common\item.c" />
-    <ClCompile Include="src\game_common\hunger.c" />
-    <ClCompile Include="src\game_common\menu.c" />
-    <ClCompile Include="src\game_common\move.c" />
-    <ClCompile Include="src\game_common\object.c" />
-    <ClCompile Include="src\game_common\player.c" />
-    <ClCompile Include="src\game_common\pokemon.c" />
-    <ClCompile Include="src\game_common\renderer.c" />
-    <ClCompile Include="src\game_common\renderer2d.c" />
-    <ClCompile Include="src\game_common\renderer2d_info.c" />
-    <ClCompile Include="src\game_common\shader.c" />
-    <ClCompile Include="src\game_common\shop.c" />
-    <ClCompile Include="src\game_common\single_sprite.c" />
-    <ClCompile Include="src\game_common\sound.c" />
-    <ClCompile Include="src\game_common\sprite.c" />
-    <ClCompile Include="src\game_common\sprites.c" />
-    <ClCompile Include="src\game_common\text.c" />
-    <ClCompile Include="src\game_common\tile.c" />
-    <ClCompile Include="src\game_common\vertex_array.c" />
-    <ClCompile Include="src\game_common\vertex_buffer.c" />
+    <ClCompile Include="src\game\ai.c" />
+    <ClCompile Include="src\game\camera.c" />
+    <ClCompile Include="src\game\display.c" />
+    <ClCompile Include="src\game\dungeon.c" />
+    <ClCompile Include="src\game\game.c" />
+    <ClCompile Include="src\game\health.c" />
+    <ClCompile Include="src\game\index_buffer.c" />
+    <ClCompile Include="src\game\input.c" />
+    <ClCompile Include="src\game\items\apples.c" />
+    <ClCompile Include="src\game\items\bands.c" />
+    <ClCompile Include="src\game\items\berries.c" />
+    <ClCompile Include="src\game\items\chests.c" />
+    <ClCompile Include="src\game\items\gummies.c" />
+    <ClCompile Include="src\game\items\misc.c" />
+    <ClCompile Include="src\game\items\orbs.c" />
+    <ClCompile Include="src\game\items\projectiles.c" />
+    <ClCompile Include="src\game\items\ribbons.c" />
+    <ClCompile Include="src\game\items\scarfs.c" />
+    <ClCompile Include="src\game\items\seeds.c" />
+    <ClCompile Include="src\game\items\specs.c" />
+    <ClCompile Include="src\game\items\tm.c" />
+    <ClCompile Include="src\game\items\vitamins.c" />
+    <ClCompile Include="src\game\item.c" />
+    <ClCompile Include="src\game\hunger.c" />
+    <ClCompile Include="src\game\menu.c" />
+    <ClCompile Include="src\game\move.c" />
+    <ClCompile Include="src\game\object.c" />
+    <ClCompile Include="src\game\player.c" />
+    <ClCompile Include="src\game\pokemon.c" />
+    <ClCompile Include="src\game\renderer.c" />
+    <ClCompile Include="src\game\renderer2d.c" />
+    <ClCompile Include="src\game\renderer2d_info.c" />
+    <ClCompile Include="src\game\shader.c" />
+    <ClCompile Include="src\game\shop.c" />
+    <ClCompile Include="src\game\single_sprite.c" />
+    <ClCompile Include="src\game\sound.c" />
+    <ClCompile Include="src\game\sprite.c" />
+    <ClCompile Include="src\game\sprites.c" />
+    <ClCompile Include="src\game\text.c" />
+    <ClCompile Include="src\game\tile.c" />
+    <ClCompile Include="src\game\vertex_array.c" />
+    <ClCompile Include="src\game\vertex_buffer.c" />
     <ClCompile Include="src\main.c" />
     <ClCompile Include="src\pokemon\database.c" />
     <ClCompile Include="src\pokemon\stats.c" />
@@ -184,46 +185,47 @@
     <ClInclude Include="inc\common\types.h" />
     <ClInclude Include="inc\common\vec.h" />
     <ClInclude Include="inc\dungeon\floor_function.h" />
-    <ClInclude Include="inc\game_common\camera.h" />
-    <ClInclude Include="inc\game_common\display.h" />
-    <ClInclude Include="inc\game_common\dungeon.h" />
-    <ClInclude Include="inc\game_common\game.h" />
-    <ClInclude Include="inc\game_common\health.h" />
-    <ClInclude Include="inc\game_common\hunger.h" />
-    <ClInclude Include="inc\game_common\index_buffer.h" />
-    <ClInclude Include="inc\game_common\input.h" />
-    <ClInclude Include="inc\game_common\items\apples.h" />
-    <ClInclude Include="inc\game_common\items\bands.h" />
-    <ClInclude Include="inc\game_common\items\berries.h" />
-    <ClInclude Include="inc\game_common\items\chests.h" />
-    <ClInclude Include="inc\game_common\items\gummies.h" />
-    <ClInclude Include="inc\game_common\items\misc.h" />
-    <ClInclude Include="inc\game_common\items\orbs.h" />
-    <ClInclude Include="inc\game_common\items\projectiles.h" />
-    <ClInclude Include="inc\game_common\items\ribbons.h" />
-    <ClInclude Include="inc\game_common\items\scarfs.h" />
-    <ClInclude Include="inc\game_common\items\seeds.h" />
-    <ClInclude Include="inc\game_common\items\specs.h" />
-    <ClInclude Include="inc\game_common\items\tm.h" />
-    <ClInclude Include="inc\game_common\items\vitamins.h" />
-    <ClInclude Include="inc\game_common\item.h" />
-    <ClInclude Include="inc\game_common\map.h" />
-    <ClInclude Include="inc\game_common\move.h" />
-    <ClInclude Include="inc\game_common\object.h" />
-    <ClInclude Include="inc\game_common\player.h" />
-    <ClInclude Include="inc\game_common\pokemon.h" />
-    <ClInclude Include="inc\game_common\renderer.h" />
-    <ClInclude Include="inc\game_common\renderer2d.h" />
-    <ClInclude Include="inc\game_common\renderer2d_info.h" />
-    <ClInclude Include="inc\game_common\shader.h" />
-    <ClInclude Include="inc\game_common\single_sprite.h" />
-    <ClInclude Include="inc\game_common\sound.h" />
-    <ClInclude Include="inc\game_common\sprite.h" />
-    <ClInclude Include="inc\game_common\sprites.h" />
-    <ClInclude Include="inc\game_common\text.h" />
-    <ClInclude Include="inc\game_common\tile.h" />
-    <ClInclude Include="inc\game_common\vertex_array.h" />
-    <ClInclude Include="inc\game_common\vertex_buffer.h" />
+    <ClInclude Include="inc\game\ai.h" />
+    <ClInclude Include="inc\game\camera.h" />
+    <ClInclude Include="inc\game\display.h" />
+    <ClInclude Include="inc\game\dungeon.h" />
+    <ClInclude Include="inc\game\game.h" />
+    <ClInclude Include="inc\game\health.h" />
+    <ClInclude Include="inc\game\hunger.h" />
+    <ClInclude Include="inc\game\index_buffer.h" />
+    <ClInclude Include="inc\game\input.h" />
+    <ClInclude Include="inc\game\items\apples.h" />
+    <ClInclude Include="inc\game\items\bands.h" />
+    <ClInclude Include="inc\game\items\berries.h" />
+    <ClInclude Include="inc\game\items\chests.h" />
+    <ClInclude Include="inc\game\items\gummies.h" />
+    <ClInclude Include="inc\game\items\misc.h" />
+    <ClInclude Include="inc\game\items\orbs.h" />
+    <ClInclude Include="inc\game\items\projectiles.h" />
+    <ClInclude Include="inc\game\items\ribbons.h" />
+    <ClInclude Include="inc\game\items\scarfs.h" />
+    <ClInclude Include="inc\game\items\seeds.h" />
+    <ClInclude Include="inc\game\items\specs.h" />
+    <ClInclude Include="inc\game\items\tm.h" />
+    <ClInclude Include="inc\game\items\vitamins.h" />
+    <ClInclude Include="inc\game\item.h" />
+    <ClInclude Include="inc\game\map.h" />
+    <ClInclude Include="inc\game\move.h" />
+    <ClInclude Include="inc\game\object.h" />
+    <ClInclude Include="inc\game\player.h" />
+    <ClInclude Include="inc\game\pokemon.h" />
+    <ClInclude Include="inc\game\renderer.h" />
+    <ClInclude Include="inc\game\renderer2d.h" />
+    <ClInclude Include="inc\game\renderer2d_info.h" />
+    <ClInclude Include="inc\game\shader.h" />
+    <ClInclude Include="inc\game\single_sprite.h" />
+    <ClInclude Include="inc\game\sound.h" />
+    <ClInclude Include="inc\game\sprite.h" />
+    <ClInclude Include="inc\game\sprites.h" />
+    <ClInclude Include="inc\game\text.h" />
+    <ClInclude Include="inc\game\tile.h" />
+    <ClInclude Include="inc\game\vertex_array.h" />
+    <ClInclude Include="inc\game\vertex_buffer.h" />
     <ClInclude Include="inc\pokemon\stats.h" />
     <ClInclude Include="inc\pokemon\database.h" />
     <ClInclude Include="inc\util.h" />
