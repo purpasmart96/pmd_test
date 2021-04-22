@@ -51,7 +51,7 @@ void Renderer2D_Init(Renderer2D_t *self);
 void Renderer2D_SubmitOld(Renderer2D_t *self, struct Renderer2DInfo_s *element);
 void Renderer2D_Submit(Renderer2D_t *self, struct SingleSprite_s *element);
 void Renderer2D_Flush(Renderer2D_t *self);
-void Renderer2D_Update(Renderer2D_t *self, ivec2 position);
+void Renderer2D_Update(Renderer2D_t *self, vec2 position);
 void Renderer2D_ShutDown(Renderer2D_t *self);
 
 BatchRenderer2D_t *BatchRenderer2D_New();
@@ -61,7 +61,7 @@ void BatchRenderer2D_Begin(BatchRenderer2D_t *self);
 void BatchRenderer2D_Submit(BatchRenderer2D_t *self, struct Sprite_s *element);
 void BatchRenderer2D_End(BatchRenderer2D_t *self);
 void BatchRenderer2D_Flush(BatchRenderer2D_t *self);
-void BatchRenderer2D_Update(BatchRenderer2D_t *self, ivec2 position);
+void BatchRenderer2D_Update(BatchRenderer2D_t *self, vec2 position);
 void BatchRenderer2D_ShutDown(BatchRenderer2D_t *self);
 
 

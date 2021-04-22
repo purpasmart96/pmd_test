@@ -44,9 +44,8 @@
 #include "game/renderer2d.h"
 
 
-static mat4 ortho_matrix;
-static mat4 model_matrix;
-static mat4 view_matrix;
+static mat4 *model_matrix;
+static mat4 *view_matrix;
 
 static Shader_t *global_shader;
 
@@ -173,6 +172,7 @@ Renderer2D_t *Renderer2D_New()
 }
 
 void Renderer2D_Submit(Renderer2D_t *self, struct SingleSprite_s *element)
+//void Renderer2D_Submit(Renderer2D_t *self, struct Renderer2DInfo_s *element)
 {
     //if (!element)
     //    ERROR("NULL element!\n");
@@ -200,7 +200,7 @@ void Renderer2D_Flush(Renderer2D_t *self)
         VertexArray_Bind(element->vertex_array);
         //IndexBuffer_Bind(element->index_buffer);
 
-        mat4 model = mat4_identity();
+        mat4 *model = mat4_identity();
         model = mat4_translate(model, element->renderer_info->position.x, element->renderer_info->position.y, 0.0f);
         model = mat4_translate(model, 0.5f * element->renderer_info->size.x, 0.5f * element->renderer_info->size.y, 0.0f);
         //model = mat4_rotate(model, 0.0f, 0.0f, 0.0f, 1.0f);
@@ -209,7 +209,7 @@ void Renderer2D_Flush(Renderer2D_t *self)
 
         const vec3 temp_color = make_vec3(color.r, color.g, color.b);
 
-        Shader_SetMatrix4(element->shader, "ModelMatrix", &model);
+        Shader_SetMatrix4(element->shader, "ModelMatrix", model);
         Shader_SetVector3f(element->shader, "sprite_color", &temp_color);
         Sprites_BindTexture(element->renderer_info->texture0, 0);
         Sprites_BindTexture(element->renderer_info->texture1, 1);
@@ -580,11 +580,8 @@ static void DrawFloorAtPlayer(Renderer2D_t *renderer, vec2 sprite_size, float wi
 
 }
 
-static void DrawFloorAtPlayerBatch(BatchRenderer2D_t *renderer, vec2 sprite_size, float width, float height, ivec2 position)
+static void DrawFloorAtPlayerBatch(BatchRenderer2D_t *renderer, vec2 sprite_size, float width, float height, vec2 position)
 {
-    // Find a  better way to pass this info
-    //ivec2 position = Player_GetPosition(GetPlayerInstance());
-
     struct Dungeon *dungeon = GetDungeonObject();
 
     // Offsets for drawing the player in the middle of the screen
@@ -651,8 +648,8 @@ void Renderer2D_Init(Renderer2D_t *self)
 
     Shader_SetInteger(global_shader, "texture_layer0", 0);
     Shader_SetInteger(global_shader, "texture_layer1", 1);
-    Shader_SetMatrix4(global_shader, "ProjectionMatrix", &self->camera->ortho_matrix);
-    Shader_SetMatrix4(global_shader, "ViewMatrix", &view_matrix);
+    Shader_SetMatrix4(global_shader, "ProjectionMatrix", self->camera->ortho_matrix);
+    Shader_SetMatrix4(global_shader, "ViewMatrix", view_matrix);
 }
 
 void Renderer2D_Update(Renderer2D_t *self, ivec2 position)
@@ -719,13 +716,14 @@ void BatchRenderer2D_Init(BatchRenderer2D_t *self)
     vec3 eye = make_vec3(0.0f, 0.0f, 0.0f);
     vec3 center = make_vec3(0.0f, 0.0f, -1.0f);
     vec3 up = make_vec3(0.0f, 1.0f, 0.0f);
-    self->camera = Camera_New(eye, center, up, 1280.0f, 720.0f);
+    self->camera = Camera_New(eye, center, up, 1920.0f, 1080.0f);
+    //self->camera = Camera_New(eye, center, up, 1280.0f, 720.0f);
 
     view_matrix = mat4_identity();
 
     model_matrix = mat4_identity();
     //model = mat4_translate(model, element->position.x, element->position.y, 0.0f);
-    //model = mat4_translate(;;model, 0.5f * element->size.x, 0.5f * element->size.y, 0.0f);
+    //model = mat4_translate(model, 0.5f * element->size.x, 0.5f * element->size.y, 0.0f);
     //model = mat4_rotate(model, 0.0f, 0.0f, 0.0f, 1.0f);
     //model = mat4_translate(model, -0.5f * element->size.x, -0.5f * element->size.y, 0.0f);
     //model = mat4_scale_xyz(model, element->size.x, element->size.y, 1.0f);
@@ -738,9 +736,9 @@ void BatchRenderer2D_Init(BatchRenderer2D_t *self)
 
     Shader_SetInteger(global_shader, "texture_layer0", 0);
     Shader_SetInteger(global_shader, "texture_layer1", 1);
-    Shader_SetMatrix4(global_shader, "ProjectionMatrix", &self->camera->ortho_matrix);
-    Shader_SetMatrix4(global_shader, "ViewMatrix", &view_matrix);
-    Shader_SetMatrix4(global_shader, "ModelMatrix", &model_matrix);
+    Shader_SetMatrix4(global_shader, "ProjectionMatrix", self->camera->ortho_matrix);
+    Shader_SetMatrix4(global_shader, "ViewMatrix", view_matrix);
+    Shader_SetMatrix4(global_shader, "ModelMatrix", model_matrix);
 
     const int vertex_index = 0;
     const int color_index = 1;
@@ -844,10 +842,10 @@ void BatchRenderer2D_Submit(BatchRenderer2D_t * self, struct Sprite_s *element)
     const vec2 size = element->renderer_info->size;
     const vec2 *texcoords = element->renderer_info->texcoords;
 
-    int r = color.x * 255.0f;
-    int g = color.y * 255.0f;
-    int b = color.z * 255.0f;
-    int a = color.w * 255.0f;
+    int r = color.r * 255.0f;
+    int g = color.g * 255.0f;
+    int b = color.b * 255.0f;
+    int a = color.a * 255.0f;
 
     u32 new_color = a << 24 | b << 16 | g << 8 | r;
 
@@ -909,7 +907,7 @@ void BatchRenderer2D_Flush(BatchRenderer2D_t *self)
     self->index_count = 0;
 }
 
-void BatchRenderer2D_Update(BatchRenderer2D_t *self, ivec2 position)
+void BatchRenderer2D_Update(BatchRenderer2D_t *self, vec2 position)
 {
     BatchRenderer2D_Begin(self);
 
@@ -956,5 +954,8 @@ void BatchRenderer2D_ShutDown(BatchRenderer2D_t * self)
 {
     IndexBuffer_ShutDown(self->ibo);
     glDeleteBuffers(1, &self->vbo);
+
+    free(model_matrix);
+    free(view_matrix);
 }
 

@@ -23,7 +23,7 @@
 
 #include <pthread.h>
 
-typedef union ivec2 ivec2;
+typedef union vec2 vec2;
 
 typedef struct Screen_s
 {
@@ -49,7 +49,7 @@ typedef struct Screen_s
 
 Screen_t *Screen_New(bool init);
 void Screen_Init(Screen_t *self);
-void Screen_Update(Screen_t *self, ivec2 position);
+void Screen_Update(Screen_t *self, vec2 position);
 void Screen_ShutDown(Screen_t *self);
 //void Screen_Update();
 //void Screen_ShutDown(Screen_t *self, pthread_t thread);

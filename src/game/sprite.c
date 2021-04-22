@@ -77,7 +77,7 @@ void Sprite_Init(Sprite_t *self, vec2 position, float width, float height, vec4 
     self->renderer_info = Renderer2DInfo_New(make_vec3(position.x, position.y, 0.0f), make_vec2(width, height), color, texture, NULL);
 
     if (self->renderer_info == NULL)
-        ERROR("renderer_info was Null!\n");
+        ERROR("renderer_info was NULL!\n");
 
     self->shader = shader;
     //self->vertex_array = VertexArray_New();

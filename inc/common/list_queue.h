@@ -37,6 +37,12 @@ typedef struct Queue_s
     int size;
 } Queue_t;
 
+#ifndef LIST_FOREACH
+#define LIST_FOREACH(L, S, M, V) Node_t *_node = NULL;\
+    Node_t *V = NULL;\
+    for (V = _node = L->S; _node != NULL; V = _node = _node->M)
+#endif
+
 void Node_Delete(Queue_t * queue, Node_t *node);
 
 Queue_t *Queue_New();
@@ -48,6 +54,7 @@ void Queue_PushBack(Queue_t *queue, void * data);
 void Queue_PopFront(Queue_t *queue);
 
 void Queue_PopBack(Queue_t *queue);
+void *Queue_At(Queue_t * queue, int index);
 void Queue_Clear(Queue_t *queue);
 void Queue_ShutDown(Queue_t *queue);
 

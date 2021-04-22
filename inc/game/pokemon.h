@@ -219,12 +219,24 @@ typedef struct Ability
     //char *description;
 } Ability;
 
+//typedef enum 
+//{
+//    North,
+//    East,
+//    South,
+//    West
+//} Direction;
+
 typedef enum 
 {
     North,
+    NorthEast,
     East,
+    SouthEast,
     South,
-    West
+    SouthWest,
+    West,
+    NorthWest,
 } Direction;
 
 typedef struct Status_s
@@ -245,7 +257,7 @@ typedef struct Status_s
     bool posioned;
 } Status_t;
 
-union ivec2;
+union vec2;
 
 typedef struct Pokemon_s
 {
@@ -268,7 +280,8 @@ typedef struct Pokemon_s
     enum Items held_item;
     struct MoveSet *moves;
     Status_t *status;
-    ivec2 position;
+    vec2 prev_position;
+    vec2 position;
     Direction direction;
     bool team_leader;
 } Pokemon_t;

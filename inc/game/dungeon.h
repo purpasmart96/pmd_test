@@ -72,7 +72,7 @@ typedef struct
     Tile previous_tile_type_before_player;
     int width;
     int height;
-    ivec2 player_spawn_point;
+    vec2 player_spawn_point;
     int start_x;
     int start_y;
     int end_x;
@@ -106,18 +106,18 @@ void Dungeon_ShutDown();
 Dungeon *GetDungeonObject(void);
 
 typedef enum Direction Direction;
-TileState GetTileInFront(Dungeon *dungeon, const ivec2 coords, Direction direction);
+TileState GetTileInFront(Dungeon *dungeon, const vec2 coords, Direction direction);
 
 int GetItemFromTile(Dungeon *dungeon, int x, int y);
 void RemoveItemFromTile(Dungeon *dungeon, int x, int y);
 void SetItemToTile(Dungeon *dungeon, int x, int y, int item);
 
-void SetPlayerPreviousPos(ivec2 coords);
+void SetPlayerPreviousPos(vec2 coords);
 
-void SetPlayerTile(Dungeon *dungeon, ivec2 coords);
+void SetPlayerTile(Dungeon *dungeon, vec2 coords);
 //void SetPlayerTile(Dungeon * dungeon, int x, int y);
 
-ivec2 GetPlayerSpawnPoint(Dungeon *dungeon);
+vec2 GetPlayerSpawnPoint(Dungeon *dungeon);
 
 void Dungeon_SetUpDefualtStatus(struct PokemonParty *party);
 void Dungeon_SetStatusAfterStairs(struct PokemonParty *party);

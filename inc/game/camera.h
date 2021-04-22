@@ -24,7 +24,7 @@
 
 typedef struct Camera_s
 {
-    mat4 ortho_matrix;
+    mat4 *ortho_matrix;
     vec3 position; // eye
     vec3 direction; // target - position
     vec3 right;

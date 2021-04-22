@@ -2402,7 +2402,7 @@ bool RemoveItemFromPokemon(struct Pokemon_s *poke)
 
 void AddItemToBagFromGround(struct Bag *bag, struct Pokemon_s *poke, Dungeon *dungeon)
 {
-    int item = GetItemFromTile(dungeon, poke->position.x, poke->position.y);
+    int item = GetItemFromTile(dungeon, floorf(poke->position.x), floorf(poke->position.y));
 
     if (!item)
         return;
@@ -2410,7 +2410,7 @@ void AddItemToBagFromGround(struct Bag *bag, struct Pokemon_s *poke, Dungeon *du
     if (!IsBagFull(bag))
     {
         AddItemToBagByType(bag, item);
-        RemoveItemFromTile(dungeon, poke->position.x, poke->position.y);
+        RemoveItemFromTile(dungeon, (int)floorf(poke->position.x), (int)floorf(poke->position.y));
     }
     else
     {
@@ -2426,7 +2426,7 @@ bool RemoveItemFromGround(Dungeon *dungeon, struct Pokemon_s *poke)
 
     if (item != None)
     {
-        RemoveItemFromTile(dungeon, poke->position.x, poke->position.y);
+        RemoveItemFromTile(dungeon, (int)floorf(poke->position.x), (int)floorf(poke->position.y));
         return true;
     }
     else

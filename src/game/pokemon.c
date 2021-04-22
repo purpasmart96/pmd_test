@@ -94,10 +94,12 @@ Pokemon_t *Pokemon_New(const char *name, Species species, Type primary_type, Typ
     if (team_leader)
     {
         pokemon->position = GetPlayerSpawnPoint(GetDungeonObject());
+        pokemon->prev_position = pokemon->position;
     }
     else 
     {
-        pokemon->position = make_ivec2(0, 0);
+        pokemon->prev_position = make_vec2(0, 0);
+        pokemon->position = make_vec2(0, 0);
     }
 
     return pokemon;

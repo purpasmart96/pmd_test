@@ -59,5 +59,6 @@ void Camera_Update(Camera_t *self)
 
 void Camera_ShutDown(Camera_t *self)
 {
+    free(self->ortho_matrix);
     free(self);
 }

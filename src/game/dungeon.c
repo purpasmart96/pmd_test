@@ -37,8 +37,8 @@ static int max_room_dimension;
 static int total_corridor_length;
 static int min_num_items;
 static int max_num_items;
-static int previous_pos_x;
-static int previous_pos_y;
+static float previous_pos_x;
+static float previous_pos_y;
 
 
 static Dungeon *dungeon;
@@ -105,7 +105,7 @@ Dungeon *GetDungeonObject(void)
     return dungeon;
 }
 
-TileState GetTileInFront(Dungeon *dungeon, const ivec2 coords, Direction direction)
+TileState GetTileInFront(Dungeon *dungeon, const vec2 coords, Direction direction)
 {
     int temp_x = coords.x;
     int temp_y = coords.y;
@@ -189,18 +189,18 @@ static void RestoreOldPreviousTile(Floor *floor, int x, int y)
     SetTile(floor, x, y, floor->previous_tile_type_before_player);
 }
 
-static void SetNewPreviousTile(Floor *floor, ivec2 coords)
+static void SetNewPreviousTile(Floor *floor, vec2 coords)
 {
-    floor->previous_tile_type_before_player = GetTile(floor, coords.x, coords.y);
+    floor->previous_tile_type_before_player = GetTile(floor, floorf(coords.x), floorf(coords.y));
 }
 
-void SetPlayerPreviousPos(ivec2 coords)
+void SetPlayerPreviousPos(vec2 coords)
 {
     previous_pos_x = coords.x;
     previous_pos_y = coords.y;
 }
 
-void SetPlayerTile(Dungeon *dungeon, ivec2 coords)
+void SetPlayerTile(Dungeon *dungeon, vec2 coords)
 {
     if (previous_pos_x || previous_pos_y)
     {
@@ -208,22 +208,22 @@ void SetPlayerTile(Dungeon *dungeon, ivec2 coords)
     }
 
     SetNewPreviousTile(dungeon->floor, coords);
-    SetTile(dungeon->floor, coords.x, coords.y, tilePlayer);
+    SetTile(dungeon->floor, floorf(coords.x), floorf(coords.y), tilePlayer);
     //PrintFloorFixed(dungeon->floor);
 }
 
-ivec2 GetPlayerSpawnPoint(Dungeon *dungeon)
+vec2 GetPlayerSpawnPoint(Dungeon *dungeon)
 {
     return dungeon->floor->player_spawn_point;
 }
 
-static void SetPlayerSpawnPoint(Floor *floor, ivec2 coords)
+static void SetPlayerSpawnPoint(Floor *floor, vec2 coords)
 {
     floor->player_spawn_point.x = coords.x;
     floor->player_spawn_point.y = coords.y;
     SetNewPreviousTile(floor, coords);
     //SetTile(dungeon->floor, coords.x, coords.y, tilePlayer);
-    floor->tiles[coords.x][coords.y].tile = tilePlayer;
+    floor->tiles[(int)coords.x][(int)coords.y].tile = tilePlayer;
 }
 
 bool IsAdjacent(Floor *floor, int x, int y, Tile tile)
@@ -688,7 +688,7 @@ static void MakeSpawnPointForPlayer(Floor *floor)
 
         if (GetTile(floor, x, y) == tileFloor)
         {
-            SetPlayerSpawnPoint(floor, make_ivec2(x, y));
+            SetPlayerSpawnPoint(floor, make_vec2(x, y));
             return;
         }
     }

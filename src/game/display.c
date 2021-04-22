@@ -187,7 +187,7 @@ void Screen_Init(Screen_t *self)
 //}
 
 
-void Screen_Update(Screen_t *self, ivec2 position)
+void Screen_Update(Screen_t *self, vec2 position)
 {
     // Clear color and depth buffer  
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

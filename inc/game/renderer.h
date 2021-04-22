@@ -36,7 +36,7 @@ typedef struct Renderer_s
     struct IndexBuffer_s *ibo;
     mat4   model_matrix;
     GLint image_sampler;
-    mat4 view_matrix;
+    mat4 *view_matrix;
 } Renderer_t;
 
 Renderer_t *Renderer_New(bool init);
@@ -45,7 +45,7 @@ void Renderer_DrawSprite(Renderer_t *self, Texture_t *texture, vec2 position, ve
 void Renderer_Init(Renderer_t *self);
 void Renderer_StartThread(Renderer_t *self);
 //void DrawDungeonSprite(Renderer_t * self, Tile tile, vec2 position);
-void Renderer_Update(Renderer_t *self, ivec2 position);
+void Renderer_Update(Renderer_t *self, vec2 position);
 void Renderer_ShutDown(Renderer_t *self);
 
 

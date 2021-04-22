@@ -25,6 +25,8 @@
 typedef struct Pokemon_s Pokemon_t;
 typedef struct Input_s Input_t;
 
+typedef enum Direction Direction;
+
 typedef struct Player_s
 {
     bool exit;
@@ -36,11 +38,11 @@ typedef struct Player_s
 
 //Player_t *GetPlayerInstance();
 
-ivec2 Player_GetPosition(Player_t *self);
+vec2 Player_GetPosition(Player_t *self);
 
-Player_t *Player_New(bool init);
+Player_t *Player_New(void);
 void Player_Init(Player_t *self);
-void Player_Update(Player_t *self);
+void Player_Update(Player_t *self, float alpha);
 //void Player_Update();
 void Player_ShutDown(Player_t *self, pthread_t thread);
 

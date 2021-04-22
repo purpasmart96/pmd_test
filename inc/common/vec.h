@@ -220,6 +220,8 @@ typedef union
 
 } imat2;
 
+float LinearInterpolation(float previous, float current, float alpha);
+
 vec4  vec4_zero();
 vec4  vec4_add(vec4, vec4);
 vec4  vec4_sub(vec4, vec4);
@@ -296,25 +298,28 @@ int   ivec2_length(ivec2 a);
 ivec2 ivec2_lerp(ivec2 a, ivec2 b, int t);
 ivec2 make_ivec2(int x, int y);
 
-mat4 mat4_make(vec4 a, vec4 b, vec4 c, vec4 d);
-mat4 mat4_identity();
-mat4 mat4_init();
-mat4 mat4_add(mat4 a, mat4 b);
-mat4 mat4_scale(mat4 m, float lamba);
-mat4 mat4_scale_xyz(mat4 m, float x, float y, float z);
-mat4 mat4_scale_xyzw(mat4 m, float x, float y, float z, float w);
-mat4 mat4_mul(mat4 a, mat4 b);
-mat4 mat4_translate(mat4 m, float x, float y, float z);
+mat4 *mat4_make(vec4 a, vec4 b, vec4 c, vec4 d);
+mat4 *mat4_identity();
+mat4 *mat4_init();
+mat4 *mat4_add(mat4 *a, mat4 *b);
+mat4 *mat4_scale(mat4 *m, float lamba);
+mat4 *mat4_scale_xyz(mat4 *m, float x, float y, float z);
+mat4 *mat4_scale_xyzw(mat4 *m, float x, float y, float z, float w);
+mat4 *mat4_mul_make(mat4 *a, mat4 *b);
+void  mat4_mul(mat4 *a, mat4 *b, mat4 *dest);
+mat4 *mat4_translate(mat4 *m, float x, float y, float z);
 //mat4 mat4_translate3(mat4 m, float x, float y, float z);
 //mat4 mat4_translate2(mat4 m, vec3 v);
-mat4 mat4_rotate(mat4 m, float angle, float x, float y, float z);
-mat4 mat4_tranpose(mat4 a);
-mat4 mat4_tranpose2(mat4 m);
-mat4 mat4_ortho(mat4 mtx, float left, float right, float bottom, float top, float znear, float zfar);
+mat4 *mat4_rotate(mat4 *m, float angle, float x, float y, float z);
+void mat4_transpose(mat4 *a);
+//mat4 *mat4_tranpose(mat4 *a);
+mat4 *mat4_tranpose2(mat4 *m);
+mat4 *mat4_ortho(mat4 *mtx, float left, float right, float bottom, float top, float znear, float zfar);
 mat4 mat4_ortho2(mat4 mtx, float left, float right, float bottom, float top, float znear, float zfar);
 mat4 mat4_ortho3(mat4 mtx, float left, float right, float bottom, float top, float znear, float zfar);
 mat4 mat4_perspective(float angle, float ratio, float znear, float zfar);
-mat4 mat4_lookAt(vec3 eye, vec3 center, vec3 up);
+mat4 *mat4_lookAt(mat4 *mtx, vec3 eye, vec3 center, vec3 up);
+mat4 *mat4_lookAt1(vec3 eye, vec3 center, vec3 up);
 mat4 mat4_lookAt2(mat4 mtx, vec3 eye, vec3 center, vec3 up);
 
 imat4 imat4_make(ivec4 a, ivec4 b, ivec4 c, ivec4 d);

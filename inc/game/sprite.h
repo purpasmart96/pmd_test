@@ -18,8 +18,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#ifndef _SPRITE23_H_
-#define _SPRITE23_H_
+#ifndef _SPRITE_H_
+#define _SPRITE_H_
 
 typedef struct Sprite_s
 {

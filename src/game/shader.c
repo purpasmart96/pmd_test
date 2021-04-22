@@ -143,6 +143,11 @@ void Shader_Use(Shader_t *self)
     glUseProgram(self->program);
 }
 
+void Shader_NotUse(Shader_t *self)
+{
+    glUseProgram(0);
+}
+
 void Shader_SetFloat(Shader_t *self, const GLchar *name, GLfloat value)
 {
     glUniform1f(glGetUniformLocation(self->program, name), value);

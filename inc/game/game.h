@@ -26,14 +26,14 @@
 #include <pthread.h>
 
 #define FPS_LIMIT_MS 1.0 / 60.0 * 1000.0
-#define FPS_LIMIT 1.0 / 12.0
-//#define FPS_LIMIT 1.0 / 60.0
+//#define FPS_LIMIT 1.0 / 12.0
+#define TIME_STEP 1.0 / 60.0
 #define FPS_LIMIT_FAST 1.0 / 20.0
-#define PLAYER_MOVEMENT_SPEED 1.0 / 20.0
+#define PLAYER_MOVEMENT_SPEED 12 / 60.0
 
-#define USE_BATCH_RENDERER 
+//#define USE_BATCH_RENDERER 
 //#define USE_SLOW_RENDERER
-//#define USE_FAST_OLD_RENDERER
+#define USE_FAST_OLD_RENDERER
 
 #define	MAX_CVAR_VALUE_STRING	256
 
@@ -87,6 +87,7 @@ typedef struct Game_s
     //double delta_time;
     u64 frames;
     u64 updates;
+    u64 ticks;
 } Game_t;
 
 

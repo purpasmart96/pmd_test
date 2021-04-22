@@ -54,6 +54,10 @@ float lerp(float a, float b, float t)
     return (1.0f - t) * a + t * b;
 }
 
+float LinearInterpolation(float previous, float current, float alpha)
+{
+    return current * alpha + previous * (1.0f - alpha);
+}
 
 vec4 vec4_zero()
 {
@@ -769,18 +773,26 @@ ivec2 ivec2_mad(ivec2 a, ivec2 b, ivec2 c)
     return ivec2_add(ivec2_mul(a, b), c);
 }
 
-mat4 mat4_make(vec4 a, vec4 b, vec4 c, vec4 d)
+mat4 *mat4_make(vec4 a, vec4 b, vec4 c, vec4 d)
 {
-    mat4 m;
-    m.a = a;
-    m.b = b;
-    m.c = c;
-    m.d = d;
+    //mat4 m;
+    //m.a = a;
+    //m.b = b;
+    //m.c = c;
+    //m.d = d;
+
+    //return &m;
+
+    mat4 *m = calloc(1, sizeof(mat4));
+    m->a = a;
+    m->b = b;
+    m->c = c;
+    m->d = d;
 
     return m;
 }
 
-mat4 mat4_identity()
+mat4 *mat4_identity()
 {
     return mat4_make(make_vec4(1.0f, 0.0f, 0.0f, 0.0f),
                      make_vec4(0.0f, 1.0f, 0.0f, 0.0f),
@@ -788,7 +800,7 @@ mat4 mat4_identity()
                      make_vec4(0.0f, 0.0f, 0.0f, 1.0f));
 }
 
-mat4 mat4_init()
+mat4 *mat4_init()
 {
     return mat4_make(make_vec4(0.0f, 0.0f, 0.0f, 0.0f),
                      make_vec4(0.0f, 0.0f, 0.0f, 0.0f),
@@ -796,55 +808,55 @@ mat4 mat4_init()
                      make_vec4(0.0f, 0.0f, 0.0f, 0.0f));
 }
 
-mat4 mat4_add(mat4 a, mat4 b)
+mat4 *mat4_add(mat4 *a, mat4 *b)
 {
      for (int i = 0; i < 16; i++)
      {
-         a.m[i] += b.m[i];
+         a->m[i] += b->m[i];
      }
-     return (a);
+     return a;
 }
 
-mat4 mat4_scale(mat4 m, float lamba)
+mat4 *mat4_scale(mat4 *m, float lamba)
 {
-    m.a = vec4_scale(m.a, lamba);
-    m.b = vec4_scale(m.b, lamba);
-    m.c = vec4_scale(m.c, lamba);
-    m.d = vec4_scale(m.d, lamba);
+    m->a = vec4_scale(m->a, lamba);
+    m->b = vec4_scale(m->b, lamba);
+    m->c = vec4_scale(m->c, lamba);
+    m->d = vec4_scale(m->d, lamba);
 
     return m;
 }
 
-mat4 mat4_scale_xyz(mat4 m, float x, float y, float z)
+mat4 *mat4_scale_xyz(mat4 *m, float x, float y, float z)
 {
-    m.a = vec4_scale(m.a, x);
-    m.b = vec4_scale(m.b, y);
-    m.c = vec4_scale(m.c, z);
+    m->a = vec4_scale(m->a, x);
+    m->b = vec4_scale(m->b, y);
+    m->c = vec4_scale(m->c, z);
 
     return m;
 }
 
-mat4 mat4_scale_xyzw(mat4 m, float x, float y, float z, float w)
+mat4 *mat4_scale_xyzw(mat4 *m, float x, float y, float z, float w)
 {
-    m.a = vec4_scale(m.a, x);
-    m.b = vec4_scale(m.b, y);
-    m.c = vec4_scale(m.c, z);
-    m.d = vec4_scale(m.d, w);
+    m->a = vec4_scale(m->a, x);
+    m->b = vec4_scale(m->b, y);
+    m->c = vec4_scale(m->c, z);
+    m->d = vec4_scale(m->d, w);
 
     return m;
 }
 
-mat4 mat4_translate(mat4 m, float x, float y, float z)
+mat4 *mat4_translate(mat4 *m, float x, float y, float z)
 {
     vec4 v1, v2, v3;
     
-    v1 = vec4_scale(m.a, x);
-    v2 = vec4_scale(m.b, y);
-    v3 = vec4_scale(m.c, z);
+    v1 = vec4_scale(m->a, x);
+    v2 = vec4_scale(m->b, y);
+    v3 = vec4_scale(m->c, z);
 
-    m.d = vec4_add(v1, m.d);
-    m.d = vec4_add(v2, m.d);
-    m.d = vec4_add(v3, m.d);
+    m->d = vec4_add(v1, m->d);
+    m->d = vec4_add(v2, m->d);
+    m->d = vec4_add(v3, m->d);
 
     return m;
 
@@ -884,66 +896,85 @@ mat4 mat4_translate(mat4 m, float x, float y, float z)
 //    return m;
 //}
 
-mat4 mat4_rotate(mat4 m, float angle, float x, float y, float z)
+mat4 *mat4_rotate(mat4 *m, float angle, float x, float y, float z)
 {
     vec3 unit = vec3_normalize(make_vec3(x, y, z));
 
-    m.m[0] = cosf(angle) + (unit.x * unit.x) * (1.0f - cosf(angle));
-    m.m[1] = unit.x * unit.y * (1.0f - cosf(angle)) - unit.z * sinf(angle);
-    m.m[2] = unit.x * unit.z * (1.0f - cosf(angle)) + unit.y * sinf(angle);
-    m.m[4] = unit.y * unit.x * (1.0f - cosf(angle)) + unit.z * sinf(angle);
-    m.m[5] = cosf(angle) + (unit.y * unit.y) * (1.0f - cosf(angle));
-    m.m[6] = unit.y * unit.z * (1.0f - cosf(angle)) - unit.x * sinf(angle);
-    m.m[8] = unit.z * unit.x * (1.0f - cosf(angle)) - unit.y * sinf(angle);
-    m.m[9] = unit.z * unit.y * (1.0f - cosf(angle)) + unit.x * sinf(angle);
-    m.m[10] = cosf(angle) + (unit.z * unit.z) * (1.0f - cosf(angle));
+    m->m[0] = cosf(angle) + (unit.x * unit.x) * (1.0f - cosf(angle));
+    m->m[1] = unit.x * unit.y * (1.0f - cosf(angle)) - unit.z * sinf(angle);
+    m->m[2] = unit.x * unit.z * (1.0f - cosf(angle)) + unit.y * sinf(angle);
+    m->m[4] = unit.y * unit.x * (1.0f - cosf(angle)) + unit.z * sinf(angle);
+    m->m[5] = cosf(angle) + (unit.y * unit.y) * (1.0f - cosf(angle));
+    m->m[6] = unit.y * unit.z * (1.0f - cosf(angle)) - unit.x * sinf(angle);
+    m->m[8] = unit.z * unit.x * (1.0f - cosf(angle)) - unit.y * sinf(angle);
+    m->m[9] = unit.z * unit.y * (1.0f - cosf(angle)) + unit.x * sinf(angle);
+    m->m[10] = cosf(angle) + (unit.z * unit.z) * (1.0f - cosf(angle));
 
     return m;
 }
 
-mat4 mat4_mul(mat4 a, mat4 b)
+mat4 *mat4_mul_make(mat4 *a, mat4 *b)
 {
-    return mat4_make(vec4_mul(a.a, b.a),
-                     vec4_mul(a.b, b.b),
-                     vec4_mul(a.c, b.c),
-                     vec4_mul(a.d, b.d));
+    return mat4_make(vec4_mul(a->a, b->a),
+                     vec4_mul(a->b, b->b),
+                     vec4_mul(a->c, b->c),
+                     vec4_mul(a->d, b->d));
 }
 
-mat4 mat4_tranpose(mat4 a)
+void mat4_mul(mat4 *a, mat4 *b, mat4 *dest)
 {
-    mat4 m = mat4_init();
+    dest->a = vec4_mul(a->a, b->a);
+    dest->b = vec4_mul(a->b, b->b);
+    dest->c = vec4_mul(a->c, b->c);
+    dest->d = vec4_mul(a->d, b->d);
+}
 
+void mat4_transpose(mat4 *a)
+{
     for (int i = 0; i < 4; i++)
     {
         for (int j = 0; j < 4; j++)
         {
-            m.m[i * 4 + j] = a.m[j * 4 + i];
+            a->m[i * 4 + j] = a->m[j * 4 + i];
         }
     }
-
-    return m;
 }
 
-mat4 mat4_tranpose2(mat4 m)
-{
-    mat4 out = mat4_init();
+//mat4 *mat4_tranpose(mat4 *a)
+//{
+//    mat4 *m = mat4_init();
+//
+//    for (int i = 0; i < 4; i++)
+//    {
+//        for (int j = 0; j < 4; j++)
+//        {
+//            m->m[i * 4 + j] = a->m[j * 4 + i];
+//        }
+//    }
+//
+//    return m;
+//}
 
-    out.a.x = m.a.x; 
-    out.b.x = m.a.y;
-    out.a.y = m.b.x;
-    out.b.y = m.b.y;
-    out.a.z = m.c.x;
-    out.b.z = m.c.y;
-    out.a.w = m.d.x;
-    out.b.w = m.d.y;
-    out.c.x = m.a.z;
-    out.d.x = m.a.w;
-    out.c.y = m.b.z;
-    out.d.y = m.b.w;
-    out.c.z = m.c.z;
-    out.d.z = m.c.w;
-    out.c.w = m.d.z;
-    out.d.w = m.d.w;
+mat4 *mat4_tranpose2(mat4 *m)
+{
+    mat4 *out = mat4_init();
+
+    out->a.x = m->a.x; 
+    out->b.x = m->a.y;
+    out->a.y = m->b.x;
+    out->b.y = m->b.y;
+    out->a.z = m->c.x;
+    out->b.z = m->c.y;
+    out->a.w = m->d.x;
+    out->b.w = m->d.y;
+    out->c.x = m->a.z;
+    out->d.x = m->a.w;
+    out->c.y = m->b.z;
+    out->d.y = m->b.w;
+    out->c.z = m->c.z;
+    out->d.z = m->c.w;
+    out->c.w = m->d.z;
+    out->d.w = m->d.w;
     
     return out;
 }
@@ -967,28 +998,28 @@ mat4 mat4_tranpose2(mat4 m)
 //}
 //#endif
 
-mat4 mat4_ortho(mat4 mtx, float left, float right, float bottom, float top, float znear, float zfar)
+mat4 *mat4_ortho(mat4 *mtx, float left, float right, float bottom, float top, float znear, float zfar)
 {
     float lr = 1 / (left - right);
     float bt = 1 / (bottom - top);
     float nf = 1 / (znear - zfar);
 
-    mtx.m[0] = -2.0f * lr;
-    mtx.m[1] = 0;
-    mtx.m[2] = 0;
-    mtx.m[3] = 0;
-    mtx.m[4] = 0;
-    mtx.m[5] = -2.0f * bt;
-    mtx.m[6] = 0;
-    mtx.m[7] = 0;
-    mtx.m[8] = 0;
-    mtx.m[9] = 0;
-    mtx.m[10] = 2.0f * nf;
-    mtx.m[11] = 0.0f;
-    mtx.m[12] = (left + right) * lr;
-    mtx.m[13] = (top + bottom) * bt;
-    mtx.m[14] = (zfar + znear) * nf;
-    mtx.m[15] = 1.0f;
+    mtx->m[0] = -2.0f * lr;
+    mtx->m[1] = 0;
+    mtx->m[2] = 0;
+    mtx->m[3] = 0;
+    mtx->m[4] = 0;
+    mtx->m[5] = -2.0f * bt;
+    mtx->m[6] = 0;
+    mtx->m[7] = 0;
+    mtx->m[8] = 0;
+    mtx->m[9] = 0;
+    mtx->m[10] = 2.0f * nf;
+    mtx->m[11] = 0.0f;
+    mtx->m[12] = (left + right) * lr;
+    mtx->m[13] = (top + bottom) * bt;
+    mtx->m[14] = (zfar + znear) * nf;
+    mtx->m[15] = 1.0f;
 
     return mtx;
 }
@@ -1031,33 +1062,70 @@ mat4 mat4_ortho3(mat4 mtx, float left, float right, float bottom, float top, flo
 
 mat4 mat4_perspective(float angle, float ratio, float znear, float zfar)
 {
-    mat4 ret = mat4_init();
+    mat4 *ret = mat4_init();
     float t = tanf(angle / 2.0f);
 
-    ret.m[0] = 1.0f / (t * ratio);
-    ret.m[1] = 0.f;
-    ret.m[2] = 0.f;
-    ret.m[3] = 0.f;
-    ret.m[4] = 0.f;
-    ret.m[5] = 1.0f / t;
-    ret.m[6] = 0.f;
-    ret.m[7] = 0.f;
-    ret.m[8] = 0.f;
-    ret.m[9] = 0.f;
-    ret.m[10] = (-znear - zfar) / (zfar - znear);
-    ret.m[11] = -1.0f;
-    ret.m[12] = 0.f;
-    ret.m[13] = 0.f;
-    ret.m[14] = -2.0f * zfar * znear / (zfar - znear);
-    ret.m[15] = 0.f;
+    ret->m[0] = 1.0f / (t * ratio);
+    ret->m[1] = 0.f;
+    ret->m[2] = 0.f;
+    ret->m[3] = 0.f;
+    ret->m[4] = 0.f;
+    ret->m[5] = 1.0f / t;
+    ret->m[6] = 0.f;
+    ret->m[7] = 0.f;
+    ret->m[8] = 0.f;
+    ret->m[9] = 0.f;
+    ret->m[10] = (-znear - zfar) / (zfar - znear);
+    ret->m[11] = -1.0f;
+    ret->m[12] = 0.f;
+    ret->m[13] = 0.f;
+    ret->m[14] = -2.0f * zfar * znear / (zfar - znear);
+    ret->m[15] = 0.f;
 
-    return ret;
+    return *ret;
 }
 
-mat4 mat4_lookAt(vec3 eye, vec3 center, vec3 up)
+mat4 *mat4_lookAt(mat4 *mtx, vec3 eye, vec3 center, vec3 up)
+{
+    vec3 forward, u, side;
+
+    forward = vec3_sub(center, eye);
+    forward = vec3_normalize(forward);
+
+    // side = forward x up
+    side = vec3_cross(forward, up);
+    side = vec3_normalize(side);
+
+    // Recompute up as: up = side x forward
+    u = vec3_cross(side, forward);
+    
+    mtx->a.x =  side.x;
+    mtx->a.y =  u.x;
+    mtx->a.z =  -forward.x;
+    mtx->a.w =  0.0f;
+
+    mtx->b.x =  side.y;
+    mtx->b.y =  u.y;
+    mtx->b.z =  -forward.y;
+    mtx->b.w =  0.0f;
+
+    mtx->c.x =  side.z;
+    mtx->c.y =  u.z;
+    mtx->c.z =  -forward.z;
+    mtx->c.w =  0.0f;
+
+    mtx->d.x =  -vec3_dot(side, eye);
+    mtx->d.y =  -vec3_dot(u, eye);
+    mtx->d.z =  vec3_dot(forward, eye);
+    mtx->d.w =  1.0f;
+
+    return mtx;
+}
+
+mat4 *mat4_lookAt1(vec3 eye, vec3 center, vec3 up)
 {
     vec3 f, u, s;
-    mat4 dest = mat4_init();
+    mat4 *dest = mat4_init();
     f = vec3_sub(center, eye);
     f = vec3_normalize(f);
     
@@ -1065,20 +1133,20 @@ mat4 mat4_lookAt(vec3 eye, vec3 center, vec3 up)
     s = vec3_normalize(s);
     u = vec3_cross(s, f);
     
-    dest.a.x =  s.x;
-    dest.a.y =  u.x;
-    dest.a.z =- f.x;
-    dest.b.x =  s.y;
-    dest.b.y =  u.y;
-    dest.b.z =- f.y;
-    dest.c.x =  s.z;
-    dest.c.y =  u.z;
-    dest.c.z =- f.z;
-    dest.d.x =- vec3_dot(s, eye);
-    dest.d.y =- vec3_dot(u, eye);
-    dest.d.z =  vec3_dot(f, eye);
-    dest.a.w =  dest.b.w = dest.c.w = 0.0f;
-    dest.d.w =  1.0f;
+    dest->a.x =  s.x;
+    dest->a.y =  u.x;
+    dest->a.z =- f.x;
+    dest->b.x =  s.y;
+    dest->b.y =  u.y;
+    dest->b.z =- f.y;
+    dest->c.x =  s.z;
+    dest->c.y =  u.z;
+    dest->c.z =- f.z;
+    dest->d.x =- vec3_dot(s, eye);
+    dest->d.y =- vec3_dot(u, eye);
+    dest->d.z =  vec3_dot(f, eye);
+    dest->a.w =  dest->b.w = dest->c.w = 0.0f;
+    dest->d.w =  1.0f;
 
     return dest;
 }

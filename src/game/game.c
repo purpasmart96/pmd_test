@@ -194,6 +194,7 @@ void Game_Init(Game_t *self)
     self->alpha = 0;
     self->current_time = 0.0;
     self->frames = 0;
+    self->ticks = 0;
     self->updates = 0;
     self->previous_time = glfwGetTime();
     self->timer = self->previous_time;
@@ -206,7 +207,7 @@ void Game_Init(Game_t *self)
     //self->screen = GetScreenInstance();
     //self->player = GetPlayerInstance();
     self->screen = Screen_New(true);
-    self->player = Player_New(true);
+    self->player = Player_New();
 
     self->party = PokemonParty_New(4);
     AddPartyMember(self->party, self->player->leader);
@@ -257,43 +258,25 @@ void Game_Init(Game_t *self)
 //    return delta;
 //}
 
-
-// The sum computed by the background thread
-long long sum = 0;
-
-// Thread function to generate sum of 0 to N
-void* ThreadFuncTest(void* arg)
-{
-    long long *limit_ptr = (long long*)arg;
-    long long limit = *limit_ptr;
-
-    for (long long i = 0; i <= limit; i++) {
-        sum += i;
-    }
-
-    // sum is a global variable, so other threads can access.
-
-    pthread_exit(0);
-}
-
 void Game_Update(Game_t *self)
 {
     double delta_time = GetDeltaTime(self->time_info);
 
     self->time_info->accumulator += delta_time;
 
-    while (self->time_info->accumulator >= FPS_LIMIT)
+    while (self->time_info->accumulator >= TIME_STEP)
     {
-        //glfwPollEvents();
-        //pthread_join(thread, NULL);
-        Player_Update(self->player);
-        //Screen_Update(self->screen);
-        //self->frames++;
+        Player_Update(self->player, self->time_info->alpha);
         self->updates++;
-        self->time_info->accumulator -= FPS_LIMIT;
+        //Screen_Update(self->screen, Player_GetPosition(self->player));
+        //self->frames++;
+        self->time_info->accumulator -= TIME_STEP;
     }
 
-    self->time_info->alpha = self->time_info->accumulator / FPS_LIMIT;
+    //nextValue * alpha + previousValue * ( 1.0 - alpha )
+    //float interpolation = float( GetTickCount() + SKIP_TICKS - next_game_tick ) / float( SKIP_TICKS );
+
+    self->time_info->alpha = self->time_info->accumulator / TIME_STEP;
     Screen_Update(self->screen, Player_GetPosition(self->player));
     self->frames++;
 

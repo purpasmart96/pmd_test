@@ -171,7 +171,7 @@ static GLfloat vertices[] = {
 
 void Renderer_DrawSprite(Renderer_t *self, Texture_t *texture, vec2 position, vec2 size, GLfloat rotate, vec3 color)
 {
-    mat4 model = mat4_identity();
+    mat4 *model = mat4_identity();
     model = mat4_translate(model, position.x, position.y, 0.0f);
 
     model = mat4_translate(model, 0.5f * size.x, 0.5f * size.y, 0.0f);
@@ -180,7 +180,7 @@ void Renderer_DrawSprite(Renderer_t *self, Texture_t *texture, vec2 position, ve
 
     model = mat4_scale_xyz(model, size.x, size.y, 1.0f);
 
-    Shader_SetMatrix4(self->shader, "ModelMatrix", &model);
+    Shader_SetMatrix4(self->shader, "ModelMatrix", model);
     Shader_SetVector3f(self->shader, "sprite_color", &color);
     Sprites_BindTexture(texture, 0);
 
@@ -190,11 +190,12 @@ void Renderer_DrawSprite(Renderer_t *self, Texture_t *texture, vec2 position, ve
     //glDrawElements(GL_TRIANGLES, self->ibo->count, GL_UNSIGNED_SHORT, 0);
     //IndexBuffer_Unbind(self->ibo);
     VertexArray_Unbind(self->vao);
+    free(model);
 }
 
 static void Renderer_DrawSpriteLayers(Renderer_t *self, Texture_t *texture0, Texture_t *texture1, vec2 position, vec2 size, GLfloat rotate, vec3 color)
 {
-    mat4 model = mat4_identity();
+    mat4 *model = mat4_identity();
     model = mat4_translate(model, position.x, position.y, 0.0f);
 
     model = mat4_translate(model, 0.5f * size.x, 0.5f * size.y, 0.0f);
@@ -203,7 +204,7 @@ static void Renderer_DrawSpriteLayers(Renderer_t *self, Texture_t *texture0, Tex
 
     model = mat4_scale_xyz(model, size.x, size.y, 1.0f);
 
-    Shader_SetMatrix4(self->shader, "ModelMatrix", &model);
+    Shader_SetMatrix4(self->shader, "ModelMatrix", model);
     Shader_SetVector3f(self->shader, "sprite_color", &color);
     Sprites_BindTexture(texture0, 0);
     Sprites_BindTexture(texture1, 1);
@@ -214,6 +215,7 @@ static void Renderer_DrawSpriteLayers(Renderer_t *self, Texture_t *texture0, Tex
     //glDrawElements(GL_TRIANGLES, self->ibo->count, GL_UNSIGNED_INT, 0);
     //IndexBuffer_Unbind(self->ibo);
     VertexArray_Unbind(self->vao);
+    free(model);
 }
 
 void Renderer_InitSprite(Renderer_t *self)
@@ -322,11 +324,27 @@ static void DrawDungeonSpriteLayers(Renderer_t *self, Tile tile, vec2 position, 
             Renderer_DrawSpriteLayers(self, sprite17, sprite9, position, sprite_size, 0.0f, make_vec3(1.0f, 1.0f, 1.0f));
             break;
         case tilePlayer:
-            Renderer_DrawSpriteLayers(self, sprite4, sprite8, position, sprite_size, 0.0f, make_vec3(1.0f, 1.0f, 1.0f));
+            //Renderer_DrawSpriteLayers(self, sprite4, sprite8, position, sprite_size, 0.0f, make_vec3(1.0f, 1.0f, 1.0f));
             break;
         default:
             break;
     }
+}
+
+static void DrawPlayerSprite(Renderer_t *renderer, vec2 sprite_size, float width, float height, vec2 position)
+{
+    // Offsets for drawing the player in the middle of the screen
+    const int x = 9;
+    const int y = 5;
+
+    int new_x = floorf(position.x) - x; // 9 tiles
+    int new_y = floorf(position.y) - y; // 5 Tiles
+
+    float coord_x = x * sprite_size.x;
+    float coord_y = y * sprite_size.y;
+
+
+    Renderer_DrawSpriteLayers(renderer, sprite4, sprite8, make_vec2(coord_x, coord_y), sprite_size, 0.0f, make_vec3(1.0f, 1.0f, 1.0f));
 }
 
 static void DrawFloor(Renderer_t *renderer)
@@ -354,16 +372,13 @@ static void DrawFloor(Renderer_t *renderer)
     }
 }
 
-static void DrawFloorAtPlayer(Renderer_t *renderer, vec2 sprite_size, float width, float height, ivec2 position)
+static void DrawFloorAtPlayer(Renderer_t *renderer, vec2 sprite_size, float width, float height, vec2 position)
 {
-    // Find a  better way to pass this info
-    //ivec2 position = Player_GetPosition(GetPlayerInstance());
-
     struct Dungeon *dungeon = GetDungeonObject();
 
     // Offsets for drawing the player in the middle of the screen
-    int new_x = position.x - 9; // 9 tiles
-    int new_y = position.y - 5; // 5 Tiles
+    int new_x = floorf(position.x) - 9; // 9 tiles
+    int new_y = floorf(position.y) - 5; // 5 Tiles
 
     for (int y = 0; y < dungeon->floor->height; y++)
     {
@@ -426,8 +441,8 @@ void Renderer_Init(Renderer_t *self)
 
     Shader_SetInteger(self->shader, "texture_layer0", 0);
     Shader_SetInteger(self->shader, "texture_layer1", 1);
-    Shader_SetMatrix4(self->shader, "ProjectionMatrix", &self->camera->ortho_matrix);
-    Shader_SetMatrix4(self->shader, "ViewMatrix", &self->view_matrix);
+    Shader_SetMatrix4(self->shader, "ProjectionMatrix", self->camera->ortho_matrix);
+    Shader_SetMatrix4(self->shader, "ViewMatrix", self->view_matrix);
     //pthread_create(&self->thread_id, 0, Renderer_Update, self);
 }
 
@@ -436,7 +451,7 @@ void Renderer_StartThread(Renderer_t *self)
     pthread_create(&self->thread_id, 0, Renderer_Update, self);
 }
 
-void Renderer_Update(Renderer_t *self, ivec2 position)
+void Renderer_Update(Renderer_t *self, vec2 position)
 {
     self->renderering = true;
 
@@ -446,10 +461,11 @@ void Renderer_Update(Renderer_t *self, ivec2 position)
         vec3 eye = make_vec3(0.0f, 0.0f, 0.0f);
         vec3 center = make_vec3(0.0f, 0.0f, -1.0f);
         vec3 up = make_vec3(0.0f, 1.0f, 0.0f);
-        self->view_matrix = mat4_lookAt(eye, center, up);
+        self->view_matrix = mat4_lookAt(self->view_matrix, eye, center, up);
         //Shader_SetMatrix4(self->shader, "ViewMatrix", &self->view_matrix);
         //DrawFloorAtPlayer(self, make_vec2(64.0f, 64.0f), 1280.0f, 720.0f);
         DrawFloorAtPlayer(self, make_vec2(64.0f, 64.0f), 1920.0f, 1080.0f, position);
+        DrawPlayerSprite(self, make_vec2(64.0f, 64.0f), 1920.0f, 1080.0f, position);
         //pthread_mutex_unlock(&self->mutex);
         //DrawPlayerTile(self, make_vec2(64.0f, 64.0f));
     //}

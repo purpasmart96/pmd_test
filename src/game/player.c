@@ -23,6 +23,7 @@
 
 #include <pthread.h>
 
+#include "common/vec.h"
 #include "common/timer.h"
 
 #include "game/game.h"
@@ -30,6 +31,8 @@
 #include "game/input.h"
 #include "game/player.h"
 #include "game/dungeon.h"
+
+static float velocity = 12;
 
 //static pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
 //static volatile struct Player_s* volatile player_instance = NULL;
@@ -53,7 +56,7 @@
 //    return player_instance;
 //}
 
-Player_t *Player_New(bool init)
+Player_t *Player_New()
 {
     Player_t *player = malloc(sizeof(*player));
 
@@ -61,14 +64,13 @@ Player_t *Player_New(bool init)
     {
         return NULL;
     }
-    else if (init)
+    else
     {
         Player_Init(player);
 
     }
     return player;
 }
-
 
 void Player_Init(Player_t *self)
 {
@@ -82,30 +84,36 @@ void Player_Init(Player_t *self)
     self->input = Input_New(true);
 }
 
-ivec2 Player_GetPosition(Player_t *self)
+vec2 Player_GetPosition(Player_t *self)
 {
     return self->leader->position;
 }
 
-static void MovePlayerXAxis(Player_t *self, Dungeon *dungeon, Direction direction, int position_delta)
+static void MovePlayerXAxis(Player_t *self, Dungeon *dungeon, Direction direction, float position_delta, float alpha)
 {
     TileState tile = GetTileInFront(dungeon, self->leader->position, direction);
     if (IsTilePassableByType(dungeon->floor, tile.tile))
     {
         SetPlayerPreviousPos(self->leader->position);
-        self->leader->position.x += position_delta;
+        self->leader->prev_position = self->leader->position;
+
+        self->leader->position.x += position_delta * velocity * TIME_STEP;
+        //self->leader->position.x = LinearInterpolation(self->leader->prev_position.x, self->leader->position.x, alpha * 1000);
         
         SetPlayerTile(dungeon, self->leader->position);
     }
 }
 
-static MovePlayerYAxis(Player_t *self, Dungeon *dungeon, Direction direction, int position_delta)
+static MovePlayerYAxis(Player_t *self, Dungeon *dungeon, Direction direction, float position_delta, float alpha)
 {
     TileState tile = GetTileInFront(dungeon, self->leader->position, direction);
     if (IsTilePassableByType(dungeon->floor, tile.tile))
     {
         SetPlayerPreviousPos(self->leader->position);
-        self->leader->position.y += position_delta;
+        self->leader->prev_position = self->leader->position;
+
+        self->leader->position.y += position_delta * velocity * TIME_STEP;
+        //self->leader->position.y = LinearInterpolation(self->leader->prev_position.y, self->leader->position.y, alpha * 1000);
         
         SetPlayerTile(dungeon, self->leader->position);
     }
@@ -117,52 +125,52 @@ static bool DoneWaiting()
     return current_frames_updated % 10 == 0;
 }
 
-static void MoveLeft(Player_t *self, Dungeon *dungeon)
+static void MoveLeft(Player_t *self, Dungeon *dungeon, float alpha)
 {
-    MovePlayerXAxis(self, dungeon, West, -1);
-    DEBUG("Player position X %d\n", self->leader->position.x);
+    MovePlayerXAxis(self, dungeon, West, -1.0, alpha);
+    DEBUG("Player position X %f\n", self->leader->position.x);
 }
 
-static void MoveRight(Player_t *self, Dungeon *dungeon)
+static void MoveRight(Player_t *self, Dungeon *dungeon, float alpha)
 {
-    MovePlayerXAxis(self, dungeon, East, 1);
-    DEBUG("Player position X %d\n", self->leader->position.x);
+    MovePlayerXAxis(self, dungeon, East, 1.0, alpha);
+    DEBUG("Player position X %f\n", self->leader->position.x);
 }
 
-static void MoveDown(Player_t *self, Dungeon *dungeon)
+static void MoveDown(Player_t *self, Dungeon *dungeon, float alpha)
 {
-    MovePlayerYAxis(self, dungeon, South, -1);
-    DEBUG("Player position Y %d\n", self->leader->position.y);
+    MovePlayerYAxis(self, dungeon, South, -1.0, alpha);
+    DEBUG("Player position Y %f\n", self->leader->position.y);
 }
 
-static void MoveUp(Player_t *self, Dungeon *dungeon)
+static void MoveUp(Player_t *self, Dungeon *dungeon, float alpha)
 {
-    MovePlayerYAxis(self, dungeon, North, 1);
-    DEBUG("Player position Y %d\n", self->leader->position.y);
+    MovePlayerYAxis(self, dungeon, North, 1.0, alpha);
+    DEBUG("Player position Y %f\n", self->leader->position.y);
 }
 
-static void HandleButtunPress(Player_t *self)
+static void HandleButtunPress(Player_t *self, float alpha)
 {
     Dungeon *dungeon = GetDungeonObject();
 
     if (Input_IsKeyPressed(self->input, GLFW_KEY_A))
     {
-        MoveLeft(self, dungeon);
+        MoveLeft(self, dungeon, alpha);
     }
 
     if (Input_IsKeyPressed(self->input, GLFW_KEY_D))
     {
-        MoveRight(self, dungeon);
+        MoveRight(self, dungeon, alpha);
     }
 
     if (Input_IsKeyPressed(self->input, GLFW_KEY_S))
     {
-        MoveDown(self, dungeon);
+        MoveDown(self, dungeon, alpha);
     }
 
     if (Input_IsKeyPressed(self->input, GLFW_KEY_W))
     {
-        MoveUp(self, dungeon);
+        MoveUp(self, dungeon, alpha);
     }
 
     //switch (self->input->current_key)
@@ -184,12 +192,12 @@ static void HandleButtunPress(Player_t *self)
     //}
 }
 
-static void Player_Move(Player_t *self)
+static void Player_Move(Player_t *self, float alpha)
 {
-    HandleButtunPress(self);
+    HandleButtunPress(self, alpha);
 }
 
-void Player_Update(Player_t *self)
+void Player_Update(Player_t *self, float alpha)
 {
     glfwPollEvents();
 
@@ -202,7 +210,7 @@ void Player_Update(Player_t *self)
     //bool update = delta_time % 5 == 0;
     //if (delta >= PLAYER_MOVEMENT_SPEED)
     //{
-        Player_Move(self);
+        Player_Move(self, alpha);
     //    self->prev_update = time;
     //}
     //glfwWaitEvents();

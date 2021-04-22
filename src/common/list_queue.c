@@ -20,10 +20,6 @@
 
 #include "common/list_queue.h"
 
-#define LIST_FOREACH(L, S, M, V) Node_t *_node = NULL;\
-    Node_t *V = NULL;\
-    for (V = _node = L->S; _node != NULL; V = _node = _node->M)
-
 static Node_t *Node_New(void *data)
 {
     Node_t *node = malloc(sizeof(*node));
@@ -191,6 +187,23 @@ void Queue_PopBack(Queue_t *queue)
         // Decrements count of elements by 1
         queue->size--;
     }
+}
+
+void *Queue_At(Queue_t *queue, int index)
+{
+    Node_t *current = queue->front;
+    int count = 0;
+
+    while (current != NULL)
+    {
+        if (count == index)
+        {
+            return current->data;
+        }
+        count++;
+        current = current->next;
+    }
+    return NULL;
 }
 
 void Queue_Clear(Queue_t *queue)

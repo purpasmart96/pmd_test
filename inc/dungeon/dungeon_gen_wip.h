@@ -36,33 +36,33 @@ typedef enum
 
 typedef struct
 {
-    int xSize;
-    int ySize;
+    int size_x;
+    int size_y;
     int *data;
 } Map;
 
 typedef struct
 {
     u64 Seed;
-    int XSize;
-    int YSize;
+    int size_x;
+    int size_y;
     int MaxFeatures;
     int ChanceRoom;
     int ChanceCorridor;
 } Dungeon;
 
-void SetCell(Map map, int x, int y, Tile celltype);
-int  GetCell(Map map, int x, int y);
+void SetCell(Map *map, int x, int y, Tile celltype);
+int  GetCell(Map *map, int x, int y);
 int  GetRand(u64 rng, int min, int max);
 Direction GetRandomDirection(u64 rng);
-void SetCells(Map map, int xStart, int yStart, int xEnd, int yEnd, Tile cellType);
-bool MakeCorridor(Map map, u64 rng, int x, int y, int maxLength, Direction direction);
-bool MakeRoom(Map map, u64 rng, int x, int y, int xMaxLength, int yMaxLength, Direction direction);
-bool MakeFeature(Dungeon dungeon, Map map, u64 rng, int x, int y, int xmod, int ymod, Direction direction);
-bool MakeFeatures(Dungeon dungeon, Map map, u64 rng);
-bool MakeStairs(Dungeon dungeon, Map map, u64 rng, Tile tile);
-bool MakeDungeon(Dungeon dungeon, Map map, u64 rng);
-void Print(Map map);
+void SetCells(Map *map, int xStart, int yStart, int xEnd, int yEnd, Tile cellType);
+bool MakeCorridor(Map *map, u64 rng, int x, int y, int maxLength, Direction direction);
+bool MakeRoom(Map *map, u64 rng, int x, int y, int xMaxLength, int yMaxLength, Direction direction);
+bool MakeFeature(Dungeon dungeon, Map *map, u64 rng, int x, int y, int xmod, int ymod, Direction direction);
+bool MakeFeatures(Dungeon dungeon, Map *map, u64 rng);
+bool MakeStairs(Dungeon dungeon, Map *map, u64 rng, Tile tile);
+bool MakeDungeon(Dungeon dungeon, Map *map, u64 rng);
+void Print(Map *map);
 void dungeon_main();
 void dungeon_free();
 

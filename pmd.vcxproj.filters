@@ -222,6 +222,9 @@
     <ClCompile Include="src\game\ai.c">
       <Filter>Source Files\game</Filter>
     </ClCompile>
+    <ClCompile Include="src\game\layer.c">
+      <Filter>Source Files\game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="inc\util.h">
@@ -420,6 +423,9 @@
       <Filter>Header Files\game</Filter>
     </ClInclude>
     <ClInclude Include="inc\game\ai.h">
+      <Filter>Header Files\game</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\game\layer.h">
       <Filter>Header Files\game</Filter>
     </ClInclude>
   </ItemGroup>

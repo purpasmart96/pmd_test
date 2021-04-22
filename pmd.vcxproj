@@ -140,6 +140,7 @@
     <ClCompile Include="src\game\items\vitamins.c" />
     <ClCompile Include="src\game\item.c" />
     <ClCompile Include="src\game\hunger.c" />
+    <ClCompile Include="src\game\layer.c" />
     <ClCompile Include="src\game\menu.c" />
     <ClCompile Include="src\game\move.c" />
     <ClCompile Include="src\game\object.c" />
@@ -209,6 +210,7 @@
     <ClInclude Include="inc\game\items\tm.h" />
     <ClInclude Include="inc\game\items\vitamins.h" />
     <ClInclude Include="inc\game\item.h" />
+    <ClInclude Include="inc\game\layer.h" />
     <ClInclude Include="inc\game\map.h" />
     <ClInclude Include="inc\game\move.h" />
     <ClInclude Include="inc\game\object.h" />
