@@ -155,8 +155,6 @@
     <ClCompile Include="src\game\sound.c" />
     <ClCompile Include="src\game\sprite.c" />
     <ClCompile Include="src\game\sprites.c" />
-    <ClCompile Include="src\game\text.c" />
-    <ClCompile Include="src\game\tile.c" />
     <ClCompile Include="src\game\vertex_array.c" />
     <ClCompile Include="src\game\vertex_buffer.c" />
     <ClCompile Include="src\main.c" />
@@ -224,8 +222,6 @@
     <ClInclude Include="inc\game\sound.h" />
     <ClInclude Include="inc\game\sprite.h" />
     <ClInclude Include="inc\game\sprites.h" />
-    <ClInclude Include="inc\game\text.h" />
-    <ClInclude Include="inc\game\tile.h" />
     <ClInclude Include="inc\game\vertex_array.h" />
     <ClInclude Include="inc\game\vertex_buffer.h" />
     <ClInclude Include="inc\pokemon\stats.h" />

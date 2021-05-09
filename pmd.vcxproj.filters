@@ -132,12 +132,6 @@
     <ClCompile Include="src\game\sprites.c">
       <Filter>Source Files\game</Filter>
     </ClCompile>
-    <ClCompile Include="src\game\tile.c">
-      <Filter>Source Files\game</Filter>
-    </ClCompile>
-    <ClCompile Include="src\game\text.c">
-      <Filter>Source Files\game</Filter>
-    </ClCompile>
     <ClCompile Include="src\game\sound.c">
       <Filter>Source Files\game</Filter>
     </ClCompile>
@@ -360,12 +354,6 @@
       <Filter>Header Files\game</Filter>
     </ClInclude>
     <ClInclude Include="inc\game\sound.h">
-      <Filter>Header Files\game</Filter>
-    </ClInclude>
-    <ClInclude Include="inc\game\text.h">
-      <Filter>Header Files\game</Filter>
-    </ClInclude>
-    <ClInclude Include="inc\game\tile.h">
       <Filter>Header Files\game</Filter>
     </ClInclude>
     <ClInclude Include="inc\common\exception.h">
