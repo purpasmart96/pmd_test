@@ -1,5 +1,5 @@
-AS OF SEPTEMBER 2022 THIS PROJECT IS ABANDONED!
-PLEASE CHECK OUT https://github.com/audinowho/PMDODump INSTEAD.
+
+This project is mostly for academic purposes, If you want something ready to use then check out https://github.com/audinowho/PMDODump.
 
 PMD Engine Coded in C
 
